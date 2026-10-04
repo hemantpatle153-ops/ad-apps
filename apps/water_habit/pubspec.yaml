@@ -1,0 +1,26 @@
+name: water_habit
+description: Water intake and habit tracker with daily reminders. Works offline.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  app_core:
+    path: ../../packages/app_core
+  shared_preferences: ^2.3.0
+  flutter_local_notifications: any
+  timezone: any
+  flutter_timezone: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
