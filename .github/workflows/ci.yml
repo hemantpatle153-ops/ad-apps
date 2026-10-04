@@ -11,7 +11,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        package: [packages/app_core, apps/qr_scanner]
+        package:
+          - packages/app_core
+          - apps/qr_scanner
+          - apps/daily_sudoku
+          - apps/doc_scanner
+          - apps/expense_tracker
+          - apps/water_habit
     defaults:
       run:
         working-directory: ${{ matrix.package }}

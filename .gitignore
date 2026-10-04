@@ -10,3 +10,6 @@ key.properties
 
 # Libraries do not commit lockfiles
 packages/*/pubspec.lock
+
+# Kotlin compiler session files
+.kotlin/

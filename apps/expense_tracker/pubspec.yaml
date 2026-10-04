@@ -1,0 +1,27 @@
+name: expense_tracker
+description: Offline daily expense tracker with budget, insights and CSV export.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  app_core:
+    path: ../../packages/app_core
+  sqflite: any
+  path: any
+  path_provider: any
+  shared_preferences: ^2.3.0
+  share_plus: ^13.3.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
