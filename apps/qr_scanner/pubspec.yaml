@@ -1,0 +1,27 @@
+name: qr_scanner
+description: Free QR and barcode scanner with history and a QR code maker.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  app_core:
+    path: ../../packages/app_core
+  mobile_scanner: ^7.0.0
+  qr_flutter: ^4.1.0
+  shared_preferences: ^2.3.0
+  share_plus: ^13.3.1
+  url_launcher: ^6.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
