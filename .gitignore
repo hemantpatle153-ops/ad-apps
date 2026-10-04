@@ -1,0 +1,12 @@
+.dart_tool/
+build/
+.idea/
+*.iml
+.flutter-plugins-dependencies
+local.properties
+key.properties
+*.jks
+*.keystore
+
+# Libraries do not commit lockfiles
+packages/*/pubspec.lock
