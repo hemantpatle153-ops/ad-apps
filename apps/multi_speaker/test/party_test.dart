@@ -122,7 +122,7 @@ void main() {
     }
     final guestEngine = FakeEngine();
     final g = await join(host, 'g', guestEngine);
-    await waitFor(() => host.guests.single.ready.length == 2);
+    await waitFor(() => host.guests.length == 1 && host.guests.single.ready.length == 2);
     await host.play();
     await waitFor(() => guestEngine.playing);
     hostEngine.finish();

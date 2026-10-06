@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Release resource shrinking removed the notification icons that
+     audio_service looks up by name, which broke the media notification and
+     lock-screen controls ("You must specify an icon resource id"). -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/audio_service_*,@mipmap/ic_launcher" />
