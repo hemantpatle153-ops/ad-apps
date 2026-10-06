@@ -9,7 +9,9 @@ import '../player/player_screen.dart';
 import '../player/system_channel.dart';
 import '../settings.dart';
 import 'discovery.dart';
+import 'online.dart';
 import 'party.dart';
+import 'pick_video_screen.dart';
 import 'protocol.dart';
 
 /// Joins a friend's watch party: scan their QR code, tap one found on this
@@ -26,6 +28,7 @@ class JoinPartyScreen extends StatefulWidget {
 class _JoinPartyScreenState extends State<JoinPartyScreen> {
   final _scanner = MobileScannerController(formats: const [BarcodeFormat.qrCode]);
   final _address = TextEditingController();
+  final _code = TextEditingController();
   BeaconListener? _listener;
   StreamSubscription<List<FoundHost>>? _sub;
   List<FoundHost> _found = [];
@@ -54,6 +57,7 @@ class _JoinPartyScreenState extends State<JoinPartyScreen> {
     _listener?.stop();
     _scanner.dispose();
     _address.dispose();
+    _code.dispose();
     if (!_joining) SystemChannel.instance.holdNetwork(false);
     super.dispose();
   }
@@ -63,10 +67,7 @@ class _JoinPartyScreenState extends State<JoinPartyScreen> {
     setState(() => _joining = true);
     await _scanner.stop();
     final s = widget.settings;
-    final name = s.partyName.isNotEmpty
-        ? s.partyName
-        : await SystemChannel.instance.deviceName();
-    final guest = PartyGuest(name, code);
+    final guest = PartyGuest(await _myName(), code);
     final ok = await guest.connect();
     if (!mounted) {
       guest.close();
@@ -98,6 +99,53 @@ class _JoinPartyScreenState extends State<JoinPartyScreen> {
       party: guest,
       replace: true,
     );
+  }
+
+  Future<String> _myName() async {
+    final s = widget.settings;
+    return s.partyName.isNotEmpty ? s.partyName : SystemChannel.instance.deviceName();
+  }
+
+  /// Joins an online party: the link opens directly, a phone video is
+  /// picked from this phone.
+  Future<void> _joinOnline() async {
+    final code = normalizeRoomCode(_code.text);
+    final messenger = ScaffoldMessenger.of(context);
+    if (code == null) {
+      messenger.showSnackBar(const SnackBar(
+          content: Text('Party codes have 6 letters and numbers, like K7QF2M')));
+      return;
+    }
+    if (_joining) return;
+    setState(() => _joining = true);
+    OnlineParty party;
+    try {
+      party = await OnlineParty.join(await _myName(), code);
+    } on OnlineException catch (e) {
+      if (mounted) setState(() => _joining = false);
+      messenger.showSnackBar(SnackBar(content: Text(e.message)));
+      return;
+    }
+    if (!mounted) {
+      party.close();
+      return;
+    }
+    final video = party.video;
+    PlayItem? item = video.isLink
+        ? PlayItem(uri: video.url!, title: video.title, key: 'party', transient: true)
+        : await Navigator.push<PlayItem>(context,
+            MaterialPageRoute(builder: (_) => PickVideoScreen(video: video)));
+    if (item == null || !mounted) {
+      party.close();
+      if (mounted) setState(() => _joining = false);
+      return;
+    }
+    await _scanner.stop();
+    _sub?.cancel();
+    _listener?.stop();
+    _listener = null;
+    if (!mounted) return;
+    await openPlayer(context, widget.settings, [item], party: party, replace: true);
   }
 
   void _onDetect(BarcodeCapture capture) {
@@ -135,12 +183,38 @@ class _JoinPartyScreenState extends State<JoinPartyScreen> {
                 padding: const EdgeInsets.all(16),
                 children: [
                   Text(
-                    'Your friend opens a video, taps More, then Watch with friends. '
-                    'Scan the code on their screen to watch in sync, with chat and reactions.',
+                    'Your friend opens a video, taps More, then Watch with friends.',
                     style: theme.textTheme.bodyMedium,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
+                  Text('Online, with a party code', style: theme.textTheme.titleMedium),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _code,
+                          textCapitalization: TextCapitalization.characters,
+                          maxLength: 7,
+                          decoration: const InputDecoration(
+                            hintText: 'K7QF2M',
+                            counterText: '',
+                            border: OutlineInputBorder(),
+                          ),
+                          onSubmitted: (_) => _joinOnline(),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      FilledButton(onPressed: _joinOnline, child: const Text('Join')),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  Text('Nearby, on the same Wi-Fi', style: theme.textTheme.titleMedium),
+                  const SizedBox(height: 4),
+                  Text("Scan the code on your friend's screen",
+                      style: theme.textTheme.bodySmall, textAlign: TextAlign.center),
+                  const SizedBox(height: 12),
                   Center(
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(24),

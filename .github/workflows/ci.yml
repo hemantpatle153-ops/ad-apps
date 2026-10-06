@@ -80,7 +80,14 @@ jobs:
         run: |
           out="$RUNNER_TEMP/apk-branch"
           mkdir -p "$out"
-          cp build/app/outputs/flutter-apk/app-release.apk "$out/$APP.apk"
+          apk=build/app/outputs/flutter-apk/app-release.apk
+          # GitHub refuses files over 100 MB. Fall back to a 64-bit ARM only
+          # APK, which nearly every phone since 2017 runs.
+          if [ "$(stat -c %s "$apk")" -gt 95000000 ]; then
+            flutter build apk --release --target-platform android-arm64
+          fi
+          echo "::notice::$APP APK is $(stat -c %s "$apk") bytes"
+          cp "$apk" "$out/$APP.apk"
           cd "$out"
           git init -q -b "apk-$APP"
           git add "$APP.apk"

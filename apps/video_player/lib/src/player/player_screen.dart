@@ -14,6 +14,7 @@ import 'package:screen_brightness/screen_brightness.dart';
 import '../format.dart';
 import '../library/subtitles.dart';
 import '../party/party.dart';
+import '../party/online.dart';
 import '../party/party_widgets.dart';
 import '../party/protocol.dart';
 import '../settings.dart';
@@ -190,7 +191,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     if (p == null || !mounted) return;
     setState(() {});
     final reason = p.endedReason;
-    if (reason != null && p is PartyGuest && p.status == GuestStatus.ended) {
+    if (reason != null && p is! PartyHost) {
       p.removeListener(_onPartyChanged);
       showDialog<void>(
         context: context,
@@ -410,12 +411,76 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         subtext: hw ? 'Smoother, uses less battery' : 'Plays files the hardware can\'t');
   }
 
-  /// Starts a watch party with this video as host.
+  /// Asks where friends are, then starts a watch party with this video.
   Future<void> _hostParty() async {
     if (_party != null) {
       _openParty();
       return;
     }
+    final online = await showPlayerSheet<bool>(
+      context,
+      (ctx) => SafeArea(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          const SheetTitle('Watch with friends'),
+          ListTile(
+            leading: const Icon(Icons.public_rounded),
+            title: const Text('Online, with a code'),
+            subtitle: Text(item.isNetwork
+                ? 'Friends anywhere open this link in sync'
+                : 'Friends anywhere who have this same video on their phone'),
+            onTap: () => Navigator.pop(ctx, true),
+          ),
+          ListTile(
+            leading: const Icon(Icons.wifi_rounded),
+            title: const Text('Nearby, on the same Wi-Fi'),
+            subtitle: const Text('Friends stream the video from your phone'),
+            onTap: () => Navigator.pop(ctx, false),
+          ),
+        ]),
+      ),
+    );
+    if (online == null || !mounted) return;
+    online ? await _hostOnline() : await _hostNearby();
+  }
+
+  Future<String> _myName() async => settings.partyName.isNotEmpty
+      ? settings.partyName
+      : await SystemChannel.instance.deviceName();
+
+  Future<void> _hostOnline() async {
+    final it = item;
+    _flash(Icons.public_rounded, 'Starting the watch party...');
+    final s = player.state;
+    try {
+      final party = await OnlineParty.create(
+        await _myName(),
+        OnlineVideo(
+          title: it.title,
+          url: it.isNetwork ? it.uri : null,
+          durationMs: s.duration.inMilliseconds,
+        ),
+        PartyState(
+          playing: s.playing,
+          positionUs: s.position.inMicroseconds,
+          anchorUs: 0,
+          rate: s.rate,
+        ),
+      );
+      if (!mounted) {
+        party.close();
+        return;
+      }
+      party.attach(player);
+      party.addListener(_onPartyChanged);
+      setState(() => _party = party);
+      _openParty();
+    } on OnlineException catch (e) {
+      _flash(Icons.public_off_rounded, 'Couldn\'t start the watch party',
+          subtext: e.message);
+    }
+  }
+
+  Future<void> _hostNearby() async {
     final it = item;
     String? file;
     if (!it.isNetwork) {
@@ -427,9 +492,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         return;
       }
     }
-    final name = settings.partyName.isNotEmpty
-        ? settings.partyName
-        : await SystemChannel.instance.deviceName();
+    final name = await _myName();
     final host = PartyHost(
       name,
       video: PartyVideo(title: it.title, url: it.isNetwork ? it.uri : null),

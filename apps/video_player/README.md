@@ -29,16 +29,24 @@ phone, plays almost any format (libmpv through `media_kit`), and works offline.
 
 ## Watch together
 
-One phone opens a video and taps More, then Watch with friends. Friends tap
-the people icon on the home screen and scan the QR code, pick the party found
-on the Wi-Fi, or type the address. Phone videos stream from the host; links
-open on every phone directly. Play, pause, seek and speed stay in sync (clock
-sync, seek when more than 1.5 s off, small speed nudges below that), with a
-chat and emoji reactions over the video.
+One phone opens a video and taps More, then Watch with friends, and picks:
 
-It works on the same Wi-Fi or the host's hotspot, with no server. Watching
-together over the internet would need a relay server (for example Firebase
-plus TURN) and is not built.
+- **Online, with a code**: anywhere in the world. Firebase Realtime Database
+  (project `dice-dhamaal`, shared with the Ludo game, data under `watch/`)
+  carries only play, pause, seek, speed, chat and emoji. The video itself is
+  never uploaded: a link opens on every phone, and a phone video must already
+  be on each friend's phone (they pick their copy; the app ranks the one with
+  the same length first). Everyone follows a shared timeline on Firebase's
+  server clock. Rules to add in the Firebase console:
+  `/mnt/project-files/video_player/firebase_watch_rules.md` (project files).
+- **Nearby, on the same Wi-Fi or hotspot**: no internet or server. Friends
+  stream the video from the host phone (HTTP with range requests) and join by
+  QR code, the nearby list or the address. Clock sync over Wi-Fi, a seek when
+  more than 1.5 s off, small speed nudges below that.
+
+Both have chat and emoji reactions over the video. Live-streaming a phone
+file to friends over the internet is not built: it would use the host's
+upload data and, on many mobile networks, a paid TURN relay.
 
 ## Ads
 

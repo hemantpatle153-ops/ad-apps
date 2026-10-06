@@ -7,6 +7,7 @@ import 'package:media_kit/media_kit.dart';
 import '../player/system_channel.dart';
 import 'clock.dart';
 import 'discovery.dart';
+import 'follower.dart';
 import 'protocol.dart';
 
 /// A watch party on the local network (same Wi-Fi or one phone's hotspot).
@@ -41,6 +42,10 @@ abstract class WatchParty extends ChangeNotifier {
   void sendChat(String text);
   void sendReaction(String emoji);
   Future<void> close();
+
+  /// Adds a chat line or reaction and shows it on the video.
+  @protected
+  void received(PartyMessage m) => _received(m);
 
   void _received(PartyMessage m) {
     messages.add(m);
@@ -355,10 +360,7 @@ class PartyGuest extends WatchParty {
   bool _closed = false;
   final _welcome = Completer<bool>();
 
-  /// Microseconds of the last seek this phone did to catch up; corrections
-  /// wait a moment after it so the player can settle.
-  int _settleUntilUs = 0;
-  bool _rateNudged = false;
+  late final _follower = TimelineFollower(nowUs: hostNowUs);
 
   int hostNowUs() => Clock.nowUs() + clock.offsetUs;
 
@@ -428,7 +430,7 @@ class PartyGuest extends WatchParty {
         notifyListeners();
       case 'state':
         state = PartyState.fromJson(m);
-        _settleUntilUs = 0;
+        _follower.reset();
         _syncNow();
       case 'members':
         members = [for (final n in (m['names'] as List? ?? const [])) '$n'];
@@ -448,47 +450,10 @@ class PartyGuest extends WatchParty {
     _sync = Timer.periodic(const Duration(milliseconds: 500), (_) => _syncNow());
   }
 
-  /// Keeps this phone on the host's timeline: small drift is fixed by
-  /// playing a little faster or slower, big gaps by seeking.
   void _syncNow() {
     final p = player;
     if (p == null || !clock.hasEstimate || status != GuestStatus.connected) return;
-    final s = state;
-    final target = s.positionAt(hostNowUs());
-    if (p.state.duration > Duration.zero &&
-        target > p.state.duration.inMicroseconds) {
-      return;
-    }
-    if (s.playing != p.state.playing) {
-      s.playing ? p.play() : p.pause();
-    }
-    final pos = p.state.position.inMicroseconds;
-    final err = pos - target;
-    if (!s.playing) {
-      if (err.abs() > 300000) p.seek(Duration(microseconds: target));
-      _resetRate(s);
-      return;
-    }
-    if (p.state.buffering || Clock.nowUs() < _settleUntilUs) return;
-    if (err.abs() > 1500000) {
-      // Aim a little ahead: the seek itself takes time.
-      p.seek(Duration(microseconds: target + 400000));
-      _settleUntilUs = Clock.nowUs() + 1500000;
-      _resetRate(s);
-    } else if (err.abs() > 120000) {
-      final nudge = (err / 4000000).clamp(-0.08, 0.08);
-      p.setRate(s.rate * (1 - nudge));
-      _rateNudged = true;
-    } else {
-      _resetRate(s);
-    }
-  }
-
-  void _resetRate(PartyState s) {
-    if (_rateNudged || (player != null && player!.state.rate != s.rate)) {
-      player?.setRate(s.rate);
-      _rateNudged = false;
-    }
+    _follower.follow(p, state);
   }
 
   void _onClosed() {
