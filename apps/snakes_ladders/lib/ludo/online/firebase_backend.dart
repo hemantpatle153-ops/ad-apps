@@ -12,7 +12,7 @@ import 'backend.dart';
 /// live in the repository:
 ///   --dart-define=FIREBASE_API_KEY=... --dart-define=FIREBASE_APP_ID=...
 ///   --dart-define=FIREBASE_PROJECT_ID=... --dart-define=FIREBASE_SENDER_ID=...
-///   --dart-define=FIREBASE_DB_URL=https://<project>-default-rtdb.<region>.firebasedatabase.app
+///   --dart-define=FIREBASE_DB_URL=https://PROJECT-default-rtdb.REGION.firebasedatabase.app
 abstract final class FirebaseSetup {
   static const apiKey = String.fromEnvironment('FIREBASE_API_KEY');
   static const appId = String.fromEnvironment('FIREBASE_APP_ID');
@@ -83,7 +83,8 @@ class FirebaseBackend implements RoomBackend {
       final ref = _room(code);
       final taken = await ref.child('size').get();
       if (taken.exists) continue;
-      final seat = Seat(uid: _uid, name: name, color: RoomState.colorsFor(size)[0]);
+      final seat =
+          Seat(uid: _uid, name: name, color: RoomState.colorsFor(size)[0]);
       await ref.set({
         'size': size,
         'rules': rules.toJson(),
@@ -105,8 +106,8 @@ class FirebaseBackend implements RoomBackend {
     if (!snap.exists || snap.value is! Map) {
       throw const RoomException(RoomError.notFound);
     }
-    final room = RoomState.fromJson(
-        code, Map<String, dynamic>.from(snap.value! as Map));
+    final room =
+        RoomState.fromJson(code, Map<String, dynamic>.from(snap.value! as Map));
     for (final e in room.seats.entries) {
       if (e.value.uid == _uid) {
         await _goOnline(code, e.key);
@@ -158,7 +159,6 @@ class FirebaseBackend implements RoomBackend {
     final subs = <StreamSubscription<DatabaseEvent>>[];
     ctl.onListen = () {
       final ref = _room(code);
-      var parts = 0;
       final fields = <String, Object?>{};
       for (final k in const ['size', 'rules', 'started']) {
         subs.add(ref.child(k).onValue.listen((e) {
@@ -167,14 +167,12 @@ class FirebaseBackend implements RoomBackend {
             head = Map<String, dynamic>.from(fields);
             emit();
           }
-          parts++;
         }, onError: ctl.addError));
       }
       subs.add(ref.child('seats').onValue.listen((e) {
         seats = e.snapshot.value;
         emit();
       }, onError: ctl.addError));
-      assert(parts >= 0);
     };
     ctl.onCancel = () async {
       for (final s in subs) {
@@ -185,17 +183,13 @@ class FirebaseBackend implements RoomBackend {
   }
 
   @override
-  Future<void> startGame(String code) =>
-      _room(code).child('started').set(true);
+  Future<void> startGame(String code) => _room(code).child('started').set(true);
 
   static String _key(int index) => index.toString().padLeft(6, '0');
 
   @override
-  Stream<(int, GameAction)> actions(String code) => _room(code)
-      .child('actions')
-      .orderByKey()
-      .onChildAdded
-      .map((e) => (
+  Stream<(int, GameAction)> actions(String code) =>
+      _room(code).child('actions').orderByKey().onChildAdded.map((e) => (
             int.parse(e.snapshot.key!),
             GameAction.fromJson(
                 Map<String, dynamic>.from(e.snapshot.value! as Map)),

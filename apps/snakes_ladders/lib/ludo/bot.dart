@@ -13,21 +13,21 @@ int chooseMove(LudoEngine g, List<int> movable, {Random? random}) {
   var bestScore = double.negativeInfinity;
   for (final t in movable) {
     final from = g.tokens[p][t];
-    final to = from == Route.yard ? 0 : from + roll;
+    final to = from == Track.yard ? 0 : from + roll;
     var s = rnd.nextDouble(); // breaks ties so bots don't look scripted
-    final sq = Route.square(color, to);
-    if (to == Route.home) s += 80;
-    if (from == Route.yard) s += 55;
-    if (sq != null && !Route.isSafe(sq) && _opponentsOn(g, p, sq) > 0) {
+    final sq = Track.square(color, to);
+    if (to == Track.home) s += 80;
+    if (from == Track.yard) s += 55;
+    if (sq != null && !Track.isSafe(sq) && _opponentsOn(g, p, sq) > 0) {
       s += 100;
     }
-    if (from <= Route.lastTrack && to > Route.lastTrack) s += 35;
-    if (sq != null && Route.isSafe(sq)) s += 18;
-    final fromSq = Route.square(color, from);
-    if (fromSq != null && !Route.isSafe(fromSq) && _threat(g, p, fromSq) > 0) {
+    if (from <= Track.lastTrack && to > Track.lastTrack) s += 35;
+    if (sq != null && Track.isSafe(sq)) s += 18;
+    final fromSq = Track.square(color, from);
+    if (fromSq != null && !Track.isSafe(fromSq) && _threat(g, p, fromSq) > 0) {
       s += 30;
     }
-    if (sq != null && !Route.isSafe(sq)) s -= 45 * _threat(g, p, sq);
+    if (sq != null && !Track.isSafe(sq)) s -= 45 * _threat(g, p, sq);
     s += to * 0.15;
     if (s > bestScore) {
       bestScore = s;
@@ -42,7 +42,7 @@ int _opponentsOn(LudoEngine g, int p, int sq) {
   for (var o = 0; o < g.players.length; o++) {
     if (o == p) continue;
     for (final t in g.tokens[o]) {
-      if (Route.square(g.players[o].color, t) == sq) n++;
+      if (Track.square(g.players[o].color, t) == sq) n++;
     }
   }
   return n;
@@ -55,11 +55,11 @@ int _threat(LudoEngine g, int p, int sq) {
     if (o == p) continue;
     final c = g.players[o].color;
     for (final t in g.tokens[o]) {
-      final s = Route.square(c, t);
+      final s = Track.square(c, t);
       if (s == null) continue;
-      final gap = (sq - s + Route.loop) % Route.loop;
+      final gap = (sq - s + Track.loop) % Track.loop;
       // The opponent must still be on the loop when it gets there.
-      if (gap >= 1 && gap <= 6 && t + gap <= Route.lastTrack) n++;
+      if (gap >= 1 && gap <= 6 && t + gap <= Track.lastTrack) n++;
     }
   }
   return n;

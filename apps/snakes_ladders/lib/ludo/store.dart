@@ -8,7 +8,8 @@ import 'themes.dart';
 
 /// An unfinished game kept on the device.
 class SavedGame {
-  const SavedGame({required this.id, required this.savedAt, required this.engine});
+  const SavedGame(
+      {required this.id, required this.savedAt, required this.engine});
 
   final String id;
   final DateTime savedAt;

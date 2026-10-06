@@ -2,8 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import 'engine.dart';
-import 'themes.dart';
+import '../engine.dart';
+import '../themes.dart';
 import 'geometry.dart';
 
 /// Paints the Ludo board. [view] turns it a quarter clockwise per step so
@@ -66,14 +66,16 @@ class LudoBoardPainter extends CustomPainter {
         ..shader = LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color.lerp(col, Colors.white, 0.18)!, col,
-              Color.lerp(col, Colors.black, 0.18)!],
+          colors: [
+            Color.lerp(col, Colors.white, 0.18)!,
+            col,
+            Color.lerp(col, Colors.black, 0.18)!
+          ],
         ).createShader(outer),
     );
     final inner = RRect.fromRectAndRadius(
         outer.deflate(u * 0.85), Radius.circular(u * 0.7));
-    canvas.drawRRect(
-        inner.shift(Offset(0, u * 0.08)),
+    canvas.drawRRect(inner.shift(Offset(0, u * 0.08)),
         Paint()..color = Colors.black.withValues(alpha: 0.18));
     canvas.drawRRect(inner, Paint()..color = theme.track);
     for (var t = 0; t < 4; t++) {
@@ -99,7 +101,7 @@ class LudoBoardPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = max(0.8, u * 0.04)
       ..color = theme.line;
-    for (var i = 0; i < Route.loop; i++) {
+    for (var i = 0; i < Track.loop; i++) {
       final cell = Grid.loop[i];
       final r = _cell(cell, u);
       final startOf = i % 13 == 0 ? i ~/ 13 : null;
@@ -112,7 +114,7 @@ class LudoBoardPainter extends CustomPainter {
       canvas.drawRect(r, line);
       if (startOf != null) {
         _arrow(canvas, r.center, u, startOf, Colors.white);
-      } else if (Route.isSafe(i)) {
+      } else if (Track.isSafe(i)) {
         _star(canvas, r.center, u * 0.36, theme.star);
       }
     }
@@ -131,7 +133,7 @@ class LudoBoardPainter extends CustomPainter {
         canvas.drawRect(r, line);
       }
       // Arrow on the square where this colour turns into its home column.
-      final entry = _cell(Grid.loop[(Route.startOf(c) + 50) % 52], u);
+      final entry = _cell(Grid.loop[(Track.startOf(c) + 50) % 52], u);
       _arrow(canvas, entry.center, u, c, col, entry: true);
     }
   }
@@ -199,9 +201,8 @@ class LudoBoardPainter extends CustomPainter {
         ..lineTo(b.dx, b.dy)
         ..lineTo(mid.dx, mid.dy)
         ..close();
-      final col = _active(e.key)
-          ? _c(e.key)
-          : Color.lerp(_c(e.key), theme.track, 0.5)!;
+      final col =
+          _active(e.key) ? _c(e.key) : Color.lerp(_c(e.key), theme.track, 0.5)!;
       canvas.drawPath(
         tri,
         Paint()
@@ -218,8 +219,8 @@ class LudoBoardPainter extends CustomPainter {
             ..color = Colors.white.withValues(alpha: 0.7));
     }
     // A small gold medallion in the middle.
-    canvas.drawCircle(mid, u * 0.42,
-        Paint()..color = Colors.black.withValues(alpha: 0.2));
+    canvas.drawCircle(
+        mid, u * 0.42, Paint()..color = Colors.black.withValues(alpha: 0.2));
     canvas.drawCircle(
       mid,
       u * 0.38,

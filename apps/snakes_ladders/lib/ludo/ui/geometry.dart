@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'engine.dart';
+import '../engine.dart';
 
 /// Board geometry on a 15 x 15 grid, in cell units (x = column, y = row,
 /// cell centres at .5). Red's yard is top-left; the other colours are the
@@ -39,8 +39,7 @@ abstract final class Grid {
   /// Home column square k (1..5) for [color].
   static (int, int) homeColumn(int color, int k) => turn((7, k), color);
 
-  static Offset center((int, int) cell) =>
-      Offset(cell.$2 + 0.5, cell.$1 + 0.5);
+  static Offset center((int, int) cell) => Offset(cell.$2 + 0.5, cell.$1 + 0.5);
 
   /// Where a finished token rests inside its colour's triangle.
   static Offset homeSpot(int color, int token, int count) {
@@ -74,11 +73,11 @@ abstract final class Grid {
 
   /// Where a token is drawn, before any view rotation.
   static Offset tokenSpot(int color, int progress, int token, int count) {
-    if (progress == Route.yard) return yardSpot(color, token);
-    if (progress == Route.home) return homeSpot(color, token, count);
-    if (progress > Route.lastTrack) {
-      return center(homeColumn(color, progress - Route.lastTrack));
+    if (progress == Track.yard) return yardSpot(color, token);
+    if (progress == Track.home) return homeSpot(color, token, count);
+    if (progress > Track.lastTrack) {
+      return center(homeColumn(color, progress - Track.lastTrack));
     }
-    return center(loop[Route.square(color, progress)!]);
+    return center(loop[Track.square(color, progress)!]);
   }
 }

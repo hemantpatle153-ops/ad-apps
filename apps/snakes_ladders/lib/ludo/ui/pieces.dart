@@ -100,8 +100,7 @@ class PiecesPainter extends CustomPainter {
       });
     for (final i in order) {
       paintPiece(canvas, place[i] * c, c * scale[i], layer.colors[i],
-          lift: layer.lift[i] * c,
-          glow: layer.glow[i] ? layer.pulse : null);
+          lift: layer.lift[i] * c, glow: layer.glow[i] ? layer.pulse : null);
     }
   }
 

@@ -271,7 +271,8 @@ class MemoryBackend implements RoomBackend {
       rules: r.rules,
       seats: {
         ...r.seats,
-        seat: Seat(uid: uid, name: name, color: RoomState.colorsFor(r.size)[seat]),
+        seat: Seat(
+            uid: uid, name: name, color: RoomState.colorsFor(r.size)[seat]),
       },
       started: false,
     );
@@ -291,7 +292,11 @@ class MemoryBackend implements RoomBackend {
   Future<void> startGame(String code) async {
     final r = server.rooms[code]!;
     server.rooms[code] = RoomState(
-        code: code, size: r.size, rules: r.rules, seats: r.seats, started: true);
+        code: code,
+        size: r.size,
+        rules: r.rules,
+        seats: r.seats,
+        started: true);
     server._changed(code);
   }
 

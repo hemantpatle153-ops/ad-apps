@@ -67,7 +67,7 @@ class GameRules {
 /// A token's progress along its own route:
 /// [yard] at home base, 0..50 on the shared track (0 is the colour's start
 /// square), 51..55 up its home column, and [home] once finished.
-abstract final class Route {
+abstract final class Track {
   static const yard = -1;
   static const lastTrack = 50;
   static const home = 56;
@@ -150,9 +150,8 @@ class MoveResult {
   final bool gameOver;
 
   /// Every progress value the token passes through, one per pip.
-  List<int> get steps => from == Route.yard
-      ? const [0]
-      : [for (var p = from + 1; p <= to; p++) p];
+  List<int> get steps =>
+      from == Track.yard ? const [0] : [for (var p = from + 1; p <= to; p++) p];
 }
 
 /// The rules of Ludo, with no UI. Fully serialisable so a game can be saved,
@@ -174,7 +173,7 @@ class LudoEngine {
   })  : tokens = tokens ??
             [
               for (var i = 0; i < players.length; i++)
-                List.filled(rules.tokens, Route.yard),
+                List.filled(rules.tokens, Track.yard),
             ],
         finishOrder = finishOrder ?? [],
         captures = captures ?? List.filled(players.length, 0),
@@ -184,7 +183,7 @@ class LudoEngine {
   final List<Player> players;
   final GameRules rules;
 
-  /// tokens[player][token] is that token's progress (see [Route]).
+  /// tokens[player][token] is that token's progress (see [Track]).
   final List<List<int>> tokens;
   int current;
   Phase phase;
@@ -203,7 +202,7 @@ class LudoEngine {
 
   Player get currentPlayer => players[current];
 
-  bool hasFinished(int p) => tokens[p].every((t) => t == Route.home);
+  bool hasFinished(int p) => tokens[p].every((t) => t == Track.home);
 
   /// The game ends when one player is left, or when every person at the
   /// table is done and only computer players remain.
@@ -227,13 +226,13 @@ class LudoEngine {
       ];
 
   int? _target(int from, int roll) {
-    if (from == Route.home) return null;
-    if (from == Route.yard) {
+    if (from == Track.home) return null;
+    if (from == Track.yard) {
       final out = roll == 6 || (!rules.sixToRelease && roll == 1);
       return out ? 0 : null;
     }
     final to = from + roll;
-    return to > Route.home ? null : to;
+    return to > Track.home ? null : to;
   }
 
   /// Applies a throw for the current player.
@@ -274,21 +273,21 @@ class LudoEngine {
     tokens[p][token] = to;
 
     final caught = <Capture>[];
-    final sq = Route.square(players[p].color, to);
-    if (sq != null && !Route.isSafe(sq)) {
+    final sq = Track.square(players[p].color, to);
+    if (sq != null && !Track.isSafe(sq)) {
       for (var o = 0; o < players.length; o++) {
         if (o == p) continue;
         for (var t = 0; t < tokens[o].length; t++) {
-          if (Route.square(players[o].color, tokens[o][t]) == sq) {
+          if (Track.square(players[o].color, tokens[o][t]) == sq) {
             caught.add(Capture(o, t, tokens[o][t]));
-            tokens[o][t] = Route.yard;
+            tokens[o][t] = Track.yard;
           }
         }
       }
     }
     captures[p] += caught.length;
 
-    final finishedToken = to == Route.home;
+    final finishedToken = to == Track.home;
     final finishedPlayer = finishedToken && hasFinished(p);
     if (finishedPlayer) finishOrder.add(p);
     final over = isOver;
@@ -324,7 +323,7 @@ class LudoEngine {
 
   /// Total progress, used to rank players who didn't finish.
   int score(int p) =>
-      tokens[p].fold(0, (s, t) => s + (t == Route.yard ? 0 : t + 1));
+      tokens[p].fold(0, (s, t) => s + (t == Track.yard ? 0 : t + 1));
 
   void _rankTheRest() {
     final rest = [
@@ -344,8 +343,7 @@ class LudoEngine {
   }
 
   /// Share of the whole route covered, 0 to 1, for the progress bars.
-  double progress(int p) =>
-      score(p) / (tokens[p].length * (Route.home + 1));
+  double progress(int p) => score(p) / (tokens[p].length * (Track.home + 1));
 
   Map<String, dynamic> toJson() => {
         'players': [for (final p in players) p.toJson()],
