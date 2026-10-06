@@ -136,6 +136,145 @@ A player may read a room and write only their own seat and the next move. The
         ".write": "auth != null && !data.exists() && newData.exists()",
         ".validate": "newData.hasChildren(['code','seat','name','reason','by','at']) && newData.child('by').val() == auth.uid && newData.child('at').val() == now && newData.child('code').isString() && newData.child('code').val().length <= 10 && newData.child('seat').isNumber() && newData.child('name').isString() && newData.child('name').val().length <= 40 && newData.child('reason').isString() && newData.child('reason').val().length <= 200"
       }
+    },
+    "ledger": {
+      "$id": {
+        ".read": "auth != null && data.child('members/' + auth.uid).exists()",
+        ".write": "auth != null && !newData.exists() && ((data.child('done').isNumber() && data.child('done').val() < now - 1209600000) || (data.child('members/' + auth.uid).exists() && !data.child('entries').exists()))",
+        "meta": {
+          ".write": "auth != null && newData.exists() && ((data.exists() && root.child('ledger/' + $id + '/members/' + auth.uid).exists()) || (!data.exists() && newData.parent().child('members/' + auth.uid + '/s').val() == 'a'))",
+          ".validate": "newData.hasChildren(['a', 'b', 'created'])",
+          "a": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 30"
+          },
+          "b": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 30"
+          },
+          "code": {
+            ".validate": "newData.isString() && newData.val().length == 8"
+          },
+          "created": {
+            ".validate": "newData.val() == data.val() || (!data.exists() && newData.val() == now)"
+          },
+          "$other": {
+            ".validate": false
+          }
+        },
+        "members": {
+          "$uid": {
+            ".write": "auth != null && $uid == auth.uid && (data.exists() || !newData.exists() || (newData.child('c').isString() && newData.child('c').val() == root.child('ledger/' + $id + '/meta/code').val()) || (!root.child('ledger/' + $id + '/meta').exists() && newData.child('s').val() == 'a'))",
+            ".validate": "newData.child('s').val() == 'a' || newData.child('s').val() == 'b'",
+            "s": {
+              ".validate": "newData.isString()"
+            },
+            "c": {
+              ".validate": "newData.isString() && newData.val().length == 8"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "entries": {
+          "$e": {
+            ".write": "auth != null && root.child('ledger/' + $id + '/members/' + auth.uid).exists() && !root.child('ledger/' + $id + '/done').exists()",
+            ".validate": "newData.hasChildren(['amt', 'by', 'date', 'at'])",
+            "amt": {
+              ".validate": "newData.isNumber() && newData.val() > 0 && newData.val() <= 100000000000 && newData.val() % 1 == 0"
+            },
+            "by": {
+              ".validate": "newData.val() == 'a' || newData.val() == 'b'"
+            },
+            "date": {
+              ".validate": "newData.isNumber()"
+            },
+            "tag": {
+              ".validate": "newData.isString() && newData.val().length <= 30"
+            },
+            "note": {
+              ".validate": "newData.isString() && newData.val().length <= 200"
+            },
+            "at": {
+              ".validate": "newData.val() == now || newData.val() == data.val()"
+            },
+            "cs": {
+              ".validate": "newData.val() == 'a' || newData.val() == 'b'"
+            },
+            "ea": {
+              ".validate": "newData.val() == now"
+            },
+            "es": {
+              ".validate": "newData.val() == root.child('ledger/' + $id + '/members/' + auth.uid + '/s').val()"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "ok": {
+          ".write": "auth != null && !newData.exists() && root.child('ledger/' + $id + '/members/' + auth.uid).exists()",
+          "$side": {
+            ".write": "auth != null && root.child('ledger/' + $id + '/members/' + auth.uid).exists() && (!newData.exists() || (root.child('ledger/' + $id + '/members/' + auth.uid + '/s').val() == $side && !root.child('ledger/' + $id + '/done').exists()))",
+            ".validate": "($side == 'a' || $side == 'b') && newData.hasChildren(['sig', 'net', 'at'])",
+            "sig": {
+              ".validate": "newData.isString() && newData.val().length <= 64"
+            },
+            "net": {
+              ".validate": "newData.isNumber()"
+            },
+            "at": {
+              ".validate": "newData.val() == now"
+            },
+            "$other": {
+              ".validate": false
+            }
+          }
+        },
+        "done": {
+          ".write": "auth != null && root.child('ledger/' + $id + '/members/' + auth.uid).exists() && (!newData.exists() || (newData.parent().child('ok/a/sig').exists() && newData.parent().child('ok/a/sig').val() == newData.parent().child('ok/b/sig').val()))",
+          ".validate": "newData.val() == now"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "ledgerCodes": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && ((!data.exists() && newData.exists() && newData.parent().parent().child('ledger/' + newData.child('id').val() + '/members/' + auth.uid).exists() && newData.parent().parent().child('ledger/' + newData.child('id').val() + '/meta/code').val() == $code) || (data.exists() && newData.child('id').val() == data.child('id').val() && root.child('ledger/' + data.child('id').val() + '/members/' + auth.uid).exists()) || (data.exists() && !newData.exists() && (root.child('ledger/' + data.child('id').val() + '/members/' + auth.uid).exists() || newData.parent().parent().child('ledger/' + data.child('id').val() + '/meta/code').val() != $code)))",
+        ".validate": "newData.hasChildren(['id', 'a', 'b']) && newData.child('id').isString() && newData.child('a').isString() && newData.child('b').isString() && newData.child('a').val().length <= 30 && newData.child('b').val().length <= 30"
+      }
+    },
+    "ledgerGc": {
+      ".read": "auth != null && query.orderByChild == 't' && query.limitToFirst <= 20",
+      ".indexOn": [
+        "t"
+      ],
+      "$id": {
+        ".write": "auth != null && (root.child('ledger/' + $id + '/members/' + auth.uid).exists() || (!newData.exists() && !newData.parent().parent().child('ledger/' + $id).exists()))",
+        ".validate": "newData.hasChildren(['t'])",
+        "t": {
+          ".validate": "newData.val() == now || newData.val() == data.val()"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "ledgerUsers": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid",
+        "ledgers": {
+          "$id": {
+            ".validate": "newData.val() == 'a' || newData.val() == 'b'"
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
     }
   }
 }
