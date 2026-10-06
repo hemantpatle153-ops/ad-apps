@@ -60,7 +60,7 @@ A player may read a room and write only their own seat and the next move. The
           ".validate": "newData.val() == now"
         },
         "started": {
-          ".write": "auth != null && root.child('rooms/'+$code+'/members/'+auth.uid).exists()",
+          ".write": "auth != null && newData.parent().child('members/'+auth.uid).exists()",
           ".validate": "newData.isBoolean()"
         },
         "members": {

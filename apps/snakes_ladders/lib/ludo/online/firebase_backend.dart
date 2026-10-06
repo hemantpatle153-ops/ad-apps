@@ -90,13 +90,15 @@ class FirebaseBackend implements RoomBackend {
       if (taken.exists) continue;
       final seat =
           Seat(uid: _uid, name: name, color: RoomState.colorsFor(size)[0]);
-      await ref.set({
+      // One multi-path update, not set(): the rules allow writes to each
+      // child of a room, never to the room node itself.
+      await ref.update({
         'size': size,
         'rules': rules.toJson(),
         'started': false,
         'created': ServerValue.timestamp,
-        'seats': {'0': seat.toJson()},
-        'members': {_uid: 0},
+        'seats/0': seat.toJson(),
+        'members/$_uid': 0,
       });
       await _goOnline(code, 0);
       return code;
