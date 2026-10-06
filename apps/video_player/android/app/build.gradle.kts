@@ -1,3 +1,4 @@
+import java.util.Base64
 import java.util.Properties
 
 plugins {
@@ -71,7 +72,7 @@ gradle.taskGraph.whenReady {
     if (allTasks.none { it.name == "bundleRelease" }) return@whenReady
     val defines = (project.findProperty("dart-defines") as String?).orEmpty()
         .split(",").filter { it.isNotEmpty() }
-        .map { String(java.util.Base64.getDecoder().decode(it)).substringBefore("=") }
+        .map { String(Base64.getDecoder().decode(it)).substringBefore("=") }
     val missing = mutableListOf<String>()
     if (keyProperties.isEmpty()) missing += "android/key.properties (upload key)"
     if (project.findProperty("admobAppId") == null) missing += "-PadmobAppId"
