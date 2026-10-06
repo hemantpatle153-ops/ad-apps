@@ -3,25 +3,38 @@ import 'package:flutter/material.dart';
 
 import 'data.dart';
 import 'editor.dart';
+import 'hisab/backend.dart';
+import 'hisab/hisab_home.dart';
+import 'hisab/service.dart';
+import 'hisab/store.dart';
 import 'insights.dart';
 import 'settings_screen.dart';
 
 const appPackageName = 'in.onlysoftware.expense_tracker';
-const privacyPolicyUrl = 'https://example.com/privacy'; // TODO: your hosted policy
+const privacyPolicyUrl =
+    'https://example.com/privacy'; // TODO: your hosted policy
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final db = await ExpenseDb.open();
   final settings = await Settings.load();
-  runApp(ExpenseApp(db: db, settings: settings));
+  // Firebase starts only when the Hisab tab is used, so the app opens fast
+  // and works offline as before.
+  final hisab = HisabService(FirebaseHisabBackend(), await HisabStore.load());
+  runApp(ExpenseApp(db: db, settings: settings, hisab: hisab));
   // Consent and ads start after the first frame so the app opens instantly.
   AdService.instance.init(AdConfig.fromEnvironment());
 }
 
 class ExpenseApp extends StatelessWidget {
-  const ExpenseApp({super.key, required this.db, required this.settings});
+  const ExpenseApp(
+      {super.key,
+      required this.db,
+      required this.settings,
+      required this.hisab});
   final ExpenseDb db;
   final Settings settings;
+  final HisabService hisab;
 
   static const _seed = Color(0xFF2E7D32);
 
@@ -32,15 +45,20 @@ class ExpenseApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: buildTheme(_seed, Brightness.light),
       darkTheme: buildTheme(_seed, Brightness.dark),
-      home: HomeShell(db: db, settings: settings),
+      home: HomeShell(db: db, settings: settings, hisab: hisab),
     );
   }
 }
 
 class HomeShell extends StatefulWidget {
-  const HomeShell({super.key, required this.db, required this.settings});
+  const HomeShell(
+      {super.key,
+      required this.db,
+      required this.settings,
+      required this.hisab});
   final ExpenseDb db;
   final Settings settings;
+  final HisabService hisab;
 
   @override
   State<HomeShell> createState() => _HomeShellState();
@@ -82,24 +100,27 @@ class _HomeShellState extends State<HomeShell> {
         MaterialLocalizations.of(context).formatMonthYear(_month);
     final isCurrent = _month.year == DateTime.now().year &&
         _month.month == DateTime.now().month;
+    final hisabTab = _tab == 2;
     return ListenableBuilder(
-      listenable: s,
+      listenable: Listenable.merge([s, widget.hisab.store]),
       builder: (context, _) => Scaffold(
         appBar: AppBar(
-          title: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              IconButton(
-                  tooltip: 'Previous month',
-                  onPressed: () => _shiftMonth(-1),
-                  icon: const Icon(Icons.chevron_left)),
-              Text(monthLabel),
-              IconButton(
-                  tooltip: 'Next month',
-                  onPressed: isCurrent ? null : () => _shiftMonth(1),
-                  icon: const Icon(Icons.chevron_right)),
-            ],
-          ),
+          title: hisabTab
+              ? const Text('Hisab with friends')
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                        tooltip: 'Previous month',
+                        onPressed: () => _shiftMonth(-1),
+                        icon: const Icon(Icons.chevron_left)),
+                    Text(monthLabel),
+                    IconButton(
+                        tooltip: 'Next month',
+                        onPressed: isCurrent ? null : () => _shiftMonth(1),
+                        icon: const Icon(Icons.chevron_right)),
+                  ],
+                ),
           actions: [
             IconButton(
               tooltip: 'Settings',
@@ -113,26 +134,35 @@ class _HomeShellState extends State<HomeShell> {
             ),
           ],
         ),
-        body: FutureBuilder<List<Expense>>(
-          future: _items,
-          builder: (context, snap) {
-            if (!snap.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final list = snap.data!;
-            return _tab == 0
-                ? _ExpenseList(
-                    items: list, settings: s, month: _month, onTap: _edit)
-                : InsightsView(items: list, settings: s, month: _month);
-          },
-        ),
+        body: hisabTab
+            ? HisabHome(service: widget.hisab, settings: s)
+            : FutureBuilder<List<Expense>>(
+                future: _items,
+                builder: (context, snap) {
+                  if (!snap.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final list = snap.data!;
+                  return _tab == 0
+                      ? _ExpenseList(
+                          items: list, settings: s, month: _month, onTap: _edit)
+                      : InsightsView(items: list, settings: s, month: _month);
+                },
+              ),
         floatingActionButton: _tab == 0
             ? FloatingActionButton.extended(
                 onPressed: () => _edit(),
                 icon: const Icon(Icons.add),
                 label: const Text('Add expense'),
               )
-            : null,
+            : hisabTab && widget.hisab.store.all().isNotEmpty
+                ? FloatingActionButton.extended(
+                    key: const Key('new-hisab'),
+                    onPressed: () => startHisab(context, widget.hisab, s),
+                    icon: const Icon(Icons.handshake_outlined),
+                    label: const Text('New hisab'),
+                  )
+                : null,
         bottomNavigationBar: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -145,6 +175,8 @@ class _HomeShellState extends State<HomeShell> {
                     icon: Icon(Icons.list_alt), label: 'Expenses'),
                 NavigationDestination(
                     icon: Icon(Icons.pie_chart_outline), label: 'Insights'),
+                NavigationDestination(
+                    icon: Icon(Icons.handshake_outlined), label: 'Hisab'),
               ],
             ),
           ],
@@ -240,8 +272,7 @@ class _ExpenseList extends StatelessWidget {
               Expanded(
                   child: Text(loc.formatFullDate(d),
                       style: theme.textTheme.titleSmall)),
-              Text(settings.money(dayTotal),
-                  style: theme.textTheme.titleSmall),
+              Text(settings.money(dayTotal), style: theme.textTheme.titleSmall),
             ],
           ),
         ));
@@ -255,8 +286,8 @@ class _ExpenseList extends StatelessWidget {
         title: Text(e.note.isEmpty ? c.label : e.note,
             maxLines: 1, overflow: TextOverflow.ellipsis),
         subtitle: e.note.isEmpty ? null : Text(c.label),
-        trailing: Text(settings.money(e.amount),
-            style: theme.textTheme.titleMedium),
+        trailing:
+            Text(settings.money(e.amount), style: theme.textTheme.titleMedium),
         onTap: () => onTap(e),
       ));
     }

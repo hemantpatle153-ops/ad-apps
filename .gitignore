@@ -13,3 +13,5 @@ packages/*/pubspec.lock
 
 # Kotlin compiler session files
 .kotlin/
+node_modules/
+*-debug.log
