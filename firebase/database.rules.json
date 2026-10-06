@@ -42,6 +42,38 @@
           }
         }
       }
+    },
+    "watch": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && data.child('host').val() == auth.uid && !newData.exists()",
+        "host": {
+          ".write": "auth != null && !data.exists()",
+          ".validate": "newData.val() == auth.uid"
+        },
+        "created": {
+          ".write": "auth != null && !data.exists()",
+          ".validate": "newData.val() == now"
+        },
+        "video": {
+          ".write": "auth != null && newData.parent().child('host').val() == auth.uid"
+        },
+        "state": {
+          ".write": "auth != null && newData.parent().child('members/' + auth.uid).exists()",
+          ".validate": "newData.hasChildren(['playing', 'pos', 'at', 'rate'])"
+        },
+        "members": {
+          "$uid": {
+            ".write": "auth != null && $uid == auth.uid"
+          }
+        },
+        "chat": {
+          "$id": {
+            ".write": "auth != null && !data.exists() && newData.parent().parent().child('members/' + auth.uid).exists()",
+            ".validate": "newData.child('uid').val() == auth.uid && newData.child('text').isString() && newData.child('text').val().length <= 300"
+          }
+        }
+      }
     }
   }
 }
