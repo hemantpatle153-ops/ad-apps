@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../format.dart';
 import '../library/private_vault.dart';
 import '../library/video_library.dart';
+import '../party/join_screen.dart';
 import '../player/play_item.dart';
 import '../player/player_screen.dart';
 import '../player/system_channel.dart';
@@ -53,6 +54,12 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.search_rounded),
             onPressed: () => Navigator.push(context,
                 MaterialPageRoute<void>(builder: (_) => SearchScreen(settings: settings, vault: widget.vault))),
+          ),
+          IconButton(
+            tooltip: 'Watch together',
+            icon: const Icon(Icons.groups_rounded),
+            onPressed: () => Navigator.push(context,
+                MaterialPageRoute<void>(builder: (_) => JoinPartyScreen(settings: settings))),
           ),
           IconButton(
             tooltip: 'Play a link',
@@ -111,7 +118,10 @@ class _HomeScreenState extends State<HomeScreen> {
       case LibraryState.ready:
         break;
     }
-    final folders = VideoLibrary.sortFolders(library.folders, settings.folderSort);
+    final hidden = settings.hiddenFolders;
+    final folders = VideoLibrary.sortFolders(
+        library.folders.where((f) => !hidden.contains(f.id)).toList(),
+        settings.folderSort);
     final resume = settings.recents
         .where((r) => r.position > Duration.zero && r.duration > Duration.zero)
         .firstOrNull;
@@ -160,6 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
           itemCount: folders.length,
           itemBuilder: (context, i) => _FolderTile(
             folder: folders[i],
+            onLongPress: () => _folderActions(context, folders[i]),
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute<void>(
@@ -169,6 +180,32 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 12)),
       ]),
+    );
+  }
+
+  void _folderActions(BuildContext context, VideoFolder folder) {
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => SafeArea(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          ListTile(
+            leading: const Icon(Icons.visibility_off_outlined),
+            title: Text('Hide "${folder.name}"'),
+            subtitle: const Text('Show it again from Settings'),
+            onTap: () {
+              Navigator.pop(ctx);
+              settings.setFolderHidden(folder.id, true);
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('${folder.name} hidden'),
+                action: SnackBarAction(
+                    label: 'Undo',
+                    onPressed: () => settings.setFolderHidden(folder.id, false)),
+              ));
+            },
+          ),
+        ]),
+      ),
     );
   }
 
@@ -310,10 +347,11 @@ class _ContinueCard extends StatelessWidget {
 }
 
 class _FolderTile extends StatelessWidget {
-  const _FolderTile({required this.folder, required this.onTap});
+  const _FolderTile({required this.folder, required this.onTap, this.onLongPress});
 
   final VideoFolder folder;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -323,6 +361,7 @@ class _FolderTile extends StatelessWidget {
     final size = formatSize(folder.totalSize);
     return InkWell(
       onTap: onTap,
+      onLongPress: onLongPress,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Row(children: [

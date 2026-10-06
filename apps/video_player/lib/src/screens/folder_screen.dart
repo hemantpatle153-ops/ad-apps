@@ -36,6 +36,13 @@ class FolderScreen extends StatelessWidget {
           appBar: AppBar(
             title: Text(folder?.name ?? 'Folder'),
             actions: [
+              IconButton(
+                tooltip: settings.gridView ? 'List view' : 'Grid view',
+                icon: Icon(settings.gridView
+                    ? Icons.view_list_rounded
+                    : Icons.grid_view_rounded),
+                onPressed: () => settings.setGridView(!settings.gridView),
+              ),
               PopupMenuButton<VideoSort>(
                 tooltip: 'Sort',
                 icon: const Icon(Icons.sort_rounded),
@@ -66,7 +73,28 @@ class FolderScreen extends StatelessWidget {
             Expanded(
               child: videos.isEmpty
                   ? const Center(child: Text('No videos here'))
-                  : ListView.builder(
+                  : settings.gridView
+                      ? GridView.builder(
+                          padding: const EdgeInsets.fromLTRB(10, 4, 10, 12),
+                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 220,
+                            childAspectRatio: 0.92,
+                          ),
+                          itemCount: videos.length,
+                          itemBuilder: (context, i) => VideoGridTile(
+                            video: videos[i],
+                            settings: settings,
+                            onTap: () => openPlayer(
+                              context,
+                              settings,
+                              [for (final v in videos) PlayItem.fromEntry(v)],
+                              index: i,
+                            ),
+                            onMore: () => showVideoActions(context,
+                                video: videos[i], settings: settings, vault: vault),
+                          ),
+                        )
+                      : ListView.builder(
                       padding: const EdgeInsets.only(bottom: 12),
                       itemCount: videos.length,
                       itemBuilder: (context, i) => VideoTile(
