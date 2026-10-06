@@ -176,6 +176,7 @@ class OnlineParty extends WatchParty {
           'members/$uid': {'name': name},
         });
         await party._listen();
+        unawaited(sweepOldRooms(db, party.serverNowUs() ~/ 1000));
         return party;
       }
     } on OnlineException {
@@ -184,6 +185,27 @@ class OnlineParty extends WatchParty {
       throw const OnlineException(OnlineError.offline);
     }
     throw const OnlineException(OnlineError.offline);
+  }
+
+  /// Rooms are deleted when their starter leaves. One left behind (app
+  /// killed, phone off) is deleted by the next phone that starts a room once
+  /// it is [roomLifetime] old, so the database stays tiny and free.
+  static const roomLifetime = Duration(hours: 12);
+
+  static Future<void> sweepOldRooms(FirebaseDatabase db, int serverNowMs) async {
+    try {
+      final old = await db
+          .ref('watch')
+          .orderByChild('created')
+          .endAt(serverNowMs - roomLifetime.inMilliseconds)
+          .limitToFirst(25)
+          .get();
+      for (final room in old.children) {
+        await room.ref.remove();
+      }
+    } catch (_) {
+      // Next time.
+    }
   }
 
   /// Looks up a room by its code. The caller opens the video, then the
