@@ -55,6 +55,8 @@ class PlayerEffects {
   Duration? loopA, loopB;
   bool loopOne = false;
 
+  bool get isNative => _mpv != null;
+
   NativePlayer? get _mpv =>
       player.platform is NativePlayer ? player.platform as NativePlayer : null;
 
@@ -82,6 +84,11 @@ class PlayerEffects {
   Future<void> applyGlobal(Settings s) async {
     // Lets the volume go up to 200% for quiet videos.
     await set('volume-max', '200');
+    // Keep 30 s ahead and the last ~50 MB behind in memory, so +-10 s jumps
+    // usually land on video that is already loaded, even on links.
+    await set('cache', 'yes');
+    await set('demuxer-readahead-secs', '30');
+    await set('demuxer-max-back-bytes', '${50 * 1024 * 1024}');
     await applyAudio(s);
   }
 
@@ -98,6 +105,19 @@ class PlayerEffects {
   Future<void> setSubtitleDelay(double seconds) async {
     subtitleDelay = seconds;
     await set('sub-delay', seconds.toStringAsFixed(2));
+  }
+
+  /// Quick jump by [by] to the nearest keyframe: much faster than an exact
+  /// seek, which has to decode every frame up to the target.
+  Future<void> seekQuick(Duration by) =>
+      command(['seek', (by.inMilliseconds / 1000).toStringAsFixed(3), 'relative+keyframes']);
+
+  /// Shifts the captions so the next ([lines] = 1) or previous (-1) line
+  /// shows now: tap it the moment you hear that line spoken.
+  Future<void> subStep(int lines) async {
+    await command(['sub-step', '$lines']);
+    final v = double.tryParse(await get('sub-delay') ?? '');
+    if (v != null) subtitleDelay = v;
   }
 
   Future<void> applyPicture() async {

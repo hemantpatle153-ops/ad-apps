@@ -95,6 +95,8 @@ class Settings extends ChangeNotifier {
   late List<double> eqGains;
   late bool nightMode;
   late Map<String, List<int>> _bookmarks;
+  late List<String> captionLanguages;
+  late Map<String, String> _captions;
 
   void _load() {
     themeMode = ThemeMode.values[_p.getInt('theme') ?? ThemeMode.dark.index];
@@ -125,6 +127,9 @@ class Settings extends ChangeNotifier {
     nightMode = _p.getBool('night') ?? false;
     _bookmarks = ((_tryDecode(_p.getString('bookmarks')) as Map?) ?? const {}).map(
         (k, v) => MapEntry(k as String, [for (final x in v as List) (x as num).toInt()]));
+    captionLanguages = _p.getStringList('capLangs') ?? ['en'];
+    _captions = ((_tryDecode(_p.getString('captions')) as Map?) ?? const {})
+        .map((k, v) => MapEntry(k as String, '$v'));
     _positions = (_tryDecode(_p.getString('positions')) as Map?)
             ?.map((k, v) => MapEntry(k as String, (v as num).toInt())) ??
         {};
@@ -256,6 +261,26 @@ class Settings extends ChangeNotifier {
     }
     _p.setString('bookmarks', jsonEncode(_bookmarks));
     notifyListeners();
+  }
+
+  // Downloaded captions -----------------------------------------------------
+
+  void setCaptionLanguages(List<String> langs) {
+    captionLanguages = [...langs];
+    _p.setStringList('capLangs', captionLanguages);
+    notifyListeners();
+  }
+
+  /// A caption file downloaded for the video [key], loaded again next time.
+  String? captionFor(String key) => _captions[key];
+
+  void setCaption(String key, String? path) {
+    _captions.remove(key);
+    if (path != null) _captions[key] = path;
+    while (_captions.length > 200) {
+      _captions.remove(_captions.keys.first);
+    }
+    _p.setString('captions', jsonEncode(_captions));
   }
 
   // Resume points ----------------------------------------------------------

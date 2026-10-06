@@ -239,11 +239,15 @@ class SubtitleSheet extends StatefulWidget {
     required this.player,
     required this.settings,
     required this.fx,
+    this.onFindOnline,
   });
 
   final Player player;
   final Settings settings;
   final PlayerEffects fx;
+
+  /// Opens the online caption search; hidden when null.
+  final VoidCallback? onFindOnline;
 
   @override
   State<SubtitleSheet> createState() => _SubtitleSheetState();
@@ -311,7 +315,48 @@ class _SubtitleSheetState extends State<SubtitleSheet> {
               subtitle: const Text('.srt, .ass, .vtt'),
               onTap: _pickFile,
             ),
+            if (widget.onFindOnline != null)
+              ListTile(
+                leading: const Icon(Icons.travel_explore_rounded),
+                title: const Text('Find captions online'),
+                subtitle: const Text('Download in your language'),
+                onTap: () {
+                  Navigator.pop(context);
+                  widget.onFindOnline!();
+                },
+              ),
             const Divider(),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+              child: Text('Sync: tap the moment you hear a line spoken',
+                  style: Theme.of(context).textTheme.bodySmall),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Row(children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () async {
+                      await widget.fx.subStep(-1);
+                      if (mounted) setState(() {});
+                    },
+                    icon: const Icon(Icons.skip_previous_rounded),
+                    label: const Text('Last line now'),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: FilledButton.tonalIcon(
+                    onPressed: () async {
+                      await widget.fx.subStep(1);
+                      if (mounted) setState(() {});
+                    },
+                    icon: const Icon(Icons.skip_next_rounded),
+                    label: const Text('Next line now'),
+                  ),
+                ),
+              ]),
+            ),
             DelayRow(
               label: 'Subtitle delay',
               value: widget.fx.subtitleDelay,
