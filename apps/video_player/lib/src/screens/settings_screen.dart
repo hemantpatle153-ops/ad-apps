@@ -2,7 +2,6 @@ import 'package:app_core/app_core.dart';
 import 'package:flutter/material.dart';
 
 import '../app.dart';
-import '../captions/opensubtitles.dart';
 import '../library/video_library.dart';
 import '../settings.dart';
 
@@ -56,34 +55,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
     );
-  }
-
-  Future<void> _captionAccount(Settings s) async {
-    final current = s.captionAccount;
-    if (current != null) {
-      final out = await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text('Caption account'),
-          content: Text('Signed in to OpenSubtitles as ${current.user}.'),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text('Close')),
-            FilledButton(
-                onPressed: () => Navigator.pop(ctx, true),
-                child: const Text('Sign out')),
-          ],
-        ),
-      );
-      if (out == true) s.setCaptionAccount(null);
-      return;
-    }
-    final account = await showDialog<CaptionAccount>(
-      context: context,
-      builder: (_) => const _CaptionSignInDialog(),
-    );
-    if (account != null) s.setCaptionAccount(account);
   }
 
   Future<void> _editPartyName(Settings s) async {
@@ -205,13 +176,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             value: s.hardwareDecoding,
             onChanged: s.setHardwareDecoding,
           ),
-          ListTile(
-            title: const Text('Caption account'),
-            subtitle: Text(s.captionAccount == null
-                ? 'Optional: sign in to OpenSubtitles for more caption downloads a day'
-                : 'Signed in as ${s.captionAccount!.user}'),
-            onTap: () => _captionAccount(s),
-          ),
           _header('Library'),
           SwitchListTile(
             title: const Text('Show videos as a grid'),
@@ -266,95 +230,3 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 }
 
-/// Signs in to OpenSubtitles; pops the account, never keeping the password.
-class _CaptionSignInDialog extends StatefulWidget {
-  const _CaptionSignInDialog();
-
-  @override
-  State<_CaptionSignInDialog> createState() => _CaptionSignInDialogState();
-}
-
-class _CaptionSignInDialogState extends State<_CaptionSignInDialog> {
-  final _user = TextEditingController();
-  final _pass = TextEditingController();
-  bool _busy = false;
-  String? _error;
-
-  @override
-  void dispose() {
-    _user.dispose();
-    _pass.dispose();
-    super.dispose();
-  }
-
-  Future<void> _signIn() async {
-    if (_user.text.trim().isEmpty || _pass.text.isEmpty) return;
-    setState(() {
-      _busy = true;
-      _error = null;
-    });
-    try {
-      final a = await OpenSubtitles().signIn(_user.text, _pass.text);
-      if (mounted) Navigator.pop(context, a);
-    } on CaptionException catch (e) {
-      if (mounted) setState(() => _error = e.message);
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Caption account'),
-      content: SingleChildScrollView(
-        child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                  'Captions come from OpenSubtitles.com. Signing in with your free '
-                  'account gives you your own daily downloads.'),
-              TextButton.icon(
-                onPressed: () => openLink(openSubtitlesSignUpPage),
-                icon: const Icon(Icons.open_in_new_rounded),
-                label: const Text('Create a free account'),
-              ),
-              TextField(
-                controller: _user,
-                autofillHints: const [AutofillHints.username],
-                decoration: const InputDecoration(labelText: 'User name'),
-              ),
-              TextField(
-                controller: _pass,
-                obscureText: true,
-                autofillHints: const [AutofillHints.password],
-                decoration: const InputDecoration(labelText: 'Password'),
-                onSubmitted: (_) => _signIn(),
-              ),
-              if (_error != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: Text(_error!,
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.error)),
-                ),
-            ]),
-      ),
-      actions: [
-        TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel')),
-        FilledButton(
-          onPressed: _busy ? null : _signIn,
-          child: _busy
-              ? const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(strokeWidth: 2))
-              : const Text('Sign in'),
-        ),
-      ],
-    );
-  }
-}

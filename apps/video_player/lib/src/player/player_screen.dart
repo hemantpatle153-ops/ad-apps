@@ -19,7 +19,6 @@ import '../party/party_widgets.dart';
 import '../party/protocol.dart';
 import '../settings.dart';
 import '../captions/auto_sync.dart';
-import '../captions/caption_search_sheet.dart';
 import 'background_audio.dart';
 import 'effects.dart';
 import 'play_item.dart';
@@ -290,7 +289,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   /// Loads "movie.srt" next to "movie.mp4" once the file has opened.
-  /// Also loads captions downloaded for this video earlier.
+  /// Also loads the subtitle file picked for this video earlier.
   Future<void> _loadSidecar(PlayItem it) async {
     var srt = await findSidecarSubtitle(it.path);
     final saved = settings.captionFor(it.key);
@@ -1314,14 +1313,9 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
           player: player,
           settings: settings,
           fx: fx,
-          onFindOnline: _openCaptionSearch,
+          onFileLoaded: (path) => settings.setCaption(item.key, path),
           onAutoSync: () =>
               autoSyncCaptions(player: player, fx: fx, videoUri: item.uri)));
-  void _openCaptionSearch() => _sheet((_) => CaptionSearchSheet(
-      player: player,
-      settings: settings,
-      item: item,
-      onLoaded: () => fx.setSubtitleSync(0, 1)));
   void _openEqualizer() =>
       _sheet((_) => EqualizerSheet(settings: settings, fx: fx));
   void _openSleep() =>

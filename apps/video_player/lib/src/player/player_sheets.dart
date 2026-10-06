@@ -239,7 +239,7 @@ class SubtitleSheet extends StatefulWidget {
     required this.player,
     required this.settings,
     required this.fx,
-    this.onFindOnline,
+    this.onFileLoaded,
     this.onAutoSync,
   });
 
@@ -247,8 +247,8 @@ class SubtitleSheet extends StatefulWidget {
   final Settings settings;
   final PlayerEffects fx;
 
-  /// Opens the online caption search; hidden when null.
-  final VoidCallback? onFindOnline;
+  /// Told the path of a subtitle file the person picked.
+  final void Function(String path)? onFileLoaded;
 
   /// Lines the caption file up with the video's speech; returns null when
   /// it worked, else why not. Hidden when null.
@@ -293,6 +293,7 @@ class _SubtitleSheetState extends State<SubtitleSheet> {
     await player.setSubtitleTrack(
         SubtitleTrack.uri(path, title: files.first.name));
     await widget.fx.setSubtitleSync(0, 1);
+    widget.onFileLoaded?.call(path);
     if (mounted) Navigator.pop(context);
   }
 
@@ -334,16 +335,6 @@ class _SubtitleSheetState extends State<SubtitleSheet> {
               subtitle: const Text('.srt, .ass, .vtt'),
               onTap: _pickFile,
             ),
-            if (widget.onFindOnline != null)
-              ListTile(
-                leading: const Icon(Icons.travel_explore_rounded),
-                title: const Text('Find captions online'),
-                subtitle: const Text('Download in your language'),
-                onTap: () {
-                  Navigator.pop(context);
-                  widget.onFindOnline!();
-                },
-              ),
             const Divider(),
             if (widget.onAutoSync != null)
               ListTile(

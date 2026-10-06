@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'captions/opensubtitles.dart';
-
 /// What happens when the user leaves the app while a video plays.
 enum LeaveAction { pause, pip, audio }
 
@@ -97,9 +95,6 @@ class Settings extends ChangeNotifier {
   late List<double> eqGains;
   late bool nightMode;
   late Map<String, List<int>> _bookmarks;
-  late List<String> captionLanguages;
-  /// Signed-in OpenSubtitles account for caption downloads, or null.
-  CaptionAccount? captionAccount;
   late Map<String, String> _captions;
 
   void _load() {
@@ -131,15 +126,10 @@ class Settings extends ChangeNotifier {
     nightMode = _p.getBool('night') ?? false;
     _bookmarks = ((_tryDecode(_p.getString('bookmarks')) as Map?) ?? const {}).map(
         (k, v) => MapEntry(k as String, [for (final x in v as List) (x as num).toInt()]));
-    captionLanguages = _p.getStringList('capLangs') ?? ['en'];
-    _p.remove('osKey'); // user keys from an early test build; no longer used
-    final osToken = _p.getString('osToken');
-    captionAccount = osToken == null || osToken.isEmpty
-        ? null
-        : CaptionAccount(
-            user: _p.getString('osUser') ?? '',
-            token: osToken,
-            host: _p.getString('osHost') ?? 'api.opensubtitles.com');
+    // Caption search settings from early test builds; search was removed.
+    for (final k in ['capLangs', 'osKey', 'osToken', 'osUser', 'osHost']) {
+      _p.remove(k);
+    }
     _captions = ((_tryDecode(_p.getString('captions')) as Map?) ?? const {})
         .map((k, v) => MapEntry(k as String, '$v'));
     _positions = (_tryDecode(_p.getString('positions')) as Map?)
@@ -275,30 +265,8 @@ class Settings extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Downloaded captions -----------------------------------------------------
+  // Subtitle files picked per video ---------------------------------------
 
-  void setCaptionLanguages(List<String> langs) {
-    captionLanguages = [...langs];
-    _p.setStringList('capLangs', captionLanguages);
-    notifyListeners();
-  }
-
-  /// Remembers the OpenSubtitles sign-in (token only), or forgets it.
-  void setCaptionAccount(CaptionAccount? a) {
-    captionAccount = a;
-    if (a == null) {
-      for (final k in ['osToken', 'osUser', 'osHost']) {
-        _p.remove(k);
-      }
-    } else {
-      _p.setString('osToken', a.token);
-      _p.setString('osUser', a.user);
-      _p.setString('osHost', a.host);
-    }
-    notifyListeners();
-  }
-
-  /// A caption file downloaded for the video [key], loaded again next time.
   String? captionFor(String key) => _captions[key];
 
   void setCaption(String key, String? path) {
