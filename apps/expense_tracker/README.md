@@ -26,12 +26,19 @@ The Friends tab keeps track of money lent and borrowed between two friends.
   confirmations. A settled ledger is read-only for 14 days (it can be reopened,
   with a new code), then deleted from Firebase. Each phone keeps its own copy.
 
+- **Getting ledgers back**: after a reinstall or on a new phone, join again
+  with the code and pick your own name; your entries are tied to your side,
+  not to the phone. Or turn on the optional **email backup** (cloud icon on
+  the Friends tab): signing in with the same email brings back every ledger.
+
 Code: `lib/ledger/` (`model.dart` holds the math and every database write;
 `service.dart` the flows; `backend.dart` Firebase; `memory_backend.dart` an
 in-memory database for tests).
 
 Data lives in the `dice-dhamaal` Firebase project (Realtime Database,
-anonymous sign-in), under `ledger/`, `ledgerCodes/` and `ledgerGc/`. The rules
+anonymous sign-in), under `ledger/`, `ledgerCodes/`, `ledgerGc/` and `ledgerUsers/` (each
+account's list of ledgers). Email backup needs the Email/Password sign-in
+provider turned on in Firebase Authentication. The rules
 are in `firebase/database.rules.json` and tested by `firebase/tests`.
 
 The app currently signs in with the Video Player's Firebase app id. To give

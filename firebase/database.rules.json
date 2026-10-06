@@ -208,6 +208,20 @@
           ".validate": false
         }
       }
+    },
+    "ledgerUsers": {
+      "$uid": {
+        ".read": "auth != null && auth.uid == $uid",
+        ".write": "auth != null && auth.uid == $uid",
+        "ledgers": {
+          "$id": {
+            ".validate": "newData.val() == 'a' || newData.val() == 'b'"
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
     }
   }
 }

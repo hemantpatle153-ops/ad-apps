@@ -22,6 +22,11 @@ class MemoryDatabase {
 
   int writes = 0;
 
+  /// Email accounts: email -> (password, user id).
+  final accounts = <String, (String, String)>{};
+  int _anon = 0;
+  String newAnonUid() => 'anon-${++_anon}';
+
   void advance(Duration d) {
     nowMs += d.inMilliseconds;
   }
@@ -90,6 +95,7 @@ class MemoryDatabase {
 
   bool canRead(String path, String uid) {
     final parts = _parts(path);
+    if (parts.length >= 2 && parts[0] == 'ledgerUsers') return parts[1] == uid;
     if (parts.length >= 2 && parts[0] == 'ledger') {
       final members = read('ledger/${parts[1]}/members');
       return members is Map && members.containsKey(uid);
@@ -106,7 +112,46 @@ class MemoryDatabase {
 class MemoryLedgerBackend implements LedgerBackend {
   MemoryLedgerBackend(this.db, this.uid);
   final MemoryDatabase db;
-  final String uid;
+
+  /// The signed-in user; changes on email sign-in and sign-out.
+  String uid;
+  String? _email;
+
+  @override
+  String? get email => _email;
+
+  @override
+  Future<void> linkEmail(String email, String password) async {
+    _check();
+    final e = email.trim().toLowerCase();
+    if (!e.contains('@')) throw LedgerException.badEmail;
+    if (password.length < 6) throw LedgerException.weakPassword;
+    if (_email != null || db.accounts.containsKey(e)) {
+      throw LedgerException.emailInUse;
+    }
+    db.accounts[e] = (password, uid);
+    _email = e;
+  }
+
+  @override
+  Future<String> signInEmail(String email, String password) async {
+    _check();
+    final e = email.trim().toLowerCase();
+    final acc = db.accounts[e];
+    if (acc == null || acc.$1 != password) throw LedgerException.wrongLogin;
+    _email = e;
+    return uid = acc.$2;
+  }
+
+  @override
+  Future<void> sendPasswordReset(String email) async => _check();
+
+  @override
+  Future<String> signOut() async {
+    _check();
+    _email = null;
+    return uid = db.newAnonUid();
+  }
 
   void _check() {
     if (db.offline) throw LedgerException.offline;

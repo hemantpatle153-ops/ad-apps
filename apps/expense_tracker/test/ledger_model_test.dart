@@ -509,8 +509,13 @@ void main() {
     test('create writes the log, the member and the code together', () {
       final w = LedgerWrites.create(
           id: 'L', code: 'ABCD2345', uid: 'u', myName: 'R', friendName: 'A');
-      expect(w.keys,
-          ['ledger/L/meta', 'ledger/L/members/u', 'ledgerCodes/ABCD2345']);
+      expect(w.keys, [
+        'ledger/L/meta',
+        'ledger/L/members/u',
+        'ledgerCodes/ABCD2345',
+        'ledgerUsers/u/ledgers/L'
+      ]);
+      expect(w['ledgerUsers/u/ledgers/L'], 'a');
       expect((w['ledger/L/meta'] as Map)['created'], serverTime);
     });
 
@@ -521,7 +526,8 @@ void main() {
           uid: 'u2',
           side: Side.b);
       expect(w, {
-        'ledger/L/members/u2': {'s': 'b', 'c': 'ABCD2345'}
+        'ledger/L/members/u2': {'s': 'b', 'c': 'ABCD2345'},
+        'ledgerUsers/u2/ledgers/L': 'b',
       });
     });
 
@@ -607,9 +613,10 @@ void main() {
     });
 
     test('leave and switch touch only this phone', () {
-      expect(LedgerWrites.leave('L', 'u'), {'ledger/L/members/u': null});
+      expect(LedgerWrites.leave('L', 'u'),
+          {'ledger/L/members/u': null, 'ledgerUsers/u/ledgers/L': null});
       expect(LedgerWrites.switchSide('L', 'u', Side.a),
-          {'ledger/L/members/u/s': 'a'});
+          {'ledger/L/members/u/s': 'a', 'ledgerUsers/u/ledgers/L': 'a'});
     });
   });
 }

@@ -1,7 +1,9 @@
 import 'package:expense_tracker/data.dart';
+import 'package:expense_tracker/ledger/backend.dart';
 import 'package:expense_tracker/ledger/ledger_home.dart';
 import 'package:expense_tracker/ledger/ledger_screen.dart';
 import 'package:expense_tracker/ledger/model.dart';
+import 'package:expense_tracker/ledger/sheets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -322,5 +324,101 @@ void main() {
         expect(resultText(t), want);
       }
     }
+  });
+
+  Future<void> openAccount(WidgetTester t, Phone p) async {
+    bigScreen(t);
+    await t.pumpWidget(MaterialApp(
+      home: Builder(
+        builder: (context) => Scaffold(
+          body: TextButton(
+            onPressed: () => showAccountSheet(context, p.service),
+            child: const Text('open'),
+          ),
+        ),
+      ),
+    ));
+    await t.tap(find.text('open'));
+    await t.pumpAndSettle();
+  }
+
+  testWidgets('turn on backup with email', (t) async {
+    final w = await World.create();
+    final (pa, _, _, _) = await w.pair();
+    await openAccount(t, pa);
+    expect(find.text('Back up your ledgers'), findsOneWidget);
+    await t.enterText(find.byKey(const Key('account-email')), 'r@example.com');
+    await t.enterText(find.byKey(const Key('account-password')), 'secret1');
+    await t.tap(find.byKey(const Key('account-submit')));
+    await t.pumpAndSettle();
+    expect(pa.service.email, 'r@example.com');
+    expect(find.text('Backup turned on'), findsOneWidget);
+  });
+
+  testWidgets('short password shows why', (t) async {
+    final w = await World.create();
+    final (pa, _, _, _) = await w.pair();
+    await openAccount(t, pa);
+    await t.enterText(find.byKey(const Key('account-email')), 'r@example.com');
+    await t.enterText(find.byKey(const Key('account-password')), '123');
+    await t.tap(find.byKey(const Key('account-submit')));
+    await t.pumpAndSettle();
+    expect(find.text(LedgerException.weakPassword.message), findsOneWidget);
+    expect(pa.service.email, isNull);
+  });
+
+  testWidgets('sign in on a new phone restores ledgers', (t) async {
+    final w = await World.create();
+    final (pa, _, id, _) = await w.pair();
+    await pa.service.backUp('r@example.com', 'secret1');
+    final fresh = await w.phone('fresh');
+    await openAccount(t, fresh);
+    await t.tap(find.text('I already have an account'));
+    await t.pumpAndSettle();
+    await t.enterText(find.byKey(const Key('account-email')), 'r@example.com');
+    await t.enterText(find.byKey(const Key('account-password')), 'secret1');
+    await t.tap(find.byKey(const Key('account-submit')));
+    await t.pumpAndSettle();
+    expect(find.text('Signed in. 1 ledger restored'), findsOneWidget);
+    expect(fresh.side(id), Side.a);
+  });
+
+  testWidgets('wrong password on sign in', (t) async {
+    final w = await World.create();
+    final (pa, _, _, _) = await w.pair();
+    await pa.service.backUp('r@example.com', 'secret1');
+    final fresh = await w.phone('fresh');
+    await openAccount(t, fresh);
+    await t.tap(find.text('I already have an account'));
+    await t.pumpAndSettle();
+    await t.enterText(find.byKey(const Key('account-email')), 'r@example.com');
+    await t.enterText(find.byKey(const Key('account-password')), 'wrong1');
+    await t.tap(find.byKey(const Key('account-submit')));
+    await t.pumpAndSettle();
+    expect(find.text('Email or password is incorrect.'), findsOneWidget);
+  });
+
+  testWidgets('signed in shows the account and sign out', (t) async {
+    final w = await World.create();
+    final (pa, _, _, _) = await w.pair();
+    await pa.service.backUp('r@example.com', 'secret1');
+    await openAccount(t, pa);
+    expect(find.text('r@example.com'), findsOneWidget);
+    await t.tap(find.byKey(const Key('sign-out')));
+    await t.pumpAndSettle();
+    await t.tap(find.widgetWithText(FilledButton, 'Sign out'));
+    await t.pumpAndSettle();
+    expect(pa.service.email, isNull);
+    expect(pa.store.all(), isEmpty);
+  });
+
+  testWidgets('empty tab offers restore from account', (t) async {
+    final s = await rupees();
+    final w = await World.create();
+    final p = await w.phone('me');
+    await pumpHome(t, p, s);
+    await t.tap(find.byKey(const Key('restore-ledgers')));
+    await t.pumpAndSettle();
+    expect(find.text('Back up your ledgers'), findsOneWidget);
   });
 }

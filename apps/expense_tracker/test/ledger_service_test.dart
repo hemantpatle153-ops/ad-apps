@@ -511,6 +511,156 @@ void main() {
     });
   });
 
+  group('getting ledgers back on a new phone', () {
+    test('reinstall without email: join with the code, same side, same data',
+        () async {
+      final w = await World.create();
+      final (pa, pb, id, code) = await w.pair();
+      await add(pa, id, 50000, iGave: true, tag: 'Loan');
+      await add(pb, id, 20000, iGave: true);
+      // Amit deletes the app: new phone user, empty list.
+      final pb2 = await w.phone('uid-Amit-reinstalled');
+      expect(pb2.store.all(), isEmpty);
+      final info = await pb2.service.lookup(code);
+      expect(info.nameB, 'Amit');
+      await pb2.service.join(code, info, Side.b);
+      final log = await pb2.log(id);
+      expect(log.entries, hasLength(2));
+      expect(log.balanceFor(Side.b).net, -30000);
+      // Still two people, not three: the entries are Amit's side.
+      expect(log.members.values.toSet(), {Side.a, Side.b});
+      await add(pb2, id, 1000, iGave: true);
+      expect((await pa.log(id)).balanceFor(Side.a).net, 29000);
+    });
+
+    test('reinstall after a code reset needs the new code', () async {
+      final w = await World.create();
+      final (pa, _, id, code) = await w.pair();
+      final newCode = await pa.service.resetCode(await pa.log(id));
+      final pb2 = await w.phone('uid-Amit-2');
+      await expectLater(
+          pb2.service.lookup(code), throwsA(LedgerException.notFound));
+      await pb2.service
+          .join(newCode, await pb2.service.lookup(newCode), Side.b);
+      expect(await pb2.read(id), isNotNull);
+    });
+
+    test('backup keeps the same user, so nothing needs rejoining', () async {
+      final w = await World.create();
+      final (pa, _, id, _) = await w.pair();
+      final before = await pa.service.uid();
+      await pa.service.backUp('rahul@example.com', 'secret1');
+      expect(pa.service.email, 'rahul@example.com');
+      expect(await pa.service.uid(), before);
+      expect(await pa.read(id), isNotNull);
+      expect(w.db.read('ledgerUsers/$before/ledgers'), {id: 'a'});
+    });
+
+    test('sign in on a new phone restores every ledger with its side',
+        () async {
+      final w = await World.create();
+      final (pa, _, id1, _) = await w.pair();
+      final (pc, pd, id2, code2) = await w.pair(a: 'Neha', b: 'Rahul2');
+      // Rahul is side b in a ledger Neha started.
+      await pa.service.join(code2, await pa.service.lookup(code2), Side.b);
+      await add(pa, id1, 700, iGave: true, tag: 'Food');
+      await pa.service.backUp('rahul@example.com', 'secret1');
+      final fresh = await w.phone('uid-new-phone');
+      final n =
+          await fresh.service.signInEmail(' rahul@example.com ', 'secret1');
+      expect(n, 2);
+      expect(fresh.side(id1), Side.a);
+      expect(fresh.side(id2), Side.b);
+      expect(fresh.store.byId(id1)!.log!.entries.single.tag, 'Food');
+      expect((await fresh.log(id1)).balanceFor(Side.a).net, 700);
+      await add(fresh, id1, 100, iGave: true);
+      expect((await pa.log(id1)).balanceFor(Side.a).net, 800);
+      expect(pc, isNotNull);
+      expect(pd, isNotNull);
+    });
+
+    test('ledgers made before signing in join the account', () async {
+      final w = await World.create();
+      final (pa, _, _, _) = await w.pair();
+      await pa.service.backUp('rahul@example.com', 'secret1');
+      // A second phone already has a ledger of its own, then signs in.
+      final (p2, _, id2, _) = await w.pair(a: 'Rahul', b: 'Neha');
+      final n = await p2.service.signInEmail('rahul@example.com', 'secret1');
+      expect(n, 2);
+      final uid = await p2.service.uid();
+      expect((await p2.log(id2)).members[uid], Side.a);
+      expect((w.db.read('ledgerUsers/$uid/ledgers') as Map).length, 2);
+    });
+
+    test('wrong password and unknown email are refused', () async {
+      final w = await World.create();
+      final (pa, _, _, _) = await w.pair();
+      await pa.service.backUp('rahul@example.com', 'secret1');
+      final p = await w.phone('x');
+      await expectLater(p.service.signInEmail('rahul@example.com', 'nope'),
+          throwsA(LedgerException.wrongLogin));
+      await expectLater(p.service.signInEmail('who@example.com', 'secret1'),
+          throwsA(LedgerException.wrongLogin));
+      expect(p.store.all(), isEmpty);
+    });
+
+    test('an email can back up only one account', () async {
+      final w = await World.create();
+      final (pa, pb, _, _) = await w.pair();
+      await pa.service.backUp('same@example.com', 'secret1');
+      await expectLater(pb.service.backUp('same@example.com', 'secret2'),
+          throwsA(LedgerException.emailInUse));
+      expect(pb.service.email, isNull);
+    });
+
+    test('short password and bad email are refused', () async {
+      final w = await World.create();
+      final (pa, _, _, _) = await w.pair();
+      await expectLater(pa.service.backUp('rahul@example.com', '123'),
+          throwsA(LedgerException.weakPassword));
+      await expectLater(pa.service.backUp('not-an-email', 'secret1'),
+          throwsA(LedgerException.badEmail));
+    });
+
+    test('sign out clears the phone list, sign in brings it back', () async {
+      final w = await World.create();
+      final (pa, _, id, _) = await w.pair();
+      await pa.service.backUp('rahul@example.com', 'secret1');
+      await pa.service.signOut();
+      expect(pa.store.all(), isEmpty);
+      expect(pa.service.email, isNull);
+      expect(await pa.read(id), isNull);
+      await pa.service.signInEmail('rahul@example.com', 'secret1');
+      expect(pa.store.byId(id)!.side, Side.a);
+      expect(await pa.read(id), isNotNull);
+    });
+
+    test('deleted ledgers drop out of the account list', () async {
+      final w = await World.create();
+      final (pa, pb, id, _) = await w.pair();
+      await add(pa, id, 500, iGave: true);
+      await pa.service.backUp('rahul@example.com', 'secret1');
+      await pa.service.approve(await pa.log(id), Side.a);
+      await pb.service.approve(await pb.log(id), Side.b);
+      w.db.advance(const Duration(days: 15));
+      await pb.service.cleanUp(); // Amit's phone never saw it settled
+      final fresh = await w.phone('new');
+      expect(
+          await fresh.service.signInEmail('rahul@example.com', 'secret1'), 0);
+      expect(w.db.read('ledgerUsers/uid-Rahul'), isNull);
+    });
+
+    test('leaving takes the ledger out of the account list', () async {
+      final w = await World.create();
+      final (pa, _, id, _) = await w.pair();
+      await pa.service.backUp('rahul@example.com', 'secret1');
+      await pa.service.leave(pa.store.byId(id)!);
+      final fresh = await w.phone('new');
+      expect(
+          await fresh.service.signInEmail('rahul@example.com', 'secret1'), 0);
+    });
+  });
+
   group('random sessions agree on both phones', () {
     for (var seed = 0; seed < 150; seed++) {
       test('session $seed', () async {

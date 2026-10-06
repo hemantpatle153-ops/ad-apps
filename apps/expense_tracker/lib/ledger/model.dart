@@ -497,6 +497,10 @@ abstract final class LedgerWrites {
   static String codePath(String code) => 'ledgerCodes/$code';
   static String gcPath(String id) => 'ledgerGc/$id';
 
+  /// The ledgers an account is in, so signing in on a new phone brings them
+  /// all back.
+  static String userPath(String uid) => 'ledgerUsers/$uid/ledgers';
+
   static Map<String, Object?> create({
     required String id,
     required String code,
@@ -513,6 +517,7 @@ abstract final class LedgerWrites {
         },
         '${logPath(id)}/members/$uid': {'s': 'a'},
         codePath(code): {'id': id, 'a': myName, 'b': friendName},
+        '${userPath(uid)}/$id': 'a',
       };
 
   /// The code goes in the member record because the rules check it there:
@@ -525,15 +530,18 @@ abstract final class LedgerWrites {
   }) =>
       {
         '${logPath(info.id)}/members/$uid': {'s': side.name, 'c': code},
+        '${userPath(uid)}/${info.id}': side.name,
       };
 
   /// Switches which friend this phone is. Only for phones already in.
   static Map<String, Object?> switchSide(String id, String uid, Side side) => {
         '${logPath(id)}/members/$uid/s': side.name,
+        '${userPath(uid)}/$id': side.name,
       };
 
   static Map<String, Object?> leave(String id, String uid) => {
         '${logPath(id)}/members/$uid': null,
+        '${userPath(uid)}/$id': null,
       };
 
   /// New code for the same log. Members, entries and confirmations stay.
@@ -621,9 +629,10 @@ abstract final class LedgerWrites {
 
   /// Removes the log from the cloud: a cleared one after [settledKeep], or
   /// one with no entries at any time.
-  static Map<String, Object?> delete(String id, String code) => {
+  static Map<String, Object?> delete(String id, String code, {String? uid}) => {
         logPath(id): null,
         gcPath(id): null,
         if (code.isNotEmpty) codePath(code): null,
+        if (uid != null) '${userPath(uid)}/$id': null,
       };
 }

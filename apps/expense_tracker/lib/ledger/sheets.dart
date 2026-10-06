@@ -235,7 +235,9 @@ class _JoinSheetState extends State<_JoinSheet> {
             Text('Join with a code', style: theme.textTheme.titleLarge),
             const SizedBox(height: 4),
             const Text('Ask your friend for the ledger code. It works '
-                'on as many phones as you like.'),
+                'on as many phones as you like. New phone or reinstalled the '
+                'app? Join again with the code and pick your own name: all '
+                'your entries are still there.'),
             const SizedBox(height: 16),
             TextField(
               key: const Key('join-code'),
@@ -730,6 +732,233 @@ class _CodeSheetState extends State<_CodeSheet> {
             label: const Text('Reset code'),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Optional email account, so a new phone or a reinstall gets every ledger
+/// back.
+Future<void> showAccountSheet(BuildContext context, LedgerService service) =>
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (_) => _AccountSheet(service: service),
+    );
+
+class _AccountSheet extends StatefulWidget {
+  const _AccountSheet({required this.service});
+  final LedgerService service;
+
+  @override
+  State<_AccountSheet> createState() => _AccountSheetState();
+}
+
+class _AccountSheetState extends State<_AccountSheet> {
+  final _email = TextEditingController();
+  final _password = TextEditingController();
+  bool _haveAccount = false;
+  bool _busy = false;
+  bool _hide = true;
+  String? _error;
+  String? _info;
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
+
+  Future<void> _go(Future<String?> Function() step) async {
+    setState(() {
+      _busy = true;
+      _error = null;
+      _info = null;
+    });
+    try {
+      final done = await step();
+      if (!mounted) return;
+      if (done != null) {
+        ScaffoldMessenger.maybeOf(context)
+            ?.showSnackBar(SnackBar(content: Text(done)));
+        Navigator.pop(context);
+      }
+    } on LedgerException catch (e) {
+      if (mounted) setState(() => _error = e.message);
+    } catch (_) {
+      if (mounted) setState(() => _error = LedgerException.offline.message);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _submit() => _go(() async {
+        if (_haveAccount) {
+          final n =
+              await widget.service.signInEmail(_email.text, _password.text);
+          return n == 1
+              ? 'Signed in. 1 ledger restored'
+              : 'Signed in. $n ledgers restored';
+        }
+        await widget.service.backUp(_email.text, _password.text);
+        return 'Backup turned on';
+      });
+
+  Future<void> _reset() => _go(() async {
+        if (!_email.text.contains('@')) throw LedgerException.badEmail;
+        await widget.service.sendPasswordReset(_email.text);
+        if (mounted) {
+          setState(() => _info =
+              'If an account exists for that email, a reset link is on its way.');
+        }
+        return null;
+      });
+
+  Future<void> _signOut() async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Sign out?'),
+        content: const Text('Your ledgers stay in your account. This phone '
+            'stops showing them until you sign in again.'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel')),
+          FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Sign out')),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    await _go(() async {
+      await widget.service.signOut();
+      return 'Signed out';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final email = widget.service.email;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+          16, 0, 16, MediaQuery.viewInsetsOf(context).bottom + 24),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: email != null
+              ? [
+                  Text('Backup', style: theme.textTheme.titleLarge),
+                  const SizedBox(height: 8),
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(Icons.cloud_done_outlined),
+                    title: Text(email),
+                    subtitle: const Text('Your ledgers are saved to this '
+                        'account. Sign in with it on a new phone to get them '
+                        'back.'),
+                  ),
+                  if (_error != null)
+                    Text(_error!,
+                        style: TextStyle(color: theme.colorScheme.error)),
+                  OutlinedButton.icon(
+                    key: const Key('sign-out'),
+                    onPressed: _busy ? null : _signOut,
+                    icon: const Icon(Icons.logout),
+                    label: const Text('Sign out'),
+                  ),
+                ]
+              : [
+                  Text(_haveAccount ? 'Sign in' : 'Back up your ledgers',
+                      style: theme.textTheme.titleLarge),
+                  const SizedBox(height: 4),
+                  Text(_haveAccount
+                      ? 'Sign in to bring back the ledgers saved to your account.'
+                      : 'Optional. Add an email and password so a new phone or '
+                          'a reinstall gets all your ledgers back. Without it, '
+                          'ask your friend for the ledger code and join again.'),
+                  const SizedBox(height: 16),
+                  TextField(
+                    key: const Key('account-email'),
+                    controller: _email,
+                    keyboardType: TextInputType.emailAddress,
+                    autofillHints: const [AutofillHints.email],
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      prefixIcon: Icon(Icons.email_outlined),
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  TextField(
+                    key: const Key('account-password'),
+                    controller: _password,
+                    obscureText: _hide,
+                    autofillHints: [
+                      _haveAccount
+                          ? AutofillHints.password
+                          : AutofillHints.newPassword
+                    ],
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      helperText: _haveAccount ? null : 'At least 6 characters',
+                      prefixIcon: const Icon(Icons.lock_outline),
+                      border: const OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        tooltip: _hide ? 'Show password' : 'Hide password',
+                        icon: Icon(_hide
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined),
+                        onPressed: () => setState(() => _hide = !_hide),
+                      ),
+                    ),
+                    onSubmitted: (_) => _submit(),
+                  ),
+                  if (_error != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(_error!,
+                          style: TextStyle(color: theme.colorScheme.error)),
+                    ),
+                  if (_info != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(_info!),
+                    ),
+                  const SizedBox(height: 12),
+                  FilledButton(
+                    key: const Key('account-submit'),
+                    onPressed: _busy ? null : _submit,
+                    child: _busy
+                        ? const SizedBox.square(
+                            dimension: 18,
+                            child: CircularProgressIndicator(strokeWidth: 2))
+                        : Text(_haveAccount ? 'Sign in' : 'Turn on backup'),
+                  ),
+                  TextButton(
+                    onPressed: _busy
+                        ? null
+                        : () => setState(() {
+                              _haveAccount = !_haveAccount;
+                              _error = null;
+                              _info = null;
+                            }),
+                    child: Text(_haveAccount
+                        ? 'New here? Turn on backup instead'
+                        : 'I already have an account'),
+                  ),
+                  if (_haveAccount)
+                    TextButton(
+                      onPressed: _busy ? null : _reset,
+                      child: const Text('Forgot password?'),
+                    ),
+                ],
+        ),
       ),
     );
   }

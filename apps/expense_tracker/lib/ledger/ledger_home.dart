@@ -67,6 +67,7 @@ class _LedgerHomeState extends State<LedgerHome> {
           return _Empty(
             onStart: () => startLedger(context, service, s),
             onJoin: () => joinLedger(context, service, s),
+            onRestore: () => showAccountSheet(context, service),
           );
         }
         var coming = 0, going = 0;
@@ -227,7 +228,9 @@ class _LogTile extends StatelessWidget {
 }
 
 class _Empty extends StatelessWidget {
-  const _Empty({required this.onStart, required this.onJoin});
+  const _Empty(
+      {required this.onStart, required this.onJoin, required this.onRestore});
+  final VoidCallback onRestore;
   final VoidCallback onStart;
   final VoidCallback onJoin;
 
@@ -266,6 +269,13 @@ class _Empty extends StatelessWidget {
               onPressed: onJoin,
               icon: const Icon(Icons.login),
               label: const Text('Join with a code'),
+            ),
+            const SizedBox(height: 8),
+            TextButton.icon(
+              key: const Key('restore-ledgers'),
+              onPressed: onRestore,
+              icon: const Icon(Icons.cloud_download_outlined),
+              label: const Text('Restore from my account'),
             ),
           ],
         ),

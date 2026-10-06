@@ -11,7 +11,7 @@ async function ok(name, p) { try { await assertSucceeds(p); pass++; } catch (e) 
 async function no(name, p) { try { await assertFails(p); pass++; } catch (e) { fail++; console.log('FAIL (should be denied):', name, e.message); } }
 const A = db('alice'), B = db('bob'), C = db('carol'), D = db('dave');
 const id = 'L1', code = 'ABCD2345';
-const create = (u, id, code) => ({ [`ledger/${id}/meta`]: { a: 'Rahul', b: 'Amit', code, created: TS }, [`ledger/${id}/members/${u}`]: { s: 'a' }, [`ledgerCodes/${code}`]: { id, a: 'Rahul', b: 'Amit' } });
+const create = (u, id, code) => ({ [`ledger/${id}/meta`]: { a: 'Rahul', b: 'Amit', code, created: TS }, [`ledger/${id}/members/${u}`]: { s: 'a' }, [`ledgerCodes/${code}`]: { id, a: 'Rahul', b: 'Amit' }, [`ledgerUsers/${u}/ledgers/${id}`]: 'a' });
 const entry = (by, amt, extra = {}) => ({ amt, by, date: 1700000000000, tag: 'Food', note: 'Lunch', at: TS, cs: by, ...extra });
 
 await no('anon create', anon.ref().update(create('x', id, code)));
@@ -25,7 +25,7 @@ await no('bob reads log before join', B.ref(`ledger/${id}`).get());
 await no('bob joins with wrong code', B.ref().update({ [`ledger/${id}/members/bob`]: { s: 'b', c: 'WRNG2345' } }));
 await no('bob joins without code', B.ref().update({ [`ledger/${id}/members/bob`]: { s: 'b' } }));
 await no('bob adds someone else', B.ref().update({ [`ledger/${id}/members/eve`]: { s: 'b', c: code } }));
-await ok('bob joins', B.ref().update({ [`ledger/${id}/members/bob`]: { s: 'b', c: code } }));
+await ok('bob joins', B.ref().update({ [`ledger/${id}/members/bob`]: { s: 'b', c: code }, [`ledgerUsers/bob/ledgers/${id}`]: 'b' }));
 await ok('bob reads log', B.ref(`ledger/${id}`).get());
 await no('carol reads log', C.ref(`ledger/${id}`).get());
 await no('bob bad side', B.ref().update({ [`ledger/${id}/members/bob/s`]: 'c' }));
@@ -100,12 +100,21 @@ const found = await C.ref('ledgerGc').orderByChild('t').endAt(now - 1209600000 -
 if (!found.hasChild(id)) { fail++; console.log('FAIL: gc did not find expired'); } else pass++;
 await no('carol gc entry only while log exists', C.ref().update({ [`ledgerGc/${id}`]: null }));
 await ok('carol cleans expired', C.ref().update({ [`ledger/${id}`]: null, [`ledgerGc/${id}`]: null }));
-await env.withSecurityRulesDisabled(async (ctx) => { const v = (await ctx.database().ref().get()).val(); if (v) { fail++; console.log('FAIL: leftovers', JSON.stringify(v)); } else pass++; });
+await env.withSecurityRulesDisabled(async (ctx) => { const all = (await ctx.database().ref().get()).val() || {}; const v = all.ledger || all.ledgerCodes || all.ledgerGc; if (v) { fail++; console.log('FAIL: leftovers', JSON.stringify(v)); } else pass++; });
 
 // Empty log delete
 await ok('create 2', A.ref().update(create('alice', 'L2', 'EMPT2345')));
 await no('bob deletes empty log he is not in', B.ref().update({ ['ledger/L2']: null, ['ledgerCodes/EMPT2345']: null }));
 await ok('alice deletes empty log', A.ref().update({ ['ledger/L2']: null, ['ledgerGc/L2']: null, ['ledgerCodes/EMPT2345']: null }));
+// Account index
+await ok('bob writes own index', B.ref().update({ ['ledgerUsers/bob/ledgers/L1']: 'b' }));
+await ok('bob reads own index', B.ref('ledgerUsers/bob').get());
+await no('carol reads bob index', C.ref('ledgerUsers/bob').get());
+await no('carol writes bob index', C.ref().update({ ['ledgerUsers/bob/ledgers/L9']: 'a' }));
+await no('bad side in index', B.ref().update({ ['ledgerUsers/bob/ledgers/L2']: 'x' }));
+await no('extra field in index', B.ref().update({ ['ledgerUsers/bob/other']: 1 }));
+await no('list all users', C.ref('ledgerUsers').get());
+await ok('bob clears own entry', B.ref().update({ ['ledgerUsers/bob/ledgers/L1']: null }));
 console.log(`passed ${pass}, failed ${fail}`);
 await env.cleanup();
 process.exit(fail ? 1 : 0);

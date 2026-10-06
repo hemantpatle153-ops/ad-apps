@@ -6,6 +6,7 @@ import 'editor.dart';
 import 'ledger/backend.dart';
 import 'ledger/ledger_home.dart';
 import 'ledger/service.dart';
+import 'ledger/sheets.dart';
 import 'ledger/store.dart';
 import 'insights.dart';
 import 'settings_screen.dart';
@@ -123,6 +124,18 @@ class _HomeShellState extends State<HomeShell> {
                   ],
                 ),
           actions: [
+            if (ledgerTab)
+              IconButton(
+                key: const Key('account-button'),
+                tooltip: 'Backup',
+                icon: Icon(widget.ledger.email == null
+                    ? Icons.cloud_off_outlined
+                    : Icons.cloud_done_outlined),
+                onPressed: () async {
+                  await showAccountSheet(context, widget.ledger);
+                  if (mounted) setState(() {});
+                },
+              ),
             IconButton(
               tooltip: 'Settings',
               icon: const Icon(Icons.settings_outlined),

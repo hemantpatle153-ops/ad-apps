@@ -16,6 +16,77 @@ class LedgerService {
 
   int nowMs() => backend.nowMs();
 
+  /// The email account this phone is signed in to, or null.
+  String? get email => backend.email;
+
+  /// Saves this phone's ledgers to an email account. Nothing moves: the
+  /// phone's user becomes the account, so every ledger stays joined.
+  Future<void> backUp(String email, String password) async {
+    await backend.linkEmail(email.trim(), password);
+    final uid = await backend.signIn();
+    final index = {
+      for (final l in store.all())
+        if (!l.archived) '${LedgerWrites.userPath(uid)}/${l.id}': l.side.name
+    };
+    if (index.isNotEmpty) await backend.update(index);
+  }
+
+  /// Signs in to an email account and brings back its ledgers. Ledgers
+  /// already on this phone are joined to the account too, with their code.
+  /// Returns how many ledgers are on the phone afterwards.
+  Future<int> signInEmail(String email, String password) async {
+    final before = store.all();
+    final uid = await backend.signInEmail(email.trim(), password);
+    final known = <String>{};
+    final index = await backend.get(LedgerWrites.userPath(uid));
+    if (index is Map) {
+      for (final MapEntry(:key, :value) in index.entries) {
+        final id = '$key';
+        final side = Side.parse(value);
+        if (side == null) continue;
+        final log =
+            LedgerLog.fromJson(id, await backend.get(LedgerWrites.logPath(id)));
+        if (log == null) {
+          // Deleted after it was settled; forget it.
+          await backend.update({'${LedgerWrites.userPath(uid)}/$id': null});
+          continue;
+        }
+        known.add(id);
+        await store.put(LocalLog(
+            id: id,
+            side: side,
+            nameA: log.nameA,
+            nameB: log.nameB,
+            snapshot: log.toJson()));
+      }
+    }
+    for (final l in before) {
+      if (known.contains(l.id) || l.archived) continue;
+      final code = l.log?.code ?? '';
+      if (code.isEmpty) continue;
+      try {
+        final info = await lookup(code);
+        if (info.id == l.id) {
+          await join(code, info, l.side);
+          known.add(l.id);
+        }
+      } catch (_) {
+        // Code was reset or the ledger is settled: it stays phone-only.
+      }
+    }
+    return store.all().length;
+  }
+
+  Future<void> sendPasswordReset(String email) =>
+      backend.sendPasswordReset(email.trim());
+
+  /// Signs out of the email account. The ledgers stay in the account; this
+  /// phone's list is cleared until someone signs in again.
+  Future<void> signOut() async {
+    await backend.signOut();
+    await store.clear();
+  }
+
   /// Starts a new log between me and [friendName], with a fresh code.
   Future<LocalLog> create(String myName, String friendName) async {
     final me = cleanName(myName), friend = cleanName(friendName);
@@ -82,6 +153,12 @@ class LedgerService {
         if (log == null) {
           if (local != null && !local.archived) {
             await store.put(local.copyWith(archived: true));
+            // Gone from the cloud: drop it from the account's list too.
+            unawaited(backend
+                .signIn()
+                .then((uid) =>
+                    backend.update({'${LedgerWrites.userPath(uid)}/$id': null}))
+                .catchError((_) {}));
           }
           return null;
         }
@@ -200,7 +277,8 @@ class LedgerService {
           'Only an empty ledger can be deleted. Settle up with your friend '
           'instead; it is removed $settledKeepDays days later.');
     }
-    await backend.update(LedgerWrites.delete(log.id, log.code));
+    await backend.update(
+        LedgerWrites.delete(log.id, log.code, uid: await backend.signIn()));
     await store.remove(log.id);
   }
 
@@ -214,7 +292,8 @@ class LedgerService {
       for (final local in store.all()) {
         final log = local.log;
         if (local.archived || log == null || !log.isExpired(now)) continue;
-        await backend.update(LedgerWrites.delete(log.id, log.code));
+        await backend.update(
+            LedgerWrites.delete(log.id, log.code, uid: await backend.signIn()));
         await store.put(local.copyWith(archived: true));
         deleted++;
       }

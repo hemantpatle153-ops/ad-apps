@@ -126,6 +126,8 @@ class LedgerStore extends ChangeNotifier {
     return _save(list);
   }
 
+  Future<void> clear() => _save([]);
+
   Future<void> remove(String id) =>
       _save(all()..removeWhere((l) => l.id == id));
 
