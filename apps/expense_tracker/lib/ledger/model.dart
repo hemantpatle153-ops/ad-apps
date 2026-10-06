@@ -1,12 +1,12 @@
 import 'dart:math';
 
-/// Friends hisab: a money log shared by two friends, kept in Firebase.
+/// Friends ledger: a money log shared by two friends, kept in Firebase.
 ///
 /// Each log has two sides, `a` (who made it) and `b` (the friend). Any
 /// number of phones can join a log with its code; each phone says which of
 /// the two friends it belongs to, so both friends can use several phones.
 ///
-/// Every entry records who paid ([HisabEntry.by]); the other side owes that
+/// Every entry records who paid ([LedgerEntry.by]); the other side owes that
 /// amount. Amounts are whole minor units (paise), so totals never drift.
 
 enum Side {
@@ -22,7 +22,7 @@ enum Side {
       };
 }
 
-/// How long a cleared hisab stays readable before it is deleted from the
+/// How long a cleared ledger stays readable before it is deleted from the
 /// cloud. Each phone keeps its own copy after that.
 const settledKeepDays = 14;
 const settledKeep = Duration(days: settledKeepDays);
@@ -103,8 +103,8 @@ int? _int(Object? v) => v is int
         : null;
 
 /// One line of the log.
-class HisabEntry {
-  const HisabEntry({
+class LedgerEntry {
+  const LedgerEntry({
     required this.id,
     required this.amount,
     required this.by,
@@ -158,14 +158,14 @@ class HisabEntry {
       };
 
   /// Null for anything malformed, so one bad record can't break the log.
-  static HisabEntry? fromJson(String id, Object? raw) {
+  static LedgerEntry? fromJson(String id, Object? raw) {
     if (raw is! Map) return null;
     final amt = _int(raw['amt']);
     final by = Side.parse(raw['by']);
     final date = _int(raw['date']);
     if (amt == null || amt <= 0 || amt > maxEntryAmount) return null;
     if (by == null || date == null) return null;
-    return HisabEntry(
+    return LedgerEntry(
       id: id,
       amount: amt,
       by: by,
@@ -179,14 +179,14 @@ class HisabEntry {
     );
   }
 
-  HisabEntry copyWith({
+  LedgerEntry copyWith({
     int? amount,
     Side? by,
     DateTime? date,
     String? tag,
     String? note,
   }) =>
-      HisabEntry(
+      LedgerEntry(
         id: id,
         amount: amount ?? this.amount,
         by: by ?? this.by,
@@ -202,7 +202,7 @@ class HisabEntry {
 
 /// Newest day first; same day: newest added first; then by id so the order
 /// is the same on every phone.
-int compareEntries(HisabEntry x, HisabEntry y) {
+int compareEntries(LedgerEntry x, LedgerEntry y) {
   final d = y.date.compareTo(x.date);
   if (d != 0) return d;
   final c = y.createdAt.compareTo(x.createdAt);
@@ -220,7 +220,7 @@ class Balance {
     required this.iGiveThemCount,
   });
 
-  factory Balance.of(Iterable<HisabEntry> entries, Side me) {
+  factory Balance.of(Iterable<LedgerEntry> entries, Side me) {
     var mine = 0, theirs = 0, nm = 0, nt = 0;
     for (final e in entries) {
       if (e.by == me) {
@@ -269,7 +269,7 @@ class Balance {
 }
 
 /// A neutral version of the result: side a's net. Same on every phone.
-int netForA(Iterable<HisabEntry> entries) => Balance.of(entries, Side.a).net;
+int netForA(Iterable<LedgerEntry> entries) => Balance.of(entries, Side.a).net;
 
 /// FNV-1a, 32 bit; stable across platforms.
 int _fnv(String s, [int h = 0x811c9dc5]) {
@@ -283,7 +283,7 @@ int _fnv(String s, [int h = 0x811c9dc5]) {
 /// Fingerprint of exactly what is being settled. A confirmation only counts
 /// while the log still matches it, so a change after a friend asked to settle
 /// means they have to look again.
-String fingerprint(Iterable<HisabEntry> entries) {
+String fingerprint(Iterable<LedgerEntry> entries) {
   final list = entries.toList()..sort((x, y) => x.id.compareTo(y.id));
   var h = 0x811c9dc5;
   for (final e in list) {
@@ -294,7 +294,7 @@ String fingerprint(Iterable<HisabEntry> entries) {
   return '${list.length}.${netForA(list)}.${h.toRadixString(16)}';
 }
 
-/// One side's "yes, this hisab is right" for one version of the log.
+/// One side's "yes, this ledger is right" for one version of the log.
 class Approval {
   const Approval({required this.sig, required this.net, this.at = 0});
   final String sig;
@@ -316,7 +316,7 @@ class Approval {
 }
 
 enum SettleStage {
-  /// Nobody asked to clear the hisab (or the log changed since).
+  /// Nobody asked to clear the ledger (or the log changed since).
   open,
 
   /// I confirmed; waiting for my friend.
@@ -330,8 +330,8 @@ enum SettleStage {
 }
 
 /// A whole log as read from the database.
-class HisabLog {
-  const HisabLog({
+class LedgerLog {
+  const LedgerLog({
     required this.id,
     required this.nameA,
     required this.nameB,
@@ -353,7 +353,7 @@ class HisabLog {
   final Map<String, Side> members;
 
   /// Sorted with [compareEntries].
-  final List<HisabEntry> entries;
+  final List<LedgerEntry> entries;
   final Map<Side, Approval> approvals;
 
   /// Server time both friends confirmed, ms.
@@ -398,7 +398,7 @@ class HisabLog {
     return SettleStage.open;
   }
 
-  /// Entries can be added or changed only while the hisab is open.
+  /// Entries can be added or changed only while the ledger is open.
   bool get editable => !isSettled;
 
   int devicesOf(Side s) => members.values.where((v) => v == s).length;
@@ -414,7 +414,7 @@ class HisabLog {
       };
 
   /// Null when the data isn't a readable log (deleted, or no access).
-  static HisabLog? fromJson(String id, Object? raw) {
+  static LedgerLog? fromJson(String id, Object? raw) {
     if (raw is! Map) return null;
     final meta = raw['meta'];
     if (meta is! Map) return null;
@@ -426,11 +426,11 @@ class HisabLog {
         if (s != null) members['$k'] = s;
       });
     }
-    final entries = <HisabEntry>[];
+    final entries = <LedgerEntry>[];
     final rawEntries = raw['entries'];
     if (rawEntries is Map) {
       rawEntries.forEach((k, v) {
-        final e = HisabEntry.fromJson('$k', v);
+        final e = LedgerEntry.fromJson('$k', v);
         if (e != null) entries.add(e);
       });
     }
@@ -444,7 +444,7 @@ class HisabLog {
         if (s != null && a != null) approvals[s] = a;
       });
     }
-    return HisabLog(
+    return LedgerLog(
       id: id,
       nameA: '${meta['a'] ?? 'Friend 1'}',
       nameB: '${meta['b'] ?? 'Friend 2'}',
@@ -492,10 +492,10 @@ const serverTime = ServerTime._();
 /// Every change to the database as one multi-path update, so each write
 /// either fully lands or not at all, and the security rules check each part.
 /// Paths are from the database root.
-abstract final class HisabWrites {
-  static String logPath(String id) => 'hisab/$id';
-  static String codePath(String code) => 'hisabCodes/$code';
-  static String gcPath(String id) => 'hisabGc/$id';
+abstract final class LedgerWrites {
+  static String logPath(String id) => 'ledger/$id';
+  static String codePath(String code) => 'ledgerCodes/$code';
+  static String gcPath(String id) => 'ledgerGc/$id';
 
   static Map<String, Object?> create({
     required String id,
@@ -537,20 +537,20 @@ abstract final class HisabWrites {
       };
 
   /// New code for the same log. Members, entries and confirmations stay.
-  static Map<String, Object?> resetCode(HisabLog log, String newCode) => {
+  static Map<String, Object?> resetCode(LedgerLog log, String newCode) => {
         if (log.code.isNotEmpty) codePath(log.code): null,
         codePath(newCode): {'id': log.id, 'a': log.nameA, 'b': log.nameB},
         '${logPath(log.id)}/meta/code': newCode,
       };
 
-  static Map<String, Object?> rename(HisabLog log, Side side, String name) => {
+  static Map<String, Object?> rename(LedgerLog log, Side side, String name) => {
         '${logPath(log.id)}/meta/${side.name}': name,
         if (log.code.isNotEmpty) '${codePath(log.code)}/${side.name}': name,
       };
 
   /// Adds or edits an entry. Any change cancels earlier confirmations: the
   /// friends must look at the new total again.
-  static Map<String, Object?> saveEntry(HisabLog log, HisabEntry e, Side me,
+  static Map<String, Object?> saveEntry(LedgerLog log, LedgerEntry e, Side me,
       {required bool isNew}) {
     final base = '${logPath(log.id)}/entries/${e.id}';
     return {
@@ -569,14 +569,14 @@ abstract final class HisabWrites {
     };
   }
 
-  static Map<String, Object?> deleteEntry(HisabLog log, String entryId) => {
+  static Map<String, Object?> deleteEntry(LedgerLog log, String entryId) => {
         '${logPath(log.id)}/entries/$entryId': null,
         if (log.approvals.isNotEmpty) '${logPath(log.id)}/ok': null,
       };
 
-  /// "This hisab is right." When the friend already confirmed this same
-  /// version, the hisab is cleared in the same write.
-  static Map<String, Object?> approve(HisabLog log, Side me) {
+  /// "This ledger is right." When the friend already confirmed this same
+  /// version, the ledger is cleared in the same write.
+  static Map<String, Object?> approve(LedgerLog log, Side me) {
     final sig = log.sig;
     final p = logPath(log.id);
     final w = <String, Object?>{
@@ -590,14 +590,14 @@ abstract final class HisabWrites {
     return w;
   }
 
-  /// Clears the hisab. Also used when both friends confirmed the same
+  /// Clears the ledger. Also used when both friends confirmed the same
   /// version at about the same moment, so neither write cleared it: whoever
   /// sees that first finishes it.
   ///
-  /// A cleared hisab has no join code (reopening makes a new one), and the
+  /// A cleared ledger has no join code (reopening makes a new one), and the
   /// cleaner's list holds only its id and time, so nothing in that public
   /// list lets anyone in.
-  static Map<String, Object?> finalize(HisabLog log) => {
+  static Map<String, Object?> finalize(LedgerLog log) => {
         '${logPath(log.id)}/done': serverTime,
         gcPath(log.id): {'t': serverTime},
         if (log.code.isNotEmpty) codePath(log.code): null,
@@ -605,13 +605,13 @@ abstract final class HisabWrites {
       };
 
   /// Takes back my own confirmation before my friend confirms.
-  static Map<String, Object?> withdraw(HisabLog log, Side me) => {
+  static Map<String, Object?> withdraw(LedgerLog log, Side me) => {
         '${logPath(log.id)}/ok/${me.name}': null,
       };
 
-  /// Opens a cleared hisab again (allowed until it is deleted), with a new
+  /// Opens a cleared ledger again (allowed until it is deleted), with a new
   /// join code.
-  static Map<String, Object?> reopen(HisabLog log, String newCode) => {
+  static Map<String, Object?> reopen(LedgerLog log, String newCode) => {
         '${logPath(log.id)}/done': null,
         '${logPath(log.id)}/ok': null,
         gcPath(log.id): null,

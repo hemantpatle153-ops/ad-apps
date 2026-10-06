@@ -1,13 +1,13 @@
 import 'dart:math';
 
-import 'package:expense_tracker/hisab/model.dart';
+import 'package:expense_tracker/ledger/model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'support/hisab_world.dart';
+import 'support/ledger_world.dart';
 
-HisabLog logOf(List<HisabEntry> entries,
+LedgerLog logOf(List<LedgerEntry> entries,
         {Map<Side, Approval> approvals = const {}, int? settledAt}) =>
-    HisabLog(
+    LedgerLog(
       id: 'L',
       nameA: 'Rahul',
       nameB: 'Amit',
@@ -17,7 +17,7 @@ HisabLog logOf(List<HisabEntry> entries,
       settledAt: settledAt,
     );
 
-HisabEntry e(String id, int amt, Side by, {DateTime? date}) => HisabEntry(
+LedgerEntry e(String id, int amt, Side by, {DateTime? date}) => LedgerEntry(
     id: id, amount: amt, by: by, date: date ?? DateTime(2026, 10, 6));
 
 void main() {
@@ -127,13 +127,13 @@ void main() {
     }
   });
 
-  group('HisabEntry json', () {
+  group('LedgerEntry json', () {
     for (var seed = 0; seed < 150; seed++) {
       test('round trip $seed', () {
         final r = Random(seed + 1000);
         var x = randomEntry(r, seed);
         if (r.nextBool()) {
-          x = HisabEntry(
+          x = LedgerEntry(
             id: x.id,
             amount: x.amount,
             by: x.by,
@@ -146,7 +146,7 @@ void main() {
             editedBy: r.nextBool() ? Side.a : Side.b,
           );
         }
-        final y = HisabEntry.fromJson(x.id, x.toJson())!;
+        final y = LedgerEntry.fromJson(x.id, x.toJson())!;
         expect(y.amount, x.amount);
         expect(y.by, x.by);
         expect(y.date, x.date);
@@ -174,18 +174,18 @@ void main() {
       ('text amount', {'amt': '5', 'by': 'a', 'date': 1}),
     ]) {
       test('rejects $name',
-          () => expect(HisabEntry.fromJson('id', raw), isNull));
+          () => expect(LedgerEntry.fromJson('id', raw), isNull));
     }
 
     test('double amounts from the database read as ints', () {
       final x =
-          HisabEntry.fromJson('i', {'amt': 500.0, 'by': 'b', 'date': 1.0});
+          LedgerEntry.fromJson('i', {'amt': 500.0, 'by': 'b', 'date': 1.0});
       expect(x!.amount, 500);
       expect(x.date.millisecondsSinceEpoch, 1);
     });
 
     test('missing optional fields get defaults', () {
-      final x = HisabEntry.fromJson('i', {'amt': 5, 'by': 'a', 'date': 0})!;
+      final x = LedgerEntry.fromJson('i', {'amt': 5, 'by': 'a', 'date': 0})!;
       expect(x.tag, '');
       expect(x.note, '');
       expect(x.createdAt, 0);
@@ -197,25 +197,25 @@ void main() {
   group('sort order', () {
     test('newest day first, then newest added, then id', () {
       final list = [
-        HisabEntry(
+        LedgerEntry(
             id: 'b',
             amount: 1,
             by: Side.a,
             date: DateTime(2026, 1, 1),
             createdAt: 5),
-        HisabEntry(
+        LedgerEntry(
             id: 'a',
             amount: 1,
             by: Side.a,
             date: DateTime(2026, 1, 1),
             createdAt: 5),
-        HisabEntry(
+        LedgerEntry(
             id: 'c',
             amount: 1,
             by: Side.a,
             date: DateTime(2026, 1, 2),
             createdAt: 1),
-        HisabEntry(
+        LedgerEntry(
             id: 'd',
             amount: 1,
             by: Side.a,
@@ -423,14 +423,14 @@ void main() {
     });
   });
 
-  group('HisabLog json', () {
+  group('LedgerLog json', () {
     for (var seed = 0; seed < 60; seed++) {
       test('round trip $seed', () {
         final r = Random(seed + 77);
         final entries = [
           for (var i = 0; i < r.nextInt(20); i++) randomEntry(r, i)
         ];
-        final log = HisabLog(
+        final log = LedgerLog(
           id: 'L$seed',
           nameA: 'A$seed',
           nameB: 'B$seed',
@@ -444,7 +444,7 @@ void main() {
           },
           settledAt: r.nextBool() ? 999 : null,
         );
-        final back = HisabLog.fromJson(log.id, log.toJson())!;
+        final back = LedgerLog.fromJson(log.id, log.toJson())!;
         expect(back.nameA, log.nameA);
         expect(back.nameB, log.nameB);
         expect(back.code, log.code);
@@ -460,12 +460,12 @@ void main() {
     }
 
     test('missing meta is not a log', () {
-      expect(HisabLog.fromJson('x', null), isNull);
-      expect(HisabLog.fromJson('x', {'entries': {}}), isNull);
+      expect(LedgerLog.fromJson('x', null), isNull);
+      expect(LedgerLog.fromJson('x', {'entries': {}}), isNull);
     });
 
     test('bad entries and members are skipped', () {
-      final log = HisabLog.fromJson('x', {
+      final log = LedgerLog.fromJson('x', {
         'meta': {'a': 'A', 'b': 'B'},
         'members': {
           'u1': {'s': 'a'},
@@ -490,7 +490,7 @@ void main() {
     });
 
     test('nameOf and devicesOf', () {
-      final log = HisabLog(
+      final log = LedgerLog(
           id: 'x',
           nameA: 'A',
           nameB: 'B',
@@ -507,44 +507,44 @@ void main() {
     final log = logOf([e('1', 500, Side.a)]);
 
     test('create writes the log, the member and the code together', () {
-      final w = HisabWrites.create(
+      final w = LedgerWrites.create(
           id: 'L', code: 'ABCD2345', uid: 'u', myName: 'R', friendName: 'A');
-      expect(
-          w.keys, ['hisab/L/meta', 'hisab/L/members/u', 'hisabCodes/ABCD2345']);
-      expect((w['hisab/L/meta'] as Map)['created'], serverTime);
+      expect(w.keys,
+          ['ledger/L/meta', 'ledger/L/members/u', 'ledgerCodes/ABCD2345']);
+      expect((w['ledger/L/meta'] as Map)['created'], serverTime);
     });
 
     test('join carries the code for the rules to check', () {
-      final w = HisabWrites.join(
+      final w = LedgerWrites.join(
           info: const CodeInfo(id: 'L', nameA: 'R', nameB: 'A'),
           code: 'ABCD2345',
           uid: 'u2',
           side: Side.b);
       expect(w, {
-        'hisab/L/members/u2': {'s': 'b', 'c': 'ABCD2345'}
+        'ledger/L/members/u2': {'s': 'b', 'c': 'ABCD2345'}
       });
     });
 
     test('new entry stamps server time and creator', () {
       final w =
-          HisabWrites.saveEntry(log, e('2', 7, Side.b), Side.b, isNew: true);
-      final v = w['hisab/L/entries/2'] as Map;
+          LedgerWrites.saveEntry(log, e('2', 7, Side.b), Side.b, isNew: true);
+      final v = w['ledger/L/entries/2'] as Map;
       expect(v['at'], serverTime);
       expect(v['cs'], 'b');
       expect(v.containsKey('ea'), isFalse);
-      expect(w.containsKey('hisab/L/ok'), isFalse);
+      expect(w.containsKey('ledger/L/ok'), isFalse);
     });
 
     test('edit stamps edit time and editor, keeps creator', () {
-      final old = HisabEntry(
+      final old = LedgerEntry(
           id: '1',
           amount: 5,
           by: Side.a,
           date: DateTime(2026),
           createdAt: 42,
           createdBy: Side.a);
-      final w = HisabWrites.saveEntry(log, old, Side.b, isNew: false);
-      final v = w['hisab/L/entries/1'] as Map;
+      final w = LedgerWrites.saveEntry(log, old, Side.b, isNew: false);
+      final v = w['ledger/L/entries/1'] as Map;
       expect(v['at'], 42);
       expect(v['cs'], 'a');
       expect(v['ea'], serverTime);
@@ -558,54 +558,58 @@ void main() {
         Side.a: Approval(sig: fingerprint([e('1', 500, Side.a)]), net: 500)
       });
       expect(
-          HisabWrites.saveEntry(asked, e('2', 1, Side.a), Side.a, isNew: true),
-          containsPair('hisab/L/ok', null));
-      expect(HisabWrites.deleteEntry(asked, '1'),
-          containsPair('hisab/L/ok', null));
+          LedgerWrites.saveEntry(asked, e('2', 1, Side.a), Side.a, isNew: true),
+          containsPair('ledger/L/ok', null));
+      expect(LedgerWrites.deleteEntry(asked, '1'),
+          containsPair('ledger/L/ok', null));
     });
 
     test('first confirmation does not clear', () {
-      final w = HisabWrites.approve(log, Side.a);
-      expect(w.keys, ['hisab/L/ok/a']);
-      expect((w['hisab/L/ok/a'] as Map)['sig'], log.sig);
-      expect((w['hisab/L/ok/a'] as Map)['net'], 500);
+      final w = LedgerWrites.approve(log, Side.a);
+      expect(w.keys, ['ledger/L/ok/a']);
+      expect((w['ledger/L/ok/a'] as Map)['sig'], log.sig);
+      expect((w['ledger/L/ok/a'] as Map)['net'], 500);
     });
 
     test('second confirmation clears, drops the code, lists for cleanup', () {
       final asked = logOf([e('1', 500, Side.a)],
           approvals: {Side.a: Approval(sig: log.sig, net: 500)});
-      final w = HisabWrites.approve(asked, Side.b);
-      expect(w['hisab/L/done'], serverTime);
-      expect(w['hisabGc/L'], {'t': serverTime});
-      expect(w.containsKey('hisabCodes/ABCD2345'), isTrue);
-      expect(w['hisabCodes/ABCD2345'], isNull);
-      expect(w['hisab/L/meta/code'], isNull);
+      final w = LedgerWrites.approve(asked, Side.b);
+      expect(w['ledger/L/done'], serverTime);
+      expect(w['ledgerGc/L'], {'t': serverTime});
+      expect(w.containsKey('ledgerCodes/ABCD2345'), isTrue);
+      expect(w['ledgerCodes/ABCD2345'], isNull);
+      expect(w['ledger/L/meta/code'], isNull);
     });
 
     test('reopen makes a new code and leaves the cleanup list', () {
-      final w = HisabWrites.reopen(logOf([], settledAt: 1), 'WXYZ6789');
-      expect(w['hisab/L/done'], isNull);
-      expect(w['hisabGc/L'], isNull);
-      expect(w['hisab/L/meta/code'], 'WXYZ6789');
-      expect((w['hisabCodes/WXYZ6789'] as Map)['id'], 'L');
+      final w = LedgerWrites.reopen(logOf([], settledAt: 1), 'WXYZ6789');
+      expect(w['ledger/L/done'], isNull);
+      expect(w['ledgerGc/L'], isNull);
+      expect(w['ledger/L/meta/code'], 'WXYZ6789');
+      expect((w['ledgerCodes/WXYZ6789'] as Map)['id'], 'L');
     });
 
     test('reset swaps the code only', () {
-      final w = HisabWrites.resetCode(log, 'WXYZ6789');
-      expect(w.keys.toSet(),
-          {'hisabCodes/ABCD2345', 'hisabCodes/WXYZ6789', 'hisab/L/meta/code'});
+      final w = LedgerWrites.resetCode(log, 'WXYZ6789');
+      expect(w.keys.toSet(), {
+        'ledgerCodes/ABCD2345',
+        'ledgerCodes/WXYZ6789',
+        'ledger/L/meta/code'
+      });
     });
 
     test('delete removes log, cleanup entry and code', () {
-      expect(HisabWrites.delete('L', 'ABCD2345'),
-          {'hisab/L': null, 'hisabGc/L': null, 'hisabCodes/ABCD2345': null});
-      expect(HisabWrites.delete('L', ''), {'hisab/L': null, 'hisabGc/L': null});
+      expect(LedgerWrites.delete('L', 'ABCD2345'),
+          {'ledger/L': null, 'ledgerGc/L': null, 'ledgerCodes/ABCD2345': null});
+      expect(
+          LedgerWrites.delete('L', ''), {'ledger/L': null, 'ledgerGc/L': null});
     });
 
     test('leave and switch touch only this phone', () {
-      expect(HisabWrites.leave('L', 'u'), {'hisab/L/members/u': null});
-      expect(HisabWrites.switchSide('L', 'u', Side.a),
-          {'hisab/L/members/u/s': 'a'});
+      expect(LedgerWrites.leave('L', 'u'), {'ledger/L/members/u': null});
+      expect(LedgerWrites.switchSide('L', 'u', Side.a),
+          {'ledger/L/members/u/s': 'a'});
     });
   });
 }

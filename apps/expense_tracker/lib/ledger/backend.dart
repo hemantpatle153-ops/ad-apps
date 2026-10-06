@@ -6,9 +6,9 @@ import 'package:firebase_database/firebase_database.dart';
 
 import 'model.dart';
 
-/// The few database operations the hisab needs. [FirebaseHisabBackend] is
+/// The few database operations the ledger needs. [FirebaseLedgerBackend] is
 /// the real one; tests use an in-memory one.
-abstract class HisabBackend {
+abstract class LedgerBackend {
   /// Signs in (anonymously) and returns this phone's user id.
   Future<String> signIn();
 
@@ -31,20 +31,20 @@ abstract class HisabBackend {
   Future<List<String>> expired(int beforeMs);
 }
 
-class HisabException implements Exception {
-  const HisabException(this.message);
+class LedgerException implements Exception {
+  const LedgerException(this.message);
   final String message;
   @override
   String toString() => message;
 
-  static const offline = HisabException(
+  static const offline = LedgerException(
       "Couldn't reach the internet. Check your connection and try again.");
-  static const notFound = HisabException(
-      'No hisab with that code. Ask your friend for the latest code; '
+  static const notFound = LedgerException(
+      'No ledger with that code. Ask your friend for the latest code; '
       'it changes when they reset it.');
-  static const denied = HisabException(
+  static const denied = LedgerException(
       "That change isn't allowed. The code may have been reset, or the "
-      'hisab is already cleared.');
+      'ledger is already settled.');
 }
 
 /// Firebase settings (the `dice-dhamaal` project, shared with Dice Dhamaal
@@ -72,7 +72,7 @@ abstract final class FirebaseSetup {
       );
 }
 
-class FirebaseHisabBackend implements HisabBackend {
+class FirebaseLedgerBackend implements LedgerBackend {
   FirebaseApp? _app;
   FirebaseDatabase? _db;
   String? _uid;
@@ -85,7 +85,7 @@ class FirebaseHisabBackend implements HisabBackend {
   Future<String> signIn() =>
       _signing ??= _signIn().then((v) => v, onError: (Object e) {
         _signing = null;
-        throw e is HisabException ? e : HisabException.offline;
+        throw e is LedgerException ? e : LedgerException.offline;
       });
 
   Future<String> _signIn() async {
@@ -108,7 +108,7 @@ class FirebaseHisabBackend implements HisabBackend {
 
   FirebaseDatabase get _database {
     final db = _db;
-    if (db == null) throw HisabException.offline;
+    if (db == null) throw LedgerException.offline;
     return db;
   }
 
@@ -118,13 +118,13 @@ class FirebaseHisabBackend implements HisabBackend {
         _ => v,
       };
 
-  static HisabException _map(Object e) {
-    if (e is HisabException) return e;
+  static LedgerException _map(Object e) {
+    if (e is LedgerException) return e;
     if (e is FirebaseException &&
         (e.code.contains('permission') || e.code.contains('denied'))) {
-      return HisabException.denied;
+      return LedgerException.denied;
     }
-    return HisabException.offline;
+    return LedgerException.offline;
   }
 
   @override
@@ -159,7 +159,7 @@ class FirebaseHisabBackend implements HisabBackend {
               handleError: (_, __, sink) => sink.add(null))));
 
   @override
-  String newKey() => _database.ref('hisab').push().key!;
+  String newKey() => _database.ref('ledger').push().key!;
 
   @override
   int nowMs() => DateTime.now().millisecondsSinceEpoch + _offsetMs;
@@ -168,7 +168,7 @@ class FirebaseHisabBackend implements HisabBackend {
   Future<List<String>> expired(int beforeMs) async {
     await signIn();
     final snap = await _database
-        .ref('hisabGc')
+        .ref('ledgerGc')
         .orderByChild('t')
         .endAt(beforeMs)
         // The database rules allow only this exact query.

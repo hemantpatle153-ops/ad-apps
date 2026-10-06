@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data.dart';
-import 'hisab_screen.dart';
+import 'ledger_screen.dart';
 import 'model.dart';
 import 'service.dart';
 import 'sheets.dart';
@@ -9,40 +9,40 @@ import 'store.dart';
 
 /// Opens a log. A brand new one shows its code first, so it can be
 /// shared straight away.
-Future<void> openHisab(BuildContext context, HisabService service,
+Future<void> openLedger(BuildContext context, LedgerService service,
         Settings settings, LocalLog local, {bool showCode = false}) =>
     Navigator.of(context).push(MaterialPageRoute(
-        builder: (_) => HisabScreen(
+        builder: (_) => LedgerScreen(
             service: service,
             settings: settings,
             id: local.id,
             showCode: showCode)));
 
-Future<void> startHisab(
-    BuildContext context, HisabService service, Settings settings) async {
+Future<void> startLedger(
+    BuildContext context, LedgerService service, Settings settings) async {
   final local = await showCreateSheet(context, service);
   if (local == null || !context.mounted) return;
-  await openHisab(context, service, settings, local, showCode: true);
+  await openLedger(context, service, settings, local, showCode: true);
 }
 
-Future<void> joinHisab(
-    BuildContext context, HisabService service, Settings settings) async {
+Future<void> joinLedger(
+    BuildContext context, LedgerService service, Settings settings) async {
   final local = await showJoinSheet(context, service);
   if (local == null || !context.mounted) return;
-  await openHisab(context, service, settings, local);
+  await openLedger(context, service, settings, local);
 }
 
-/// The Hisab tab: every log on this phone with its result.
-class HisabHome extends StatefulWidget {
-  const HisabHome({super.key, required this.service, required this.settings});
-  final HisabService service;
+/// The Ledger tab: every log on this phone with its result.
+class LedgerHome extends StatefulWidget {
+  const LedgerHome({super.key, required this.service, required this.settings});
+  final LedgerService service;
   final Settings settings;
 
   @override
-  State<HisabHome> createState() => _HisabHomeState();
+  State<LedgerHome> createState() => _LedgerHomeState();
 }
 
-class _HisabHomeState extends State<HisabHome> {
+class _LedgerHomeState extends State<LedgerHome> {
   static bool _cleaned = false;
 
   @override
@@ -65,8 +65,8 @@ class _HisabHomeState extends State<HisabHome> {
         final logs = service.store.all();
         if (logs.isEmpty) {
           return _Empty(
-            onStart: () => startHisab(context, service, s),
-            onJoin: () => joinHisab(context, service, s),
+            onStart: () => startLedger(context, service, s),
+            onJoin: () => joinLedger(context, service, s),
           );
         }
         var coming = 0, going = 0;
@@ -90,13 +90,13 @@ class _HisabHomeState extends State<HisabHome> {
                   children: [
                     Expanded(
                       child: _Total(
-                          label: 'Friends will give you',
+                          label: 'Friends owe you',
                           value: s.money(coming),
                           color: comingColor(context)),
                     ),
                     Expanded(
                       child: _Total(
-                          label: 'You will give friends',
+                          label: 'You owe friends',
                           value: s.money(going),
                           color: goingColor(context)),
                     ),
@@ -109,11 +109,11 @@ class _HisabHomeState extends State<HisabHome> {
               child: Row(
                 children: [
                   Expanded(
-                      child: Text('Your hisabs',
+                      child: Text('Your ledgers',
                           style: theme.textTheme.titleSmall)),
                   TextButton.icon(
                     key: const Key('join-button'),
-                    onPressed: () => joinHisab(context, service, s),
+                    onPressed: () => joinLedger(context, service, s),
                     icon: const Icon(Icons.login),
                     label: const Text('Join with code'),
                   ),
@@ -125,7 +125,7 @@ class _HisabHomeState extends State<HisabHome> {
                 local: l,
                 settings: s,
                 nowMs: service.nowMs(),
-                onTap: () => openHisab(context, service, s, l),
+                onTap: () => openLedger(context, service, s, l),
               ),
           ],
         );
@@ -189,11 +189,11 @@ class _LogTile extends StatelessWidget {
         chip = 'On this phone only';
       } else if (log.isSettled) {
         final d = log.daysLeft(nowMs);
-        chip = 'Cleared · deleted in $d ${d == 1 ? 'day' : 'days'}';
+        chip = 'Settled · removed in $d ${d == 1 ? 'day' : 'days'}';
         color = null;
       } else {
         chip = switch (log.stageFor(local.side)) {
-          SettleStage.friendAsked => '$friend asks you to confirm',
+          SettleStage.friendAsked => '$friend wants to settle up',
           SettleStage.waitingForFriend => 'Waiting for $friend',
           _ => null,
         };
@@ -243,26 +243,26 @@ class _Empty extends StatelessWidget {
             Icon(Icons.handshake_outlined,
                 size: 72, color: theme.colorScheme.primary),
             const SizedBox(height: 16),
-            Text('Hisab with friends',
+            Text('Track money with friends',
                 style: theme.textTheme.headlineSmall,
                 textAlign: TextAlign.center),
             const SizedBox(height: 8),
             const Text(
-              'Write down money you lend and borrow. Share a code with your '
-              'friend: both of you see the same log, the same total, and who '
-              'will give whom.',
+              'Record money you lend and borrow. Share a code with your friend '
+              'and you both see the same entries, the same balance, and who '
+              'owes whom.',
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             FilledButton.icon(
-              key: const Key('start-hisab'),
+              key: const Key('start-ledger'),
               onPressed: onStart,
               icon: const Icon(Icons.add),
-              label: const Text('Start a hisab'),
+              label: const Text('Start a shared ledger'),
             ),
             const SizedBox(height: 8),
             OutlinedButton.icon(
-              key: const Key('join-hisab'),
+              key: const Key('join-ledger'),
               onPressed: onJoin,
               icon: const Icon(Icons.login),
               label: const Text('Join with a code'),

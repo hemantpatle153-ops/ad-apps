@@ -6,8 +6,8 @@ top-level path in Realtime Database, and adds its section to
 
 - `rooms/`: Dice Dhamaal online Ludo.
 - `watch/`: Video Player watch parties.
-- `hisab/`, `hisabCodes/`, `hisabGc/`: Expense Tracker's shared hisab with
-  friends. Cleared logs are deleted 14 days after both friends confirm.
+- `ledger/`, `ledgerCodes/`, `ledgerGc/`: Expense Tracker's shared ledger with
+  friends. Settled ledgers are deleted 14 days after both friends confirm.
 
 Deploy the rules from this folder:
 

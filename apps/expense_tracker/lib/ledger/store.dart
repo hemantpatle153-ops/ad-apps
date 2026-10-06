@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'model.dart';
 
 /// A log this phone has joined, with the last copy it saw. The copy keeps a
-/// cleared hisab readable on the phone after the cloud copy is deleted.
+/// cleared ledger readable on the phone after the cloud copy is deleted.
 class LocalLog {
   const LocalLog({
     required this.id,
@@ -33,7 +33,7 @@ class LocalLog {
   String get myName => side == Side.a ? nameA : nameB;
   String get friendName => side == Side.a ? nameB : nameA;
 
-  HisabLog? get log => HisabLog.fromJson(id, snapshot);
+  LedgerLog? get log => LedgerLog.fromJson(id, snapshot);
 
   LocalLog copyWith({
     Side? side,
@@ -77,15 +77,15 @@ class LocalLog {
 }
 
 /// The logs on this phone, newest first, in shared preferences.
-class HisabStore extends ChangeNotifier {
-  HisabStore(this._p);
+class LedgerStore extends ChangeNotifier {
+  LedgerStore(this._p);
   final SharedPreferences _p;
 
-  static const _key = 'hisab_logs_v1';
-  static const _nameKey = 'hisab_my_name';
+  static const _key = 'ledger_logs_v1';
+  static const _nameKey = 'ledger_my_name';
 
-  static Future<HisabStore> load() async =>
-      HisabStore(await SharedPreferences.getInstance());
+  static Future<LedgerStore> load() async =>
+      LedgerStore(await SharedPreferences.getInstance());
 
   List<LocalLog> all() {
     final raw = _p.getString(_key);
@@ -130,7 +130,7 @@ class HisabStore extends ChangeNotifier {
       _save(all()..removeWhere((l) => l.id == id));
 
   /// Remembers the latest cloud copy of a log.
-  Future<void> remember(String id, Side side, HisabLog log) {
+  Future<void> remember(String id, Side side, LedgerLog log) {
     final old = byId(id);
     return put(LocalLog(
       id: id,

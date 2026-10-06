@@ -1,15 +1,15 @@
 # Expense Tracker
 
 Offline daily expense tracker with budget, insights and CSV export, plus
-**Hisab**: a money log shared with a friend.
+**Friends**: a shared money ledger shared with a friend.
 
 See the repository README for build and release steps.
 
-## Hisab with friends
+## Shared ledgers with friends
 
-The Hisab tab keeps track of money lent and borrowed between two friends.
+The Friends tab keeps track of money lent and borrowed between two friends.
 
-- **Start a hisab** with your name and your friend's. You get an 8 letter code
+- **Start a shared ledger** with your name and your friend's. You get an 8 letter code
   (like `ABCD-2345`) to share.
 - **Join with a code** on any number of phones; each phone says which of the
   two friends it belongs to, so both friends can use several phones.
@@ -21,17 +21,17 @@ The Hisab tab keeps track of money lent and borrowed between two friends.
   show the same result from their own side.
 - **Reset code** replaces the join code; members, entries and confirmations
   stay.
-- **Clearing**: one friend confirms the final amount, the other confirms the
-  same amount, and the hisab is cleared. Any change in between cancels the
-  confirmations. A cleared hisab is read-only for 14 days (it can be reopened,
+- **Settle up**: one friend confirms the final amount, the other confirms the
+  same amount, and the ledger is settled. Any change in between cancels the
+  confirmations. A settled ledger is read-only for 14 days (it can be reopened,
   with a new code), then deleted from Firebase. Each phone keeps its own copy.
 
-Code: `lib/hisab/` (`model.dart` holds the math and every database write;
+Code: `lib/ledger/` (`model.dart` holds the math and every database write;
 `service.dart` the flows; `backend.dart` Firebase; `memory_backend.dart` an
 in-memory database for tests).
 
 Data lives in the `dice-dhamaal` Firebase project (Realtime Database,
-anonymous sign-in), under `hisab/`, `hisabCodes/` and `hisabGc/`. The rules
+anonymous sign-in), under `ledger/`, `ledgerCodes/` and `ledgerGc/`. The rules
 are in `firebase/database.rules.json` and tested by `firebase/tests`.
 
 The app currently signs in with the Video Player's Firebase app id. To give

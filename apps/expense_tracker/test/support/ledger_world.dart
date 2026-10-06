@@ -1,25 +1,25 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:expense_tracker/hisab/memory_backend.dart';
-import 'package:expense_tracker/hisab/model.dart';
-import 'package:expense_tracker/hisab/service.dart';
-import 'package:expense_tracker/hisab/store.dart';
+import 'package:expense_tracker/ledger/memory_backend.dart';
+import 'package:expense_tracker/ledger/model.dart';
+import 'package:expense_tracker/ledger/service.dart';
+import 'package:expense_tracker/ledger/store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// One phone: its own user id, its own saved list, the shared database.
 class Phone {
   Phone(this.service, this.uid);
-  final HisabService service;
+  final LedgerService service;
   final String uid;
 
-  HisabStore get store => service.store;
+  LedgerStore get store => service.store;
 
   /// The log as this phone reads it from the cloud right now.
-  Future<HisabLog?> read(String id) async =>
-      HisabLog.fromJson(id, await service.backend.get(HisabWrites.logPath(id)));
+  Future<LedgerLog?> read(String id) async => LedgerLog.fromJson(
+      id, await service.backend.get(LedgerWrites.logPath(id)));
 
-  Future<HisabLog> log(String id) async => (await read(id))!;
+  Future<LedgerLog> log(String id) async => (await read(id))!;
 
   Side side(String id) => store.byId(id)!.side;
 }
@@ -38,10 +38,10 @@ class World {
   Future<Phone> phone(String uid) async {
     final prefs = _FakePrefs();
     return Phone(
-        HisabService(MemoryHisabBackend(db, uid), HisabStore(prefs)), uid);
+        LedgerService(MemoryLedgerBackend(db, uid), LedgerStore(prefs)), uid);
   }
 
-  /// Rahul starts a hisab with Amit; Amit joins on his phone.
+  /// Rahul starts a ledger with Amit; Amit joins on his phone.
   Future<(Phone, Phone, String, String)> pair(
       {String a = 'Rahul', String b = 'Amit'}) async {
     final pa = await phone('uid-$a');
@@ -55,7 +55,7 @@ class World {
 }
 
 /// Adds an entry from [phone] and returns it.
-Future<HisabEntry> add(Phone phone, String id, int amount,
+Future<LedgerEntry> add(Phone phone, String id, int amount,
     {required bool iGave,
     String tag = '',
     String note = '',
@@ -81,9 +81,9 @@ int refNetForA(List<(int, Side)> entries) {
   return n;
 }
 
-HisabEntry randomEntry(Random r, int i) {
+LedgerEntry randomEntry(Random r, int i) {
   const amounts = [1, 99, 100, 5000, 12345, 99999, 100000, 2500000];
-  return HisabEntry(
+  return LedgerEntry(
     id: 'e${i.toString().padLeft(4, '0')}',
     amount: r.nextBool()
         ? amounts[r.nextInt(amounts.length)]

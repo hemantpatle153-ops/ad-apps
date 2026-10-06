@@ -4,13 +4,13 @@ import 'backend.dart';
 import 'model.dart';
 import 'store.dart';
 
-/// Everything the hisab screens do, on top of a [HisabBackend] (the cloud)
-/// and a [HisabStore] (this phone's list and copies).
-class HisabService {
-  HisabService(this.backend, this.store);
+/// Everything the ledger screens do, on top of a [LedgerBackend] (the cloud)
+/// and a [LedgerStore] (this phone's list and copies).
+class LedgerService {
+  LedgerService(this.backend, this.store);
 
-  final HisabBackend backend;
-  final HisabStore store;
+  final LedgerBackend backend;
+  final LedgerStore store;
 
   Future<String> uid() => backend.signIn();
 
@@ -20,12 +20,12 @@ class HisabService {
   Future<LocalLog> create(String myName, String friendName) async {
     final me = cleanName(myName), friend = cleanName(friendName);
     if (me.isEmpty || friend.isEmpty) {
-      throw const HisabException('Enter both names.');
+      throw const LedgerException('Enter both names.');
     }
     final uid = await backend.signIn();
     final id = backend.newKey();
     final code = await _freeCode();
-    await backend.update(HisabWrites.create(
+    await backend.update(LedgerWrites.create(
         id: id, code: code, uid: uid, myName: me, friendName: friend));
     store.myName = me;
     final local = LocalLog(id: id, side: Side.a, nameA: me, nameB: friend);
@@ -36,21 +36,21 @@ class HisabService {
   Future<String> _freeCode() async {
     for (var i = 0; i < 6; i++) {
       final code = newJoinCode();
-      if (await backend.get(HisabWrites.codePath(code)) == null) return code;
+      if (await backend.get(LedgerWrites.codePath(code)) == null) return code;
     }
-    throw HisabException.offline;
+    throw LedgerException.offline;
   }
 
   /// What a typed code points at.
   Future<CodeInfo> lookup(String rawCode) async {
     final code = normalizeJoinCode(rawCode);
     if (code == null) {
-      throw const HisabException(
+      throw const LedgerException(
           'A code has 8 letters and digits, like ABCD-2345.');
     }
     final info =
-        CodeInfo.fromJson(await backend.get(HisabWrites.codePath(code)));
-    if (info == null) throw HisabException.notFound;
+        CodeInfo.fromJson(await backend.get(LedgerWrites.codePath(code)));
+    if (info == null) throw LedgerException.notFound;
     return info;
   }
 
@@ -59,8 +59,8 @@ class HisabService {
   Future<LocalLog> join(String rawCode, CodeInfo info, Side side) async {
     final code = normalizeJoinCode(rawCode)!;
     final uid = await backend.signIn();
-    await backend
-        .update(HisabWrites.join(info: info, code: code, uid: uid, side: side));
+    await backend.update(
+        LedgerWrites.join(info: info, code: code, uid: uid, side: side));
     store.myName = info.nameOf(side);
     final local =
         LocalLog(id: info.id, side: side, nameA: info.nameA, nameB: info.nameB);
@@ -75,9 +75,9 @@ class HisabService {
   /// The live log. Each version is also saved on the phone. When the cloud
   /// copy disappears, the phone's last copy is marked archived and this
   /// emits null.
-  Stream<HisabLog?> watch(String id) =>
-      backend.watch(HisabWrites.logPath(id)).asyncMap((raw) async {
-        final log = HisabLog.fromJson(id, raw);
+  Stream<LedgerLog?> watch(String id) =>
+      backend.watch(LedgerWrites.logPath(id)).asyncMap((raw) async {
+        final log = LedgerLog.fromJson(id, raw);
         final local = store.byId(id);
         if (log == null) {
           if (local != null && !local.archived) {
@@ -91,20 +91,20 @@ class HisabService {
               log.approvedBy(Side.b) &&
               !log.isSettled) {
             unawaited(
-                backend.update(HisabWrites.finalize(log)).catchError((_) {}));
+                backend.update(LedgerWrites.finalize(log)).catchError((_) {}));
           }
         }
         return log;
       });
 
-  HisabEntry newEntry({
+  LedgerEntry newEntry({
     required int amount,
     required Side by,
     required DateTime date,
     String tag = '',
     String note = '',
   }) =>
-      HisabEntry(
+      LedgerEntry(
         id: backend.newKey(),
         amount: amount,
         by: by,
@@ -113,61 +113,61 @@ class HisabService {
         note: cleanText(note, maxNoteLength),
       );
 
-  Future<void> saveEntry(HisabLog log, Side me, HisabEntry e,
+  Future<void> saveEntry(LedgerLog log, Side me, LedgerEntry e,
       {required bool isNew}) async {
     _checkOpen(log);
     if (e.amount <= 0 || e.amount > maxEntryAmount) {
-      throw const HisabException('Enter an amount up to ₹1,000 crore.');
+      throw const LedgerException('Enter an amount up to ₹1,000 crore.');
     }
-    await backend.update(HisabWrites.saveEntry(log, e, me, isNew: isNew));
+    await backend.update(LedgerWrites.saveEntry(log, e, me, isNew: isNew));
   }
 
-  Future<void> deleteEntry(HisabLog log, String entryId) async {
+  Future<void> deleteEntry(LedgerLog log, String entryId) async {
     _checkOpen(log);
-    await backend.update(HisabWrites.deleteEntry(log, entryId));
+    await backend.update(LedgerWrites.deleteEntry(log, entryId));
   }
 
-  void _checkOpen(HisabLog log) {
+  void _checkOpen(LedgerLog log) {
     if (!log.editable) {
-      throw const HisabException(
-          'This hisab is cleared. Reopen it to change entries.');
+      throw const LedgerException(
+          'This ledger is settled. Reopen it to change entries.');
     }
   }
 
-  /// "The hisab is right." Clears it when my friend already agreed.
-  Future<void> approve(HisabLog log, Side me) async {
+  /// "The ledger is right." Clears it when my friend already agreed.
+  Future<void> approve(LedgerLog log, Side me) async {
     _checkOpen(log);
     if (log.entries.isEmpty) {
-      throw const HisabException('Add an entry first.');
+      throw const LedgerException('Add an entry first.');
     }
-    await backend.update(HisabWrites.approve(log, me));
+    await backend.update(LedgerWrites.approve(log, me));
   }
 
-  Future<void> withdraw(HisabLog log, Side me) =>
-      backend.update(HisabWrites.withdraw(log, me));
+  Future<void> withdraw(LedgerLog log, Side me) =>
+      backend.update(LedgerWrites.withdraw(log, me));
 
-  Future<String> reopen(HisabLog log) async {
+  Future<String> reopen(LedgerLog log) async {
     if (!log.isSettled) return log.code;
     final code = await _freeCode();
-    await backend.update(HisabWrites.reopen(log, code));
+    await backend.update(LedgerWrites.reopen(log, code));
     return code;
   }
 
   /// A new join code for the same log; nobody is removed.
-  Future<String> resetCode(HisabLog log) async {
+  Future<String> resetCode(LedgerLog log) async {
     if (log.isSettled) {
-      throw const HisabException(
-          'A cleared hisab has no code. Reopen it to get a new one.');
+      throw const LedgerException(
+          'A settled ledger has no code. Reopen it to get a new one.');
     }
     final code = await _freeCode();
-    await backend.update(HisabWrites.resetCode(log, code));
+    await backend.update(LedgerWrites.resetCode(log, code));
     return code;
   }
 
-  Future<void> rename(HisabLog log, Side side, String name) async {
+  Future<void> rename(LedgerLog log, Side side, String name) async {
     final n = cleanName(name);
-    if (n.isEmpty) throw const HisabException('Enter a name.');
-    await backend.update(HisabWrites.rename(log, side, n));
+    if (n.isEmpty) throw const LedgerException('Enter a name.');
+    await backend.update(LedgerWrites.rename(log, side, n));
     final local = store.byId(log.id);
     if (local != null) {
       await store.put(
@@ -179,7 +179,7 @@ class HisabService {
   /// wrong pick when joining).
   Future<void> switchSide(LocalLog local, Side side) async {
     final uid = await backend.signIn();
-    await backend.update(HisabWrites.switchSide(local.id, uid, side));
+    await backend.update(LedgerWrites.switchSide(local.id, uid, side));
     await store.put(local.copyWith(side: side));
   }
 
@@ -188,19 +188,19 @@ class HisabService {
   Future<void> leave(LocalLog local) async {
     if (!local.archived) {
       final uid = await backend.signIn();
-      await backend.update(HisabWrites.leave(local.id, uid));
+      await backend.update(LedgerWrites.leave(local.id, uid));
     }
     await store.remove(local.id);
   }
 
   /// Deletes a log with no entries from the cloud, for both friends.
-  Future<void> deleteEmpty(HisabLog log) async {
+  Future<void> deleteEmpty(LedgerLog log) async {
     if (log.entries.isNotEmpty) {
-      throw const HisabException(
-          'Only an empty hisab can be deleted. Clear it with your friend '
-          'instead; it is deleted $settledKeepDays days later.');
+      throw const LedgerException(
+          'Only an empty ledger can be deleted. Settle up with your friend '
+          'instead; it is removed $settledKeepDays days later.');
     }
-    await backend.update(HisabWrites.delete(log.id, log.code));
+    await backend.update(LedgerWrites.delete(log.id, log.code));
     await store.remove(log.id);
   }
 
@@ -214,7 +214,7 @@ class HisabService {
       for (final local in store.all()) {
         final log = local.log;
         if (local.archived || log == null || !log.isExpired(now)) continue;
-        await backend.update(HisabWrites.delete(log.id, log.code));
+        await backend.update(LedgerWrites.delete(log.id, log.code));
         await store.put(local.copyWith(archived: true));
         deleted++;
       }
@@ -222,7 +222,7 @@ class HisabService {
       final old =
           await backend.expired(now - settledKeep.inMilliseconds - 60000);
       for (final id in old) {
-        await backend.update(HisabWrites.delete(id, ''));
+        await backend.update(LedgerWrites.delete(id, ''));
         deleted++;
       }
     } catch (_) {

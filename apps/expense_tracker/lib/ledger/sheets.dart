@@ -16,28 +16,29 @@ Color comingColor(BuildContext context) =>
 Color goingColor(BuildContext context) => Theme.of(context).colorScheme.error;
 
 /// Runs [action]; a problem shows as a snackbar. True when it worked.
-Future<bool> runHisab(BuildContext context, Future<void> Function() action,
+Future<bool> runLedger(BuildContext context, Future<void> Function() action,
     {String? done}) async {
   final messenger = ScaffoldMessenger.maybeOf(context);
   try {
     await action();
     if (done != null) messenger?.showSnackBar(SnackBar(content: Text(done)));
     return true;
-  } on HisabException catch (e) {
+  } on LedgerException catch (e) {
     messenger?.showSnackBar(SnackBar(content: Text(e.message)));
   } catch (_) {
-    messenger
-        ?.showSnackBar(SnackBar(content: Text(HisabException.offline.message)));
+    messenger?.showSnackBar(
+        SnackBar(content: Text(LedgerException.offline.message)));
   }
   return false;
 }
 
-String inviteText(HisabLog log, Side me) =>
-    '${log.nameOf(me)} invited you to share a hisab in Daily Expense Tracker. '
-    'Open Hisab, tap Join with code and enter ${prettyCode(log.code)}';
+String inviteText(LedgerLog log, Side me) =>
+    '${log.nameOf(me)} invited you to a shared ledger in Daily Expense Tracker. '
+    'Open the Friends tab, tap Join with code and enter ${prettyCode(log.code)}';
 
-/// Start a new hisab: my name and my friend's. Returns the new log.
-Future<LocalLog?> showCreateSheet(BuildContext context, HisabService service) =>
+/// Start a new ledger: my name and my friend's. Returns the new log.
+Future<LocalLog?> showCreateSheet(
+        BuildContext context, LedgerService service) =>
     showModalBottomSheet<LocalLog>(
       context: context,
       isScrollControlled: true,
@@ -47,7 +48,7 @@ Future<LocalLog?> showCreateSheet(BuildContext context, HisabService service) =>
 
 class _CreateSheet extends StatefulWidget {
   const _CreateSheet({required this.service});
-  final HisabService service;
+  final LedgerService service;
 
   @override
   State<_CreateSheet> createState() => _CreateSheetState();
@@ -78,10 +79,10 @@ class _CreateSheetState extends State<_CreateSheet> {
     try {
       final log = await widget.service.create(_me.text, _friend.text);
       if (mounted) Navigator.pop(context, log);
-    } on HisabException catch (e) {
+    } on LedgerException catch (e) {
       if (mounted) setState(() => _error = e.message);
     } catch (_) {
-      if (mounted) setState(() => _error = HisabException.offline.message);
+      if (mounted) setState(() => _error = LedgerException.offline.message);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -97,7 +98,7 @@ class _CreateSheetState extends State<_CreateSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Start a hisab',
+            Text('Start a shared ledger',
                 style: Theme.of(context).textTheme.titleLarge),
             const SizedBox(height: 4),
             const Text('You get a code to share. Your friend joins with it, '
@@ -138,7 +139,7 @@ class _CreateSheetState extends State<_CreateSheet> {
                       dimension: 18,
                       child: CircularProgressIndicator(strokeWidth: 2))
                   : const Icon(Icons.handshake_outlined),
-              label: const Text('Create hisab'),
+              label: const Text('Create ledger'),
             ),
           ],
         ),
@@ -148,7 +149,7 @@ class _CreateSheetState extends State<_CreateSheet> {
 }
 
 /// Join with a code: type or paste it, then pick which friend I am.
-Future<LocalLog?> showJoinSheet(BuildContext context, HisabService service,
+Future<LocalLog?> showJoinSheet(BuildContext context, LedgerService service,
         {String? code}) =>
     showModalBottomSheet<LocalLog>(
       context: context,
@@ -159,7 +160,7 @@ Future<LocalLog?> showJoinSheet(BuildContext context, HisabService service,
 
 class _JoinSheet extends StatefulWidget {
   const _JoinSheet({required this.service, this.code});
-  final HisabService service;
+  final LedgerService service;
   final String? code;
 
   @override
@@ -192,10 +193,10 @@ class _JoinSheetState extends State<_JoinSheet> {
     });
     try {
       await step();
-    } on HisabException catch (e) {
+    } on LedgerException catch (e) {
       if (mounted) setState(() => _error = e.message);
     } catch (_) {
-      if (mounted) setState(() => _error = HisabException.offline.message);
+      if (mounted) setState(() => _error = LedgerException.offline.message);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -233,7 +234,7 @@ class _JoinSheetState extends State<_JoinSheet> {
           children: [
             Text('Join with a code', style: theme.textTheme.titleLarge),
             const SizedBox(height: 4),
-            const Text('Ask your friend for the code of your hisab. It works '
+            const Text('Ask your friend for the ledger code. It works '
                 'on as many phones as you like.'),
             const SizedBox(height: 16),
             TextField(
@@ -261,7 +262,7 @@ class _JoinSheetState extends State<_JoinSheet> {
             ),
             if (info != null) ...[
               const SizedBox(height: 16),
-              Text('Hisab between ${info.nameA} and ${info.nameB}',
+              Text('Ledger between ${info.nameA} and ${info.nameB}',
                   style: theme.textTheme.titleMedium),
               const SizedBox(height: 4),
               const Text('Which one are you?'),
@@ -296,7 +297,7 @@ class _JoinSheetState extends State<_JoinSheet> {
                       child: CircularProgressIndicator(strokeWidth: 2))
                   : Icon(info == null ? Icons.search : Icons.login),
               label: Text(info == null
-                  ? 'Find hisab'
+                  ? 'Find ledger'
                   : 'Join as ${info.nameOf(_side)}'),
             ),
           ],
@@ -309,7 +310,7 @@ class _JoinSheetState extends State<_JoinSheet> {
 /// What the entry editor returns.
 class EntryResult {
   const EntryResult(this.entry, {this.isNew = false, this.isDelete = false});
-  final HisabEntry entry;
+  final LedgerEntry entry;
   final bool isNew;
   final bool isDelete;
 }
@@ -317,11 +318,11 @@ class EntryResult {
 /// Add or edit one entry. [by] presets who paid for a new one.
 Future<EntryResult?> showEntryEditor(
   BuildContext context, {
-  required HisabService service,
+  required LedgerService service,
   required Settings settings,
-  required HisabLog log,
+  required LedgerLog log,
   required Side me,
-  HisabEntry? existing,
+  LedgerEntry? existing,
   Side? by,
 }) =>
     showModalBottomSheet<EntryResult>(
@@ -347,12 +348,12 @@ class _EntryEditor extends StatefulWidget {
     required this.by,
     this.existing,
   });
-  final HisabService service;
+  final LedgerService service;
   final Settings settings;
-  final HisabLog log;
+  final LedgerLog log;
   final Side me;
   final Side by;
-  final HisabEntry? existing;
+  final LedgerEntry? existing;
 
   @override
   State<_EntryEditor> createState() => _EntryEditorState();
@@ -471,9 +472,7 @@ class _EntryEditorState extends State<_EntryEditor> {
             ),
             const SizedBox(height: 6),
             Text(
-              iPaid
-                  ? '$friend will give this back to you'
-                  : 'You will give this back to $friend',
+              iPaid ? '$friend owes you this' : 'You owe $friend this',
               style: theme.textTheme.bodyMedium?.copyWith(color: color),
             ),
             const SizedBox(height: 12),
@@ -572,7 +571,7 @@ String _ms(BuildContext context, int ms) => MaterialLocalizations.of(context)
     .formatMediumDate(DateTime.fromMillisecondsSinceEpoch(ms));
 
 /// "Added by Rahul on 6 Oct 2026 · Edited by Amit on 7 Oct 2026".
-String entryHistory(BuildContext context, HisabLog log, HisabEntry e) {
+String entryHistory(BuildContext context, LedgerLog log, LedgerEntry e) {
   final parts = <String>[];
   if (e.createdAt > 0) {
     parts.add(e.createdBy == null
@@ -589,8 +588,8 @@ String entryHistory(BuildContext context, HisabLog log, HisabEntry e) {
 
 /// The code, who is in, and reset.
 Future<void> showCodeSheet(BuildContext context,
-        {required HisabService service,
-        required HisabLog log,
+        {required LedgerService service,
+        required LedgerLog log,
         required LocalLog local}) =>
     showModalBottomSheet<void>(
       context: context,
@@ -602,8 +601,8 @@ Future<void> showCodeSheet(BuildContext context,
 class _CodeSheet extends StatefulWidget {
   const _CodeSheet(
       {required this.service, required this.log, required this.local});
-  final HisabService service;
-  final HisabLog log;
+  final LedgerService service;
+  final LedgerLog log;
   final LocalLog local;
 
   @override
@@ -621,7 +620,7 @@ class _CodeSheetState extends State<_CodeSheet> {
         title: const Text('Reset the code?'),
         content: const Text(
             'The old code stops working for new phones. Phones already in '
-            'this hisab stay in, and no entries are lost.'),
+            'this ledger stay in, and no entries are lost.'),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
@@ -634,8 +633,8 @@ class _CodeSheetState extends State<_CodeSheet> {
     );
     if (ok != true || !mounted) return;
     setState(() => _busy = true);
-    await runHisab(context, () async {
-      final log = HisabLog(
+    await runLedger(context, () async {
+      final log = LedgerLog(
         id: widget.log.id,
         nameA: widget.log.nameA,
         nameB: widget.log.nameB,
@@ -664,7 +663,7 @@ class _CodeSheetState extends State<_CodeSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Hisab code', style: theme.textTheme.titleLarge),
+          Text('Ledger code', style: theme.textTheme.titleLarge),
           const SizedBox(height: 4),
           Text('${log.nameOf(me.other)} joins with this code. It works on any '
               'number of phones and stays the same until you reset it.'),
@@ -706,7 +705,7 @@ class _CodeSheetState extends State<_CodeSheet> {
                 child: FilledButton.icon(
                   onPressed: () => SharePlus.instance.share(ShareParams(
                       text: inviteText(
-                          HisabLog(
+                          LedgerLog(
                               id: log.id,
                               nameA: log.nameA,
                               nameB: log.nameB,

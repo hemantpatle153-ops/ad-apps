@@ -1,12 +1,12 @@
 import 'package:expense_tracker/data.dart';
-import 'package:expense_tracker/hisab/hisab_home.dart';
-import 'package:expense_tracker/hisab/hisab_screen.dart';
-import 'package:expense_tracker/hisab/model.dart';
+import 'package:expense_tracker/ledger/ledger_home.dart';
+import 'package:expense_tracker/ledger/ledger_screen.dart';
+import 'package:expense_tracker/ledger/model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'support/hisab_world.dart';
+import 'support/ledger_world.dart';
 
 Future<Settings> rupees() async {
   SharedPreferences.setMockInitialValues({'currency': '₹'});
@@ -22,14 +22,14 @@ void bigScreen(WidgetTester t) {
 Future<void> pumpScreen(WidgetTester t, Phone p, String id, Settings s) async {
   bigScreen(t);
   await t.pumpWidget(
-      MaterialApp(home: HisabScreen(service: p.service, settings: s, id: id)));
+      MaterialApp(home: LedgerScreen(service: p.service, settings: s, id: id)));
   await t.pumpAndSettle();
 }
 
 Future<void> pumpHome(WidgetTester t, Phone p, Settings s) async {
   bigScreen(t);
   await t.pumpWidget(MaterialApp(
-      home: Scaffold(body: HisabHome(service: p.service, settings: s))));
+      home: Scaffold(body: LedgerHome(service: p.service, settings: s))));
   await t.pumpAndSettle();
 }
 
@@ -42,25 +42,25 @@ void main() {
     final w = await World.create();
     final p = await w.phone('me');
     await pumpHome(t, p, s);
-    expect(find.text('Hisab with friends'), findsOneWidget);
-    expect(find.byKey(const Key('start-hisab')), findsOneWidget);
-    expect(find.byKey(const Key('join-hisab')), findsOneWidget);
+    expect(find.text('Track money with friends'), findsOneWidget);
+    expect(find.byKey(const Key('start-ledger')), findsOneWidget);
+    expect(find.byKey(const Key('join-ledger')), findsOneWidget);
   });
 
-  testWidgets('start a hisab, then the code is shown to share', (t) async {
+  testWidgets('start a ledger, then the code is shown to share', (t) async {
     final s = await rupees();
     final w = await World.create();
     final p = await w.phone('me');
     await pumpHome(t, p, s);
-    await t.tap(find.byKey(const Key('start-hisab')));
+    await t.tap(find.byKey(const Key('start-ledger')));
     await t.pumpAndSettle();
     await t.enterText(find.byKey(const Key('create-me')), 'Rahul');
     await t.enterText(find.byKey(const Key('create-friend')), 'Amit');
-    await t.tap(find.text('Create hisab'));
+    await t.tap(find.text('Create ledger'));
     await t.pumpAndSettle();
     final local = p.store.all().single;
     final code = (await p.log(local.id)).code;
-    expect(find.text('Hisab code'), findsOneWidget);
+    expect(find.text('Ledger code'), findsOneWidget);
     expect(find.text(prettyCode(code)), findsOneWidget);
     expect(find.text('Rahul: 1 phone'), findsOneWidget);
     expect(find.text('Amit: 0 phones'), findsOneWidget);
@@ -71,10 +71,10 @@ void main() {
     final w = await World.create();
     final p = await w.phone('me');
     await pumpHome(t, p, s);
-    await t.tap(find.byKey(const Key('start-hisab')));
+    await t.tap(find.byKey(const Key('start-ledger')));
     await t.pumpAndSettle();
     await t.enterText(find.byKey(const Key('create-me')), 'Rahul');
-    await t.tap(find.text('Create hisab'));
+    await t.tap(find.text('Create ledger'));
     await t.pumpAndSettle();
     expect(find.text('Enter both names'), findsOneWidget);
     expect(p.store.all(), isEmpty);
@@ -88,20 +88,20 @@ void main() {
     final code = (await pa.log(local.id)).code;
     final pb = await w.phone('uid-Amit');
     await pumpHome(t, pb, s);
-    await t.tap(find.byKey(const Key('join-hisab')));
+    await t.tap(find.byKey(const Key('join-ledger')));
     await t.pumpAndSettle();
     await t.enterText(
         find.byKey(const Key('join-code')), prettyCode(code).toLowerCase());
-    await t.tap(find.text('Find hisab'));
+    await t.tap(find.text('Find ledger'));
     await t.pumpAndSettle();
-    expect(find.text('Hisab between Rahul and Amit'), findsOneWidget);
+    expect(find.text('Ledger between Rahul and Amit'), findsOneWidget);
     expect(find.text('Join as Amit'), findsOneWidget);
     await t.tap(find.text('Join as Amit'));
     await t.pumpAndSettle();
     expect(pb.side(local.id), Side.b);
     // Opened the log from Amit's side.
     expect(find.text('Rahul'), findsWidgets);
-    expect(resultText(t), 'All clear');
+    expect(resultText(t), 'All settled');
   });
 
   testWidgets('wrong code shows a message', (t) async {
@@ -109,12 +109,12 @@ void main() {
     final w = await World.create();
     final p = await w.phone('me');
     await pumpHome(t, p, s);
-    await t.tap(find.byKey(const Key('join-hisab')));
+    await t.tap(find.byKey(const Key('join-ledger')));
     await t.pumpAndSettle();
     await t.enterText(find.byKey(const Key('join-code')), 'ABCD2345');
-    await t.tap(find.text('Find hisab'));
+    await t.tap(find.text('Find ledger'));
     await t.pumpAndSettle();
-    expect(find.textContaining('No hisab with that code'), findsOneWidget);
+    expect(find.textContaining('No ledger with that code'), findsOneWidget);
   });
 
   testWidgets('both phones show the result from their own side', (t) async {
@@ -124,14 +124,14 @@ void main() {
     await add(pa, id, 50000, iGave: true, tag: 'Loan');
     await add(pb, id, 20000, iGave: true, tag: 'Food');
     await pumpScreen(t, pa, id, s);
-    expect(resultText(t), 'Amit will give you ₹300');
-    expect(find.text('Amit will give me'), findsOneWidget);
+    expect(resultText(t), 'Amit owes you ₹300');
+    expect(find.text('Amit owes me'), findsOneWidget);
     expect(find.text('₹500'), findsOneWidget);
     expect(find.text('− ₹200'), findsOneWidget);
-    expect(find.text('Amit gives Rahul'), findsOneWidget);
+    expect(find.text('Amit pays Rahul'), findsOneWidget);
     await pumpScreen(t, pb, id, s);
-    expect(resultText(t), 'You will give Rahul ₹300');
-    expect(find.text('Amit gives Rahul'), findsOneWidget);
+    expect(resultText(t), 'You owe Rahul ₹300');
+    expect(find.text('Amit pays Rahul'), findsOneWidget);
   });
 
   testWidgets('add an entry with the I gave button', (t) async {
@@ -141,13 +141,13 @@ void main() {
     await pumpScreen(t, pa, id, s);
     await t.tap(find.byKey(const Key('add-i-gave')));
     await t.pumpAndSettle();
-    expect(find.text('Amit will give this back to you'), findsOneWidget);
+    expect(find.text('Amit owes you this'), findsOneWidget);
     await t.enterText(find.byKey(const Key('entry-amount')), '250');
     await t.tap(find.widgetWithText(ChoiceChip, 'Food'));
     await t.enterText(find.byKey(const Key('entry-note')), 'Biryani');
     await t.tap(find.text('Save'));
     await t.pumpAndSettle();
-    expect(resultText(t), 'Amit will give you ₹250');
+    expect(resultText(t), 'Amit owes you ₹250');
     expect(find.text('Biryani'), findsOneWidget);
     final e = (await pb.log(id)).entries.single;
     expect(e.amount, 25000);
@@ -162,12 +162,12 @@ void main() {
     await pumpScreen(t, pa, id, s);
     await t.tap(find.byKey(const Key('add-they-gave')));
     await t.pumpAndSettle();
-    expect(find.text('You will give this back to Amit'), findsOneWidget);
+    expect(find.text('You owe Amit this'), findsOneWidget);
     await t.enterText(find.byKey(const Key('entry-amount')), '99.50');
     await t.enterText(find.byKey(const Key('entry-tag')), 'Cricket kit');
     await t.tap(find.text('Save'));
     await t.pumpAndSettle();
-    expect(resultText(t), 'You will give Amit ₹99.50');
+    expect(resultText(t), 'You owe Amit ₹99.50');
     expect((await pa.log(id)).entries.single.tag, 'Cricket kit');
   });
 
@@ -209,16 +209,16 @@ void main() {
     await pumpScreen(t, pa, id, s);
     expect(find.text('Lent cash'), findsOneWidget);
     expect(find.text('Paid my tea'), findsOneWidget);
-    await t.tap(find.text('Amit gives (1)'));
+    await t.tap(find.text('Amit owes (1)'));
     await t.pumpAndSettle();
     expect(find.text('Lent cash'), findsOneWidget);
     expect(find.text('Paid my tea'), findsNothing);
-    expect(find.text('Amit will give you ₹10 in total'), findsOneWidget);
-    await t.tap(find.text('I give (1)'));
+    expect(find.text('Amit owes you ₹10 in total'), findsOneWidget);
+    await t.tap(find.text('I owe (1)'));
     await t.pumpAndSettle();
     expect(find.text('Lent cash'), findsNothing);
     expect(find.text('Paid my tea'), findsOneWidget);
-    expect(find.text('You will give Amit ₹3 in total'), findsOneWidget);
+    expect(find.text('You owe Amit ₹3 in total'), findsOneWidget);
   });
 
   testWidgets('clearing needs both: ask, confirm, then read-only', (t) async {
@@ -232,17 +232,17 @@ void main() {
     expect(find.textContaining('Waiting for Amit to confirm'), findsOneWidget);
 
     await pumpScreen(t, pb, id, s);
-    expect(find.textContaining('Rahul confirmed the hisab'), findsOneWidget);
+    expect(find.textContaining('Rahul wants to settle up'), findsOneWidget);
     await t.tap(find.byKey(const Key('confirm-settle')));
     await t.pumpAndSettle();
-    expect(find.textContaining('Hisab cleared on'), findsOneWidget);
+    expect(find.textContaining('Settled on'), findsOneWidget);
     expect(find.textContaining('in 14 days'), findsOneWidget);
     expect(find.byKey(const Key('add-i-gave')), findsNothing);
     expect(find.text('Reopen'), findsOneWidget);
     expect((await pa.log(id)).isSettled, isTrue);
   });
 
-  testWidgets('reopen a cleared hisab', (t) async {
+  testWidgets('reopen a cleared ledger', (t) async {
     final s = await rupees();
     final w = await World.create();
     final (pa, pb, id, _) = await w.pair();
@@ -269,10 +269,10 @@ void main() {
     await t.pumpAndSettle();
     expect(find.textContaining('Saved on this phone only'), findsOneWidget);
     expect(find.text('Movie'), findsOneWidget);
-    expect(resultText(t), 'Amit will give you ₹5');
+    expect(resultText(t), 'Amit owes you ₹5');
   });
 
-  testWidgets('home lists hisabs with totals and status', (t) async {
+  testWidgets('home lists ledgers with totals and status', (t) async {
     final s = await rupees();
     final w = await World.create();
     final pa = await w.phone('uid-Rahul');
@@ -292,29 +292,29 @@ void main() {
       await pa.store.remember(l.id, Side.a, await pa.log(l.id));
     }
     await pumpHome(t, pa, s);
-    expect(find.text('Amit will give you ₹700'), findsOneWidget);
-    expect(find.text('You will give Neha ₹200'), findsOneWidget);
-    expect(find.text('Neha asks you to confirm'), findsOneWidget);
-    expect(find.text('₹700'), findsOneWidget); // friends will give you
-    expect(find.text('₹200'), findsOneWidget); // you will give friends
+    expect(find.text('Amit owes you ₹700'), findsOneWidget);
+    expect(find.text('You owe Neha ₹200'), findsOneWidget);
+    expect(find.text('Neha wants to settle up'), findsOneWidget);
+    expect(find.text('₹700'), findsOneWidget); // friends owe you
+    expect(find.text('₹200'), findsOneWidget); // you owe friends
   });
 
   testWidgets('result card for every sign', (t) async {
     final s = await rupees();
     for (final (entries, a, b) in [
-      (<HisabEntry>[], 'All clear', 'All clear'),
+      (<LedgerEntry>[], 'All settled', 'All settled'),
       (
-        [HisabEntry(id: '1', amount: 100, by: Side.a, date: DateTime(2026))],
-        'Amit will give you ₹1',
-        'You will give Rahul ₹1'
+        [LedgerEntry(id: '1', amount: 100, by: Side.a, date: DateTime(2026))],
+        'Amit owes you ₹1',
+        'You owe Rahul ₹1'
       ),
       (
-        [HisabEntry(id: '1', amount: 100, by: Side.b, date: DateTime(2026))],
-        'You will give Amit ₹1',
-        'Rahul will give you ₹1'
+        [LedgerEntry(id: '1', amount: 100, by: Side.b, date: DateTime(2026))],
+        'You owe Amit ₹1',
+        'Rahul owes you ₹1'
       ),
     ]) {
-      final log = HisabLog(
+      final log = LedgerLog(
           id: 'x', nameA: 'Rahul', nameB: 'Amit', code: '', entries: entries);
       for (final (side, want) in [(Side.a, a), (Side.b, b)]) {
         await t.pumpWidget(MaterialApp(

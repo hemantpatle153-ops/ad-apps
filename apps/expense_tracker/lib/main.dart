@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 import 'data.dart';
 import 'editor.dart';
-import 'hisab/backend.dart';
-import 'hisab/hisab_home.dart';
-import 'hisab/service.dart';
-import 'hisab/store.dart';
+import 'ledger/backend.dart';
+import 'ledger/ledger_home.dart';
+import 'ledger/service.dart';
+import 'ledger/store.dart';
 import 'insights.dart';
 import 'settings_screen.dart';
 
@@ -18,10 +18,11 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final db = await ExpenseDb.open();
   final settings = await Settings.load();
-  // Firebase starts only when the Hisab tab is used, so the app opens fast
+  // Firebase starts only when the Ledger tab is used, so the app opens fast
   // and works offline as before.
-  final hisab = HisabService(FirebaseHisabBackend(), await HisabStore.load());
-  runApp(ExpenseApp(db: db, settings: settings, hisab: hisab));
+  final ledger =
+      LedgerService(FirebaseLedgerBackend(), await LedgerStore.load());
+  runApp(ExpenseApp(db: db, settings: settings, ledger: ledger));
   // Consent and ads start after the first frame so the app opens instantly.
   AdService.instance.init(AdConfig.fromEnvironment());
 }
@@ -31,10 +32,10 @@ class ExpenseApp extends StatelessWidget {
       {super.key,
       required this.db,
       required this.settings,
-      required this.hisab});
+      required this.ledger});
   final ExpenseDb db;
   final Settings settings;
-  final HisabService hisab;
+  final LedgerService ledger;
 
   static const _seed = Color(0xFF2E7D32);
 
@@ -45,7 +46,7 @@ class ExpenseApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: buildTheme(_seed, Brightness.light),
       darkTheme: buildTheme(_seed, Brightness.dark),
-      home: HomeShell(db: db, settings: settings, hisab: hisab),
+      home: HomeShell(db: db, settings: settings, ledger: ledger),
     );
   }
 }
@@ -55,10 +56,10 @@ class HomeShell extends StatefulWidget {
       {super.key,
       required this.db,
       required this.settings,
-      required this.hisab});
+      required this.ledger});
   final ExpenseDb db;
   final Settings settings;
-  final HisabService hisab;
+  final LedgerService ledger;
 
   @override
   State<HomeShell> createState() => _HomeShellState();
@@ -100,13 +101,13 @@ class _HomeShellState extends State<HomeShell> {
         MaterialLocalizations.of(context).formatMonthYear(_month);
     final isCurrent = _month.year == DateTime.now().year &&
         _month.month == DateTime.now().month;
-    final hisabTab = _tab == 2;
+    final ledgerTab = _tab == 2;
     return ListenableBuilder(
-      listenable: Listenable.merge([s, widget.hisab.store]),
+      listenable: Listenable.merge([s, widget.ledger.store]),
       builder: (context, _) => Scaffold(
         appBar: AppBar(
-          title: hisabTab
-              ? const Text('Hisab with friends')
+          title: ledgerTab
+              ? const Text('Friends')
               : Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -134,8 +135,8 @@ class _HomeShellState extends State<HomeShell> {
             ),
           ],
         ),
-        body: hisabTab
-            ? HisabHome(service: widget.hisab, settings: s)
+        body: ledgerTab
+            ? LedgerHome(service: widget.ledger, settings: s)
             : FutureBuilder<List<Expense>>(
                 future: _items,
                 builder: (context, snap) {
@@ -155,12 +156,12 @@ class _HomeShellState extends State<HomeShell> {
                 icon: const Icon(Icons.add),
                 label: const Text('Add expense'),
               )
-            : hisabTab && widget.hisab.store.all().isNotEmpty
+            : ledgerTab && widget.ledger.store.all().isNotEmpty
                 ? FloatingActionButton.extended(
-                    key: const Key('new-hisab'),
-                    onPressed: () => startHisab(context, widget.hisab, s),
+                    key: const Key('new-ledger'),
+                    onPressed: () => startLedger(context, widget.ledger, s),
                     icon: const Icon(Icons.handshake_outlined),
-                    label: const Text('New hisab'),
+                    label: const Text('New ledger'),
                   )
                 : null,
         bottomNavigationBar: Column(
@@ -176,7 +177,7 @@ class _HomeShellState extends State<HomeShell> {
                 NavigationDestination(
                     icon: Icon(Icons.pie_chart_outline), label: 'Insights'),
                 NavigationDestination(
-                    icon: Icon(Icons.handshake_outlined), label: 'Hisab'),
+                    icon: Icon(Icons.handshake_outlined), label: 'Friends'),
               ],
             ),
           ],

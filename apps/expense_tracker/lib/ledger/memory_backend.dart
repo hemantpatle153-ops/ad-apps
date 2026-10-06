@@ -3,7 +3,7 @@ import 'dart:async';
 import 'backend.dart';
 import 'model.dart';
 
-/// A database kept in memory, shared by any number of [MemoryHisabBackend]
+/// A database kept in memory, shared by any number of [MemoryLedgerBackend]
 /// "phones". Used by tests and the widget previews. It applies the same
 /// read rule as the real database: a log is readable only by its members.
 class MemoryDatabase {
@@ -90,8 +90,8 @@ class MemoryDatabase {
 
   bool canRead(String path, String uid) {
     final parts = _parts(path);
-    if (parts.length >= 2 && parts[0] == 'hisab') {
-      final members = read('hisab/${parts[1]}/members');
+    if (parts.length >= 2 && parts[0] == 'ledger') {
+      final members = read('ledger/${parts[1]}/members');
       return members is Map && members.containsKey(uid);
     }
     return true;
@@ -103,13 +103,13 @@ class MemoryDatabase {
   }
 }
 
-class MemoryHisabBackend implements HisabBackend {
-  MemoryHisabBackend(this.db, this.uid);
+class MemoryLedgerBackend implements LedgerBackend {
+  MemoryLedgerBackend(this.db, this.uid);
   final MemoryDatabase db;
   final String uid;
 
   void _check() {
-    if (db.offline) throw HisabException.offline;
+    if (db.offline) throw LedgerException.offline;
   }
 
   @override
@@ -121,7 +121,7 @@ class MemoryHisabBackend implements HisabBackend {
   @override
   Future<void> update(Map<String, Object?> writes) async {
     _check();
-    if (db.reject?.call(writes, uid) ?? false) throw HisabException.denied;
+    if (db.reject?.call(writes, uid) ?? false) throw LedgerException.denied;
     db.apply(writes);
   }
 
@@ -163,7 +163,7 @@ class MemoryHisabBackend implements HisabBackend {
   @override
   Future<List<String>> expired(int beforeMs) async {
     _check();
-    final gc = db.read('hisabGc');
+    final gc = db.read('ledgerGc');
     if (gc is! Map) return [];
     final list = [
       for (final e in gc.entries)

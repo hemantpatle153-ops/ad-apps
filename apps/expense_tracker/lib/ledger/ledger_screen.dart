@@ -11,9 +11,9 @@ import 'store.dart';
 
 enum _Filter { theyGive, iGive, all }
 
-/// One hisab with a friend: the result, the two lists, and clearing it.
-class HisabScreen extends StatefulWidget {
-  const HisabScreen({
+/// One ledger with a friend: the result, the two lists, and clearing it.
+class LedgerScreen extends StatefulWidget {
+  const LedgerScreen({
     super.key,
     required this.service,
     required this.settings,
@@ -21,7 +21,7 @@ class HisabScreen extends StatefulWidget {
     this.showCode = false,
   });
 
-  final HisabService service;
+  final LedgerService service;
   final Settings settings;
   final String id;
 
@@ -29,12 +29,12 @@ class HisabScreen extends StatefulWidget {
   final bool showCode;
 
   @override
-  State<HisabScreen> createState() => _HisabScreenState();
+  State<LedgerScreen> createState() => _LedgerScreenState();
 }
 
-class _HisabScreenState extends State<HisabScreen> {
-  late final StreamSubscription<HisabLog?> _sub;
-  HisabLog? _log;
+class _LedgerScreenState extends State<LedgerScreen> {
+  late final StreamSubscription<LedgerLog?> _sub;
+  LedgerLog? _log;
 
   /// The cloud copy is gone (deleted, or this phone left).
   bool _gone = false;
@@ -42,7 +42,7 @@ class _HisabScreenState extends State<HisabScreen> {
   _Filter _filter = _Filter.all;
   bool _codeShown = false;
 
-  HisabService get _service => widget.service;
+  LedgerService get _service => widget.service;
   LocalLog? get _local => _service.store.byId(widget.id);
 
   @override
@@ -79,8 +79,8 @@ class _HisabScreenState extends State<HisabScreen> {
     super.dispose();
   }
 
-  Future<void> _edit(HisabLog log, Side me,
-      {HisabEntry? existing, Side? by}) async {
+  Future<void> _edit(LedgerLog log, Side me,
+      {LedgerEntry? existing, Side? by}) async {
     if (!log.editable || _gone) return;
     final r = await showEntryEditor(context,
         service: _service,
@@ -91,14 +91,14 @@ class _HisabScreenState extends State<HisabScreen> {
         by: by);
     if (r == null || !mounted) return;
     final current = _log ?? log;
-    await runHisab(
+    await runLedger(
         context,
         () => r.isDelete
             ? _service.deleteEntry(current, r.entry.id)
             : _service.saveEntry(current, me, r.entry, isNew: r.isNew));
   }
 
-  Future<void> _menu(String action, HisabLog log, LocalLog local) async {
+  Future<void> _menu(String action, LedgerLog log, LocalLog local) async {
     switch (action) {
       case 'code':
         await showCodeSheet(context, service: _service, log: log, local: local);
@@ -107,27 +107,27 @@ class _HisabScreenState extends State<HisabScreen> {
       case 'renameMe':
         await _rename(log, local.side);
       case 'switch':
-        await runHisab(
+        await runLedger(
             context, () => _service.switchSide(local, local.side.other),
             done: 'This phone is now ${log.nameOf(local.side.other)}');
         setState(() {});
       case 'leave':
         final ok = await _confirm(
-            _gone ? 'Remove from this phone?' : 'Leave this hisab?',
+            _gone ? 'Remove from this phone?' : 'Leave this ledger?',
             _gone
                 ? 'The copy on this phone is deleted.'
-                : 'This phone stops seeing the hisab. ${log.nameOf(local.side.other)} '
+                : 'This phone stops seeing the ledger. ${log.nameOf(local.side.other)} '
                     'keeps it, and you can join again with the code.',
             _gone ? 'Remove' : 'Leave');
         if (!ok || !mounted) return;
-        if (await runHisab(context, () => _service.leave(local)) && mounted) {
+        if (await runLedger(context, () => _service.leave(local)) && mounted) {
           Navigator.pop(context);
         }
       case 'delete':
-        final ok = await _confirm('Delete this hisab?',
+        final ok = await _confirm('Delete this ledger?',
             'It has no entries. It is deleted for both of you.', 'Delete');
         if (!ok || !mounted) return;
-        if (await runHisab(context, () => _service.deleteEmpty(log)) &&
+        if (await runLedger(context, () => _service.deleteEmpty(log)) &&
             mounted) {
           Navigator.pop(context);
         }
@@ -151,7 +151,7 @@ class _HisabScreenState extends State<HisabScreen> {
       ) ??
       false;
 
-  Future<void> _rename(HisabLog log, Side side) async {
+  Future<void> _rename(LedgerLog log, Side side) async {
     final c = TextEditingController(text: log.nameOf(side));
     final v = await showDialog<String>(
       context: context,
@@ -174,7 +174,7 @@ class _HisabScreenState extends State<HisabScreen> {
     );
     c.dispose();
     if (v == null || !mounted) return;
-    await runHisab(context, () => _service.rename(log, side, v));
+    await runLedger(context, () => _service.rename(log, side, v));
   }
 
   @override
@@ -189,7 +189,7 @@ class _HisabScreenState extends State<HisabScreen> {
               ? const CircularProgressIndicator()
               : const Padding(
                   padding: EdgeInsets.all(32),
-                  child: Text('This hisab is no longer available.',
+                  child: Text('This ledger is no longer available.',
                       textAlign: TextAlign.center),
                 ),
         ),
@@ -216,7 +216,7 @@ class _HisabScreenState extends State<HisabScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(friend),
-              Text('Hisab with ${log.nameOf(me)}',
+              Text('Ledger with ${log.nameOf(me)}',
                   style: theme.textTheme.bodySmall),
             ],
           ),
@@ -241,12 +241,12 @@ class _HisabScreenState extends State<HisabScreen> {
                       value: 'switch', child: Text('This phone is $friend\'s')),
                   if (log.entries.isEmpty)
                     const PopupMenuItem(
-                        value: 'delete', child: Text('Delete hisab')),
+                        value: 'delete', child: Text('Delete ledger')),
                 ],
                 PopupMenuItem(
                     value: 'leave',
-                    child:
-                        Text(_gone ? 'Remove from this phone' : 'Leave hisab')),
+                    child: Text(
+                        _gone ? 'Remove from this phone' : 'Leave ledger')),
               ],
             ),
           ],
@@ -270,11 +270,11 @@ class _HisabScreenState extends State<HisabScreen> {
                 segments: [
                   ButtonSegment(
                       value: _Filter.theyGive,
-                      label: Text('$friend gives (${balance.theyGiveMeCount})',
+                      label: Text('$friend owes (${balance.theyGiveMeCount})',
                           overflow: TextOverflow.ellipsis)),
                   ButtonSegment(
                       value: _Filter.iGive,
-                      label: Text('I give (${balance.iGiveThemCount})',
+                      label: Text('I owe (${balance.iGiveThemCount})',
                           overflow: TextOverflow.ellipsis)),
                   ButtonSegment(
                       value: _Filter.all,
@@ -289,8 +289,8 @@ class _HisabScreenState extends State<HisabScreen> {
                 padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                 child: Text(
                   _filter == _Filter.theyGive
-                      ? '$friend will give you ${s.money(balance.theyGiveMe)} in total'
-                      : 'You will give $friend ${s.money(balance.iGiveThem)} in total',
+                      ? '$friend owes you ${s.money(balance.theyGiveMe)} in total'
+                      : 'You owe $friend ${s.money(balance.iGiveThem)} in total',
                   style: theme.textTheme.titleSmall,
                 ),
               ),
@@ -359,11 +359,11 @@ class _HisabScreenState extends State<HisabScreen> {
   }
 }
 
-/// The final hisab: who gives whom, and how it adds up.
+/// The final ledger: who gives whom, and how it adds up.
 class ResultCard extends StatelessWidget {
   const ResultCard(
       {super.key, required this.log, required this.me, required this.settings});
-  final HisabLog log;
+  final LedgerLog log;
   final Side me;
   final Settings settings;
 
@@ -397,22 +397,22 @@ class ResultCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Final hisab', style: theme.textTheme.labelLarge),
+            Text('Balance', style: theme.textTheme.labelLarge),
             const SizedBox(height: 4),
             Text(headline,
                 key: const Key('result-line'),
                 style: theme.textTheme.headlineSmall
                     ?.copyWith(color: color, fontWeight: FontWeight.w600)),
             const Divider(height: 24),
-            row('$friend will give me', money(b.theyGiveMe),
+            row('$friend owes me', money(b.theyGiveMe),
                 style: TextStyle(color: comingColor(context))),
-            row('I will give $friend', '− ${money(b.iGiveThem)}',
+            row('I owe $friend', '− ${money(b.iGiveThem)}',
                 style: TextStyle(color: goingColor(context))),
             const Divider(height: 16),
             row(
               b.isClear
                   ? 'Nobody owes anything'
-                  : '${log.nameOf(b.payer!)} gives ${log.nameOf(b.receiver!)}',
+                  : '${log.nameOf(b.payer!)} pays ${log.nameOf(b.receiver!)}',
               money(b.amount),
               style: theme.textTheme.titleMedium,
             ),
@@ -424,13 +424,13 @@ class ResultCard extends StatelessWidget {
 }
 
 /// "Amit will give you ₹500", from [me]'s side.
-String resultLine(HisabLog log, Side me, String Function(int) money) {
+String resultLine(LedgerLog log, Side me, String Function(int) money) {
   final b = log.balanceFor(me);
   final friend = log.nameOf(me.other);
-  if (b.isClear) return 'All clear';
+  if (b.isClear) return 'All settled';
   return b.net > 0
-      ? '$friend will give you ${money(b.amount)}'
-      : 'You will give $friend ${money(b.amount)}';
+      ? '$friend owes you ${money(b.amount)}'
+      : 'You owe $friend ${money(b.amount)}';
 }
 
 class EntryTile extends StatelessWidget {
@@ -442,9 +442,9 @@ class EntryTile extends StatelessWidget {
     required this.settings,
     this.onTap,
   });
-  final HisabLog log;
+  final LedgerLog log;
   final Side me;
-  final HisabEntry entry;
+  final LedgerEntry entry;
   final Settings settings;
   final VoidCallback? onTap;
 
@@ -493,7 +493,7 @@ class EntryTile extends StatelessWidget {
               Text(loc.formatMediumDate(entry.date)),
             ],
           ),
-          Text(mine ? '$friend will give you' : 'You will give $friend',
+          Text(mine ? '$friend owes you' : 'You owe $friend',
               style: theme.textTheme.bodySmall),
           if (edited != null)
             Text(edited,
@@ -553,7 +553,7 @@ class _Banner extends StatelessWidget {
   }
 }
 
-/// Clearing the hisab: both friends confirm the same final amount.
+/// Clearing the ledger: both friends confirm the same final amount.
 class _SettleCard extends StatelessWidget {
   const _SettleCard({
     required this.service,
@@ -561,8 +561,8 @@ class _SettleCard extends StatelessWidget {
     required this.me,
     required this.settings,
   });
-  final HisabService service;
-  final HisabLog log;
+  final LedgerService service;
+  final LedgerLog log;
   final Side me;
   final Settings settings;
 
@@ -580,17 +580,17 @@ class _SettleCard extends StatelessWidget {
         return _Banner(
           icon: Icons.verified_outlined,
           text: at == null
-              ? 'Both of you confirmed. Clearing the hisab…'
-              : 'Hisab cleared on '
-                  '${loc.formatMediumDate(DateTime.fromMillisecondsSinceEpoch(at))}, '
-                  'confirmed by both. It is read-only and is deleted from the '
-                  'cloud ${days == 0 ? 'now' : 'in $days ${days == 1 ? 'day' : 'days'}'}; '
-                  'a copy stays on this phone.',
+              ? 'Both of you confirmed. Settling up…'
+              : 'Settled on '
+                  '${loc.formatMediumDate(DateTime.fromMillisecondsSinceEpoch(at))}. '
+                  'This ledger is now read-only and will be removed from the '
+                  'cloud ${days == 0 ? 'today' : 'in $days ${days == 1 ? 'day' : 'days'}'}. '
+                  'A copy stays on this phone.',
           actions: [
             if (at != null)
               TextButton(
-                onPressed: () => runHisab(context, () => service.reopen(log),
-                    done: 'Hisab reopened'),
+                onPressed: () => runLedger(context, () => service.reopen(log),
+                    done: 'Ledger reopened'),
                 child: const Text('Reopen'),
               ),
           ],
@@ -602,21 +602,22 @@ class _SettleCard extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () =>
-                  runHisab(context, () => service.withdraw(log, me)),
-              child: const Text('Take back'),
+                  runLedger(context, () => service.withdraw(log, me)),
+              child: const Text('Cancel request'),
             ),
           ],
         );
       case SettleStage.friendAsked:
         return _Banner(
           icon: Icons.mark_email_unread_outlined,
-          text: '$friend confirmed the hisab: $result. Is it right? When you '
-              'confirm too, it is cleared.',
+          text: '$friend wants to settle up: $result. Confirm if this is '
+              'correct.',
           actions: [
             FilledButton(
               key: const Key('confirm-settle'),
-              onPressed: () => runHisab(context, () => service.approve(log, me),
-                  done: 'Hisab cleared'),
+              onPressed: () => runLedger(
+                  context, () => service.approve(log, me),
+                  done: 'Settled up'),
               child: const Text('Confirm'),
             ),
           ],
@@ -624,16 +625,17 @@ class _SettleCard extends StatelessWidget {
       case SettleStage.open:
         return _Banner(
           icon: Icons.handshake_outlined,
-          text: '${log.staleApprovalBy(me.other) ? '$friend confirmed an older '
-                  'version; entries changed since. ' : ''}Done with this hisab? '
-              'When both of you confirm "$result", it is cleared and deleted '
-              'from the cloud $settledKeepDays days later.',
+          text: '${log.staleApprovalBy(me.other) ? 'The entries changed after '
+                  '$friend asked to settle up. ' : ''}Ready to settle up? '
+              'Once you both confirm "$result", the ledger is settled and removed '
+              'from the cloud after $settledKeepDays days.',
           actions: [
             FilledButton.tonal(
               key: const Key('ask-settle'),
-              onPressed: () => runHisab(context, () => service.approve(log, me),
+              onPressed: () => runLedger(
+                  context, () => service.approve(log, me),
                   done: 'Sent to $friend to confirm'),
-              child: const Text('Confirm hisab'),
+              child: const Text('Settle up'),
             ),
           ],
         );

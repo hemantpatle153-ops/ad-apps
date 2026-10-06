@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import 'package:expense_tracker/hisab/backend.dart';
-import 'package:expense_tracker/hisab/model.dart';
+import 'package:expense_tracker/ledger/backend.dart';
+import 'package:expense_tracker/ledger/model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'support/hisab_world.dart';
+import 'support/ledger_world.dart';
 
 void main() {
   group('create and join', () {
@@ -44,8 +44,8 @@ void main() {
     test('unknown code says not found', () async {
       final w = await World.create();
       final p = await w.phone('x');
-      expect(
-          () => p.service.lookup('ABCD2345'), throwsA(HisabException.notFound));
+      expect(() => p.service.lookup('ABCD2345'),
+          throwsA(LedgerException.notFound));
     });
 
     test('malformed code is rejected before any lookup', () async {
@@ -59,7 +59,8 @@ void main() {
         'ABCD-23O5',
         'ABCD1234'
       ]) {
-        await expectLater(p.service.lookup(bad), throwsA(isA<HisabException>()),
+        await expectLater(
+            p.service.lookup(bad), throwsA(isA<LedgerException>()),
             reason: bad);
       }
       expect(w.db.writes, 0);
@@ -69,9 +70,9 @@ void main() {
       final w = await World.create();
       final p = await w.phone('x');
       await expectLater(
-          p.service.create(' ', 'Amit'), throwsA(isA<HisabException>()));
+          p.service.create(' ', 'Amit'), throwsA(isA<LedgerException>()));
       await expectLater(
-          p.service.create('Rahul', ''), throwsA(isA<HisabException>()));
+          p.service.create('Rahul', ''), throwsA(isA<LedgerException>()));
     });
 
     test('names are trimmed and remembered', () async {
@@ -105,12 +106,12 @@ void main() {
       final p = await w.phone('x');
       w.db.offline = true;
       await expectLater(
-          p.service.create('A', 'B'), throwsA(HisabException.offline));
+          p.service.create('A', 'B'), throwsA(LedgerException.offline));
       expect(p.store.all(), isEmpty);
     });
   });
 
-  group('both friends see the same hisab', () {
+  group('both friends see the same ledger', () {
     test('entries from both phones add up the same on both', () async {
       final w = await World.create();
       final (pa, pb, id, _) = await w.pair();
@@ -205,7 +206,7 @@ void main() {
       final w = await World.create();
       final (pa, _, id, _) = await w.pair();
       await expectLater(add(pa, id, maxEntryAmount + 1, iGave: true),
-          throwsA(isA<HisabException>()));
+          throwsA(isA<LedgerException>()));
       await add(pa, id, maxEntryAmount, iGave: true);
     });
   });
@@ -277,7 +278,7 @@ void main() {
       final newCode = await pa.service.resetCode(await pa.log(id));
       final p3 = await w.phone('three');
       await expectLater(
-          p3.service.lookup(code), throwsA(HisabException.notFound));
+          p3.service.lookup(code), throwsA(LedgerException.notFound));
       final info = await p3.service.lookup(newCode);
       expect(info.id, id);
       expect(info.nameA, 'Rahul');
@@ -289,7 +290,7 @@ void main() {
       for (var i = 0; i < 10; i++) {
         await pa.service.resetCode(await pa.log(id));
       }
-      final codes = w.db.read('hisabCodes') as Map;
+      final codes = w.db.read('ledgerCodes') as Map;
       expect(codes.length, 1);
       expect((codes.values.single as Map)['id'], id);
     });
@@ -304,7 +305,7 @@ void main() {
     });
   });
 
-  group('clearing the hisab', () {
+  group('clearing the ledger', () {
     test('one confirmation waits for the friend', () async {
       final w = await World.create();
       final (pa, pb, id, _) = await w.pair();
@@ -327,14 +328,14 @@ void main() {
       expect(log.stageFor(Side.a), SettleStage.settled);
       expect(log.stageFor(Side.b), SettleStage.settled);
       expect(log.code, '');
-      expect(w.db.read('hisabCodes/$code'), isNull);
-      expect(w.db.read('hisabGc/$id'), {'t': w.db.nowMs});
+      expect(w.db.read('ledgerCodes/$code'), isNull);
+      expect(w.db.read('ledgerGc/$id'), {'t': w.db.nowMs});
       await expectLater(
-          add(pa, id, 1, iGave: true), throwsA(isA<HisabException>()));
+          add(pa, id, 1, iGave: true), throwsA(isA<LedgerException>()));
       await expectLater(pb.service.deleteEntry(log, log.entries.single.id),
-          throwsA(isA<HisabException>()));
+          throwsA(isA<LedgerException>()));
       await expectLater(
-          pb.service.resetCode(log), throwsA(isA<HisabException>()));
+          pb.service.resetCode(log), throwsA(isA<LedgerException>()));
     });
 
     test('a change after a confirmation needs both to confirm again', () async {
@@ -361,7 +362,7 @@ void main() {
       // ...while Amit's phone changes an entry without clearing confirmations
       // (an older app, or a write that crossed).
       final e = old.entries.single.copyWith(amount: 900);
-      w.db.apply({'hisab/$id/entries/${e.id}/amt': 900});
+      w.db.apply({'ledger/$id/entries/${e.id}/amt': 900});
       final now = await pb.log(id);
       expect(now.approvals.containsKey(Side.a), isTrue);
       expect(now.approvedBy(Side.a), isFalse);
@@ -400,7 +401,7 @@ void main() {
       final w = await World.create();
       final (pa, _, id, _) = await w.pair();
       await expectLater(pa.service.approve(await pa.log(id), Side.a),
-          throwsA(isA<HisabException>()));
+          throwsA(isA<LedgerException>()));
     });
 
     test('reopen within two weeks, with a new code', () async {
@@ -415,7 +416,7 @@ void main() {
       expect(log.isSettled, isFalse);
       expect(log.approvals, isEmpty);
       expect(log.code, code);
-      expect(w.db.read('hisabGc/$id'), isNull);
+      expect(w.db.read('ledgerGc/$id'), isNull);
       expect((await pa.service.lookup(code)).id, id);
       await add(pa, id, 1, iGave: true);
     });
@@ -438,9 +439,9 @@ void main() {
       expect(await pa.read(id), isNotNull);
       w.db.advance(const Duration(hours: 2));
       expect(await pa.service.cleanUp(), 1);
-      expect(w.db.read('hisab'), isNull);
-      expect(w.db.read('hisabGc'), isNull);
-      expect(w.db.read('hisabCodes'), isNull);
+      expect(w.db.read('ledger'), isNull);
+      expect(w.db.read('ledgerGc'), isNull);
+      expect(w.db.read('ledgerCodes'), isNull);
       // Rahul's phone keeps its copy, marked as phone-only.
       final local = pa.store.byId(id)!;
       expect(local.archived, isTrue);
@@ -465,8 +466,8 @@ void main() {
       w.db.advance(const Duration(days: 15));
       final stranger = await w.phone('someone-else');
       expect(await stranger.service.cleanUp(), 1);
-      expect(w.db.read('hisab'), isNull);
-      expect(w.db.read('hisabGc'), isNull);
+      expect(w.db.read('ledger'), isNull);
+      expect(w.db.read('ledgerGc'), isNull);
     });
 
     test('cleanup leaves open and recent logs alone', () async {
@@ -496,8 +497,8 @@ void main() {
       final w = await World.create();
       final (pa, _, id, code) = await w.pair();
       await pa.service.deleteEmpty(await pa.log(id));
-      expect(w.db.read('hisab/$id'), isNull);
-      expect(w.db.read('hisabCodes/$code'), isNull);
+      expect(w.db.read('ledger/$id'), isNull);
+      expect(w.db.read('ledgerCodes/$code'), isNull);
       expect(pa.store.byId(id), isNull);
     });
 
@@ -506,7 +507,7 @@ void main() {
       final (pa, _, id, _) = await w.pair();
       await add(pa, id, 1, iGave: true);
       await expectLater(pa.service.deleteEmpty(await pa.log(id)),
-          throwsA(isA<HisabException>()));
+          throwsA(isA<LedgerException>()));
     });
   });
 
