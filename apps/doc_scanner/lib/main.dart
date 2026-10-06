@@ -6,10 +6,13 @@ import 'package:open_filex/open_filex.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'doc_store.dart';
+import 'doc_thumb.dart';
+import 'system_channel.dart';
 import 'review_screen.dart';
 import 'scanner.dart';
 import 'screens/text_screen.dart';
 import 'screens/tools_screen.dart';
+import 'screens/viewer_screen.dart';
 import 'ui_helpers.dart';
 
 const appPackageName = 'in.onlysoftware.doc_scanner';
@@ -57,12 +60,38 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     docsChanged.addListener(_reload);
+    // PDFs and photos opened with or shared to Doc Scanner from other apps.
+    SystemChannel.listen(_received);
+    SystemChannel.takeSharedFiles().then(_received);
   }
 
   @override
   void dispose() {
     docsChanged.removeListener(_reload);
     super.dispose();
+  }
+
+  Future<void> _received(List<SharedFile> files) async {
+    if (files.isEmpty || !mounted) return;
+    final images = <String>[];
+    var pdfs = 0;
+    for (final f in files) {
+      if (f.isPdf) {
+        try {
+          final name = f.name.replaceAll(RegExp(r'\.pdf$', caseSensitive: false), '');
+          await DocStore.instance.savePdf(name, await File(f.path).readAsBytes());
+          pdfs++;
+        } catch (_) {}
+      } else if (f.isImage) {
+        images.add(f.path);
+      }
+    }
+    if (!mounted) return;
+    if (pdfs > 0) {
+      _reload();
+      toast(context, 'Added $pdfs PDF${pdfs == 1 ? '' : 's'}');
+    }
+    if (images.isNotEmpty) await _start(Future.value(images), title: 'Images');
   }
 
   void _reload() => setState(() => _docs = DocStore.instance.list());
@@ -97,37 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _share(String path) => SharePlus.instance
       .share(ShareParams(files: [XFile(path, mimeType: 'application/pdf')]));
 
-  Future<void> _scanMenu() async {
-    final pick = await showModalBottomSheet<String>(
-      context: context,
-      showDragHandle: true,
-      builder: (c) {
-        Widget item(String v, IconData i, String t, String s) => ListTile(
-            leading: Icon(i), title: Text(t), subtitle: Text(s),
-            onTap: () => Navigator.pop(c, v));
-        return SafeArea(
-          child: SingleChildScrollView(
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              item('doc', Icons.document_scanner_outlined, 'Document',
-                  'Auto edge detection, crop and cleanup'),
-              item('photo', Icons.photo_camera_outlined, 'Photo',
-                  'Take pictures with the camera'),
-              item('id', Icons.badge_outlined, 'ID card',
-                  'Front and back on one page'),
-              item('card', Icons.contact_mail_outlined, 'Business card',
-                  'Save the contact details'),
-              item('book', Icons.menu_book_outlined, 'Book or notes',
-                  'Many pages in one go'),
-              item('gallery', Icons.photo_library_outlined, 'Import photos',
-                  'Images from your gallery'),
-              item('pdf', Icons.upload_file, 'Import PDF',
-                  'Add a PDF from your phone'),
-            ]),
-          ),
-        );
-      },
-    );
-    if (pick == null || !mounted) return;
+  Future<void> _runScan(String pick) async {
     switch (pick) {
       case 'doc':
         await _start(scanPages(context));
@@ -200,7 +199,9 @@ class _HomeScreenState extends State<HomeScreen> {
           return const Center(child: CircularProgressIndicator());
         }
         final all = snap.data!;
-        if (all.isEmpty) return const _Empty();
+        if (all.isEmpty) {
+          return Column(children: [_QuickActions(onPick: _runScan), const Expanded(child: _Empty())]);
+        }
         _loadText(all);
         final q = _query.toLowerCase().trim();
         final docs = all
@@ -210,8 +211,9 @@ class _HomeScreenState extends State<HomeScreen> {
             .toList();
         return Column(
           children: [
+            _QuickActions(onPick: _runScan),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
               child: SearchBar(
                 hintText: 'Search names and text in documents',
                 leading: const Icon(Icons.search),
@@ -226,19 +228,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   final d = docs[i];
                   final textHit = q.isNotEmpty && !d.name.toLowerCase().contains(q);
                   return ListTile(
-                    leading: const Icon(Icons.picture_as_pdf, size: 36),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    leading: DocThumb(doc: d),
                     title: Text(d.name,
                         maxLines: 1, overflow: TextOverflow.ellipsis),
                     subtitle: Text(textHit
                         ? 'Text match · ${formatBytes(d.bytes)}'
                         : '${MaterialLocalizations.of(context).formatMediumDate(d.modified)} · ${formatBytes(d.bytes)}'),
-                    onTap: () => OpenFilex.open(d.file.path,
-                        type: 'application/pdf'),
+                    onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => ViewerScreen(doc: d))),
                     trailing: PopupMenuButton<String>(
                       onSelected: (v) async {
                         switch (v) {
                           case 'share':
                             _share(d.file.path);
+                          case 'save':
+                            final bytes = await d.file.readAsBytes();
+                            if (!context.mounted) return;
+                            await saveToPhone(context, d.name, bytes);
+                          case 'open':
+                            await OpenFilex.open(d.file.path, type: 'application/pdf');
                           case 'tools':
                             final bytes = await d.file.readAsBytes();
                             if (!context.mounted) return;
@@ -253,6 +262,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       itemBuilder: (_) => const [
                         PopupMenuItem(value: 'share', child: Text('Share')),
+                        PopupMenuItem(value: 'save', child: Text('Save to phone')),
+                        PopupMenuItem(value: 'open', child: Text('Open in another app')),
                         PopupMenuItem(value: 'tools', child: Text('Edit, sign, convert…')),
                         PopupMenuItem(value: 'text', child: Text('Copy text')),
                         PopupMenuItem(value: 'rename', child: Text('Rename')),
@@ -306,11 +317,66 @@ class _HomeScreenState extends State<HomeScreen> {
       body: _tab == 0 ? _documents() : const ToolsScreen(),
       floatingActionButton: _tab == 0
           ? FloatingActionButton.extended(
-              onPressed: _scanMenu,
+              onPressed: () => _runScan('doc'),
               icon: const Icon(Icons.document_scanner_outlined),
               label: const Text('Scan'),
             )
           : null,
+    );
+  }
+}
+
+/// One-tap shortcuts to every way of adding a document.
+class _QuickActions extends StatelessWidget {
+  const _QuickActions({required this.onPick});
+  final Future<void> Function(String) onPick;
+
+  static const _items = [
+    ('doc', Icons.document_scanner_outlined, 'Scan'),
+    ('id', Icons.badge_outlined, 'ID card'),
+    ('card', Icons.contact_mail_outlined, 'Business\ncard'),
+    ('book', Icons.menu_book_outlined, 'Book'),
+    ('photo', Icons.photo_camera_outlined, 'Photo'),
+    ('gallery', Icons.photo_library_outlined, 'Import\nphotos'),
+    ('pdf', Icons.upload_file, 'Import\nPDF'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return SizedBox(
+      height: 104,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        children: [
+          for (final (id, icon, label) in _items)
+            SizedBox(
+              width: 76,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () => onPick(id),
+                child: Column(children: [
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: id == 'doc' ? scheme.primary : scheme.primaryContainer,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Icon(icon,
+                        color: id == 'doc' ? scheme.onPrimary : scheme.onPrimaryContainer),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(label,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      style: Theme.of(context).textTheme.labelSmall),
+                ]),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
@@ -333,7 +399,7 @@ class _Empty extends StatelessWidget {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500)),
             const SizedBox(height: 8),
             const Text(
-              'Tap Scan to capture documents, ID cards, business cards or photos. Edges are found automatically, text is recognized, and everything stays on your phone. The Tools tab has merge, split, compress, sign, compare and more.',
+              'Tap Scan and point the camera at a page. Edges are found and captured automatically, shadows are cleaned up, and text is recognized, all on your phone. The Tools tab has merge, split, compress, sign, compare and more.',
               textAlign: TextAlign.center,
             ),
           ],

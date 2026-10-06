@@ -8,14 +8,20 @@ import 'doc_store.dart';
 import 'image_filters.dart';
 import 'jobs.dart';
 import 'ocr.dart';
+import 'scan/capture.dart';
+import 'scan/crop_screen.dart';
+import 'scan/geometry.dart';
 import 'scanner.dart';
 import 'ui_helpers.dart';
 
 /// A page photo plus the look the user picked for it.
 class ScanPage {
-  ScanPage(this.path);
-  final String path;
-  PageFilter filter = PageFilter.original;
+  ScanPage(this.path)
+      : filter = (pageSources[path]?.quad ?? Quad.full) == Quad.full
+            ? PageFilter.original
+            : PageFilter.magic;
+  String path;
+  PageFilter filter;
   int turns = 0;
 }
 
@@ -317,6 +323,15 @@ class _EditPageScreenState extends State<EditPageScreen> {
     });
   }
 
+  Future<void> _crop() async {
+    final path = await Navigator.of(context).push<String>(
+        MaterialPageRoute(builder: (_) => CropScreen(pagePath: widget.page.path)));
+    if (path == null || !mounted) return;
+    widget.page.path = path;
+    _raw = await File(path).readAsBytes();
+    _refresh();
+  }
+
   Future<void> _refresh() async {
     final raw = _raw;
     if (raw == null) return;
@@ -380,6 +395,11 @@ class _EditPageScreenState extends State<EditPageScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              TextButton.icon(
+                onPressed: _crop,
+                icon: const Icon(Icons.crop),
+                label: const Text('Crop'),
+              ),
               TextButton.icon(
                 onPressed: () => setState(() => _turns = (_turns + 3) % 4),
                 icon: const Icon(Icons.rotate_left),
