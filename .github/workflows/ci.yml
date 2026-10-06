@@ -55,6 +55,10 @@ jobs:
           channel: stable
           cache: true
       - run: flutter pub get
+      # Private-repo runners have 7 GB of RAM; the template's 8 GB Gradle
+      # heap gets the runner killed mid-build.
+      - name: Fit Gradle in the runner's memory
+        run: sed -i 's/^org.gradle.jvmargs=.*/org.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=1g -XX:ReservedCodeCacheSize=256m/' android/gradle.properties
       - run: flutter build apk --release
       - uses: actions/upload-artifact@v4
         with:
