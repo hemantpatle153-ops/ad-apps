@@ -63,7 +63,7 @@ class PlayItem {
     final u = Uri.tryParse(url);
     var title = url;
     if (u != null && u.pathSegments.isNotEmpty && u.pathSegments.last.isNotEmpty) {
-      title = Uri.decodeComponent(u.pathSegments.last);
+      title = u.pathSegments.last; // already percent-decoded
     } else if (u != null && u.host.isNotEmpty) {
       title = u.host;
     }
@@ -75,7 +75,7 @@ class PlayItem {
     final u = Uri.tryParse(uri);
     var title = 'Video';
     if (u != null && u.pathSegments.isNotEmpty) {
-      title = Uri.decodeComponent(u.pathSegments.last);
+      title = u.pathSegments.last; // already percent-decoded
       final slash = title.lastIndexOf('/');
       if (slash >= 0) title = title.substring(slash + 1);
     }
