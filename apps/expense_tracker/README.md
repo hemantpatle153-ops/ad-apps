@@ -1,7 +1,7 @@
 # Expense Tracker
 
 Offline daily expense tracker with budget, insights and CSV export, plus
-**Friends**: a shared money ledger shared with a friend.
+**Friends**: shared money ledgers with friends.
 
 See the repository README for build and release steps.
 

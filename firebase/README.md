@@ -6,8 +6,9 @@ top-level path in Realtime Database, and adds its section to
 
 - `rooms/`: Dice Dhamaal online Ludo.
 - `watch/`: Video Player watch parties.
-- `ledger/`, `ledgerCodes/`, `ledgerGc/`: Expense Tracker's shared ledger with
-  friends. Settled ledgers are deleted 14 days after both friends confirm.
+- `ledger/`, `ledgerCodes/`, `ledgerGc/`, `ledgerUsers/`: Expense Tracker's
+  shared ledgers with friends (email backup needs the Email/Password
+  provider). Settled ledgers are deleted 14 days after both friends confirm.
 
 Deploy the rules from this folder:
 
