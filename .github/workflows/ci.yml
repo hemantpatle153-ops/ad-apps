@@ -19,6 +19,7 @@ jobs:
           - apps/expense_tracker
           - apps/water_habit
           - apps/snakes_ladders
+          - apps/multi_speaker
     defaults:
       run:
         working-directory: ${{ matrix.package }}
@@ -32,3 +33,56 @@ jobs:
       - run: flutter analyze
       - name: Test
         run: if [ -d test ]; then flutter test; fi
+
+  # Builds test APKs so they can be shared without a laptop build. Signed
+  # with debug keys: the Play upload key stays offline. To build another
+  # app, add its folder name to the matrix. Each APK is also saved as the
+  # only file on branch apk-<app> (replaced on every build), which is easy
+  # to fetch with plain git.
+  apk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        app: [multi_speaker]
+    defaults:
+      run:
+        working-directory: apps/${{ matrix.app }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      # Private-repo runners have 7 GB of RAM; the template's 8 GB Gradle
+      # heap gets the runner killed mid-build.
+      - name: Fit Gradle in the runner's memory
+        run: sed -i 's/^org.gradle.jvmargs=.*/org.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=1g -XX:ReservedCodeCacheSize=256m/' android/gradle.properties
+      - run: flutter build apk --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.app }}-apk
+          path: apps/${{ matrix.app }}/build/app/outputs/flutter-apk/app-release.apk
+          retention-days: 14
+      - name: Save the APK on branch apk-${{ matrix.app }}
+        # Forked PRs get a read-only token; skip there.
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          APP: ${{ matrix.app }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          out="$RUNNER_TEMP/apk-branch"
+          mkdir -p "$out"
+          cp build/app/outputs/flutter-apk/app-release.apk "$out/$APP.apk"
+          cd "$out"
+          git init -q -b "apk-$APP"
+          git add "$APP.apk"
+          git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com \
+            commit -qm "$APP test APK from $GITHUB_SHA ($GITHUB_REF_NAME)"
+          git push -qf "https://x-access-token:$TOKEN@github.com/$GITHUB_REPOSITORY" "apk-$APP"

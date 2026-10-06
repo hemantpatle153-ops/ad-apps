@@ -10,9 +10,10 @@ apps/doc_scanner    app 3: camera document scanner (auto edges, crop, filters) t
 apps/expense_tracker app 4: daily expenses, monthly budget, category insights, CSV export
 apps/water_habit    app 5: water goal and daily habits with streaks and local reminders
 apps/snakes_ladders app 6: Snakes & Ladders game, vs computer or 2-4 player pass-and-play, themes, sounds
+apps/multi_speaker  app 7: one song on many speakers in sync (phones on the same Wi-Fi/hotspot, each on its own speaker)
 ```
 
-Package names are `in.onlysoftware.<folder name>`. Every app works offline; the only network use is ads.
+Package names are `in.onlysoftware.<folder name>`. Every app works offline; the only network use is ads (Multi Speaker also talks to other phones on the local Wi-Fi).
 The release commands below work the same in every app folder (replace `qr_scanner` with the app).
 
 ## Run on your phone
