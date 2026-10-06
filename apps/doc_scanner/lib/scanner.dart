@@ -4,13 +4,13 @@ import 'package:image_picker/image_picker.dart';
 
 /// Opens the on-device document scanner (edge detection, crop, rotate and
 /// filters all run on the phone). Returns JPEG page paths, empty if cancelled.
-Future<List<String>> scanPages(BuildContext context) async {
+Future<List<String>> scanPages(BuildContext context, {int pageLimit = 50}) async {
   final scanner = DocumentScanner(
     options: DocumentScannerOptions(
       documentFormats: const {DocumentFormat.jpeg},
       mode: ScannerMode.full,
       isGalleryImport: true,
-      pageLimit: 50,
+      pageLimit: pageLimit,
     ),
   );
   try {
@@ -47,4 +47,35 @@ Future<List<String>> scanPages(BuildContext context) async {
 Future<List<String>> pickFromGallery() async {
   final files = await ImagePicker().pickMultiImage(imageQuality: 85);
   return [for (final f in files) f.path];
+}
+
+/// Takes plain photos with the camera (no cropping), one after another
+/// until the user stops. Returns the photo paths.
+Future<List<String>> takePhotos(BuildContext context) async {
+  final picker = ImagePicker();
+  final paths = <String>[];
+  while (true) {
+    final shot =
+        await picker.pickImage(source: ImageSource.camera, imageQuality: 90);
+    if (shot == null) break;
+    paths.add(shot.path);
+    if (!context.mounted) break;
+    final again = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: Text('${paths.length} photo${paths.length == 1 ? '' : 's'} taken'),
+        content: const Text('Take another photo?'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(c, false),
+              child: const Text('Done')),
+          FilledButton(
+              onPressed: () => Navigator.pop(c, true),
+              child: const Text('Take another')),
+        ],
+      ),
+    );
+    if (again != true) break;
+  }
+  return paths;
 }
