@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:app_core/app_core.dart';
@@ -6,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'package:receive_sharing_intent/receive_sharing_intent.dart';
-
 import 'doc_store.dart';
 import 'doc_thumb.dart';
+import 'system_channel.dart';
 import 'review_screen.dart';
 import 'scanner.dart';
 import 'screens/text_screen.dart';
@@ -58,46 +56,34 @@ class _HomeScreenState extends State<HomeScreen> {
   // Recognized text per PDF path, loaded for searching inside documents.
   final Map<String, String> _text = {};
 
-  StreamSubscription<List<SharedMediaFile>>? _shares;
-
   @override
   void initState() {
     super.initState();
     docsChanged.addListener(_reload);
     // PDFs and photos opened with or shared to Doc Scanner from other apps.
-    try {
-      _shares = ReceiveSharingIntent.instance.getMediaStream().listen(_received);
-      ReceiveSharingIntent.instance.getInitialMedia().then((files) {
-        _received(files);
-        ReceiveSharingIntent.instance.reset();
-      });
-    } catch (_) {
-      // Not available (tests, desktop).
-    }
+    SystemChannel.listen(_received);
+    SystemChannel.takeSharedFiles().then(_received);
   }
 
   @override
   void dispose() {
-    _shares?.cancel();
     docsChanged.removeListener(_reload);
     super.dispose();
   }
 
-  Future<void> _received(List<SharedMediaFile> files) async {
+  Future<void> _received(List<SharedFile> files) async {
     if (files.isEmpty || !mounted) return;
     final images = <String>[];
     var pdfs = 0;
     for (final f in files) {
-      final path = f.path;
-      final isPdf = (f.mimeType ?? '').contains('pdf') || path.toLowerCase().endsWith('.pdf');
-      if (isPdf) {
+      if (f.isPdf) {
         try {
-          final name = path.split('/').last.replaceAll(RegExp(r'\.pdf$', caseSensitive: false), '');
-          await DocStore.instance.savePdf(name, await File(path).readAsBytes());
+          final name = f.name.replaceAll(RegExp(r'\.pdf$', caseSensitive: false), '');
+          await DocStore.instance.savePdf(name, await File(f.path).readAsBytes());
           pdfs++;
         } catch (_) {}
-      } else if (f.type == SharedMediaType.image) {
-        images.add(path);
+      } else if (f.isImage) {
+        images.add(f.path);
       }
     }
     if (!mounted) return;

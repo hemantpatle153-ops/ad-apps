@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
+import '../system_channel.dart';
 import '../ui_helpers.dart';
 import 'capture.dart';
 import 'geometry.dart';
@@ -95,14 +95,7 @@ class _CameraScanScreenState extends State<CameraScanScreen>
   }
 
   Future<void> _start() async {
-    var status = await Permission.camera.status;
-    if (!status.isGranted) status = await Permission.camera.request();
-    if (!mounted) return;
-    if (!status.isGranted) {
-      setState(() => _problem =
-          status.isPermanentlyDenied ? _Problem.deniedForever : _Problem.denied);
-      return;
-    }
+    // The camera plugin asks for camera permission when it starts.
     try {
       final cams = await availableCameras();
       if (cams.isEmpty) {
@@ -127,7 +120,11 @@ class _CameraScanScreenState extends State<CameraScanScreen>
     } on CameraException catch (e) {
       if (!mounted) return;
       setState(() {
-        _problem = e.code.contains('Access') ? _Problem.denied : _Problem.failed;
+        _problem = switch (e.code) {
+          'CameraAccessDeniedWithoutPrompt' || 'CameraAccessRestricted' => _Problem.deniedForever,
+          'CameraAccessDenied' || 'CameraAccess' => _Problem.denied,
+          _ => _Problem.failed,
+        };
         _error = e.description ?? e.code;
       });
     }
@@ -687,7 +684,7 @@ class _ProblemView extends StatelessWidget {
           Text(body, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white70)),
           const SizedBox(height: 24),
           if (problem == _Problem.deniedForever)
-            FilledButton(onPressed: openAppSettings, child: const Text('Open settings'))
+            FilledButton(onPressed: SystemChannel.openAppSettings, child: const Text('Open settings'))
           else if (problem != _Problem.noCamera)
             FilledButton(onPressed: onRetry, child: const Text('Allow camera')),
           const SizedBox(height: 8),
