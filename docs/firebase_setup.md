@@ -38,6 +38,9 @@ deleted by the rules below once they are a day old.
 
 ## Database rules
 
+The rules also live in `firebase/database.rules.json`; deploy them from
+that folder with `firebase deploy --only database`.
+
 A player may read a room and write only their own seat and the next move. The
 `.validate` on `size` keeps a room from being rewritten once it exists.
 

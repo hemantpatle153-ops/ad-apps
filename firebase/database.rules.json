@@ -1,0 +1,47 @@
+{
+  "rules": {
+    "rooms": {
+      "$code": {
+        ".read": "auth != null",
+        "size": {
+          ".write": "auth != null && !data.exists()",
+          ".validate": "newData.isNumber() && newData.val() >= 2 && newData.val() <= 4"
+        },
+        "rules": {
+          ".write": "auth != null && !data.exists()"
+        },
+        "created": {
+          ".write": "auth != null && !data.exists()",
+          ".validate": "newData.val() == now"
+        },
+        "started": {
+          ".write": "auth != null && root.child('rooms/'+$code+'/members/'+auth.uid).exists()",
+          ".validate": "newData.isBoolean()"
+        },
+        "members": {
+          "$uid": {
+            ".write": "auth != null && $uid == auth.uid"
+          }
+        },
+        "seats": {
+          "$seat": {
+            ".write": "auth != null && (!data.exists() || data.child('uid').val() == auth.uid)",
+            ".validate": "newData.child('uid').val() == auth.uid || !newData.exists()"
+          }
+        },
+        "actions": {
+          "$index": {
+            ".write": "auth != null && !data.exists() && root.child('rooms/'+$code+'/members/'+auth.uid).exists()"
+          }
+        },
+        "signal": {
+          "$seat": {
+            "$id": {
+              ".write": "auth != null && root.child('rooms/'+$code+'/members/'+auth.uid).exists()"
+            }
+          }
+        }
+      }
+    }
+  }
+}
