@@ -5,6 +5,8 @@ import 'package:media_kit/media_kit.dart';
 import '../format.dart';
 import '../library/subtitles.dart';
 import '../settings.dart';
+import 'effects.dart';
+import 'tool_sheets.dart';
 
 const speeds = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 4.0];
 
@@ -58,10 +60,18 @@ class _Title extends StatelessWidget {
 
 /// Playback speed from 0.25x to 4x: quick chips plus a fine slider.
 class SpeedSheet extends StatefulWidget {
-  const SpeedSheet({super.key, required this.player, required this.settings});
+  const SpeedSheet({
+    super.key,
+    required this.player,
+    required this.settings,
+    required this.onRate,
+  });
 
   final Player player;
   final Settings settings;
+
+  /// Sets the speed (through the watch party when there is one).
+  final void Function(double) onRate;
 
   @override
   State<SpeedSheet> createState() => _SpeedSheetState();
@@ -73,7 +83,7 @@ class _SpeedSheetState extends State<SpeedSheet> {
   void _set(double s) {
     s = (s * 20).round() / 20;
     setState(() => _speed = s);
-    widget.player.setRate(s);
+    widget.onRate(s);
     widget.settings.setSpeed(s);
   }
 
@@ -143,10 +153,24 @@ String _trackName(String id, String? title, String? language, int n) {
 }
 
 /// Lists the audio tracks (languages) in the file.
-class AudioTrackSheet extends StatelessWidget {
-  const AudioTrackSheet({super.key, required this.player});
+class AudioTrackSheet extends StatefulWidget {
+  const AudioTrackSheet({
+    super.key,
+    required this.player,
+    required this.fx,
+    required this.onEqualizer,
+  });
 
   final Player player;
+  final PlayerEffects fx;
+  final VoidCallback onEqualizer;
+
+  @override
+  State<AudioTrackSheet> createState() => _AudioTrackSheetState();
+}
+
+class _AudioTrackSheetState extends State<AudioTrackSheet> {
+  Player get player => widget.player;
 
   @override
   Widget build(BuildContext context) {
@@ -186,6 +210,20 @@ class AudioTrackSheet extends StatelessWidget {
                   Navigator.pop(context);
                 },
               ),
+              const Divider(),
+              DelayRow(
+                label: 'Audio delay',
+                value: widget.fx.audioDelay,
+                onChanged: (v) => setState(() => widget.fx.setAudioDelay(v)),
+              ),
+              ListTile(
+                leading: const Icon(Icons.graphic_eq_rounded),
+                title: const Text('Equalizer and night mode'),
+                onTap: () {
+                  Navigator.pop(context);
+                  widget.onEqualizer();
+                },
+              ),
             ],
           ),
         );
@@ -196,10 +234,16 @@ class AudioTrackSheet extends StatelessWidget {
 
 /// Subtitle tracks, loading a file, and the text size and colour.
 class SubtitleSheet extends StatefulWidget {
-  const SubtitleSheet({super.key, required this.player, required this.settings});
+  const SubtitleSheet({
+    super.key,
+    required this.player,
+    required this.settings,
+    required this.fx,
+  });
 
   final Player player;
   final Settings settings;
+  final PlayerEffects fx;
 
   @override
   State<SubtitleSheet> createState() => _SubtitleSheetState();
@@ -268,6 +312,11 @@ class _SubtitleSheetState extends State<SubtitleSheet> {
               onTap: _pickFile,
             ),
             const Divider(),
+            DelayRow(
+              label: 'Subtitle delay',
+              value: widget.fx.subtitleDelay,
+              onChanged: (v) => setState(() => widget.fx.setSubtitleDelay(v)),
+            ),
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
               child: Text('Text size  ·  ${settings.subtitleSize.round()}'),
@@ -305,6 +354,16 @@ class _SubtitleSheetState extends State<SubtitleSheet> {
                     ),
                 ],
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+              child: Text('Height above the bottom  ·  ${settings.subtitleLift.round()}'),
+            ),
+            Slider(
+              max: 240,
+              divisions: 24,
+              value: settings.subtitleLift.clamp(0, 240),
+              onChanged: (v) => setState(() => settings.setSubtitleStyle(lift: v)),
             ),
             SwitchListTile(
               title: const Text('Dark box behind text'),
