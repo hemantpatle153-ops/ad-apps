@@ -22,8 +22,7 @@ abstract final class FirebaseSetup {
   static const senderId = String.fromEnvironment('FIREBASE_SENDER_ID',
       defaultValue: '448997235311');
   static const dbUrl = String.fromEnvironment('FIREBASE_DB_URL',
-      defaultValue:
-          'https://dice-dhamaal-default-rtdb.asia-southeast1.firebasedatabase.app');
+      defaultValue: 'https://dice-dhamaal-default-rtdb.firebaseio.com');
 
   /// False in builds made without the settings; online play then explains
   /// that it isn't available instead of failing.
