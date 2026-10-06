@@ -34,6 +34,7 @@ class MainActivity : AudioServiceActivity() {
                             result.success(null)
                         }
                         "openHotspotSettings" -> { openHotspotSettings(); result.success(null) }
+                        "openMediaOutput" -> { openMediaOutput(); result.success(null) }
                         "deviceName" -> result.success(deviceName())
                         "audioOutput" -> result.success(audioOutput())
                         "bluetoothFeatures" -> result.success(bluetoothFeatures())
@@ -74,6 +75,19 @@ class MainActivity : AudioServiceActivity() {
             startActivity(tether)
         } catch (e: Exception) {
             startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
+        }
+    }
+
+    // The "where is this playing" panel; on Samsung it is where Dual audio
+    // ticks two speakers. Falls back to Bluetooth settings.
+    private fun openMediaOutput() {
+        val panel = Intent("com.android.settings.panel.action.MEDIA_OUTPUT")
+            .putExtra("com.android.settings.panel.extra.PACKAGE_NAME", packageName)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        try {
+            startActivity(panel)
+        } catch (e: Exception) {
+            startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
         }
     }
 

@@ -27,6 +27,9 @@ class Native {
   static Future<void> openBluetoothSettings() =>
       _call<void>('openBluetoothSettings');
 
+  /// Opens the system "play on" panel (Samsung Dual audio lives there).
+  static Future<void> openMediaOutput() => _call<void>('openMediaOutput');
+
   /// Opens the hotspot settings page (falls back to Wi-Fi settings).
   static Future<void> openHotspotSettings() => _call<void>('openHotspotSettings');
 

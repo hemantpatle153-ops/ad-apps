@@ -68,8 +68,8 @@ class HomeScreen extends StatelessWidget {
                 Card(
                   child: ListTile(
                     leading: const Icon(Icons.bluetooth),
-                    title: const Text('Two Bluetooth speakers on one phone?'),
-                    subtitle: const Text('See what your phone can do'),
+                    title: const Text('Many speakers from one phone?'),
+                    subtitle: const Text('Dual audio, speaker party modes and more'),
                     trailing: const Icon(Icons.chevron_right),
                     onTap: () => Navigator.push(context,
                         MaterialPageRoute(builder: (_) => const BluetoothHelpScreen())),

@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import '../sync/audio_engine.dart';
 import '../sync/clock.dart';
 import '../sync/protocol.dart';
+import '../sync/speaker.dart';
 import '../sync/sync_controller.dart';
 import 'discovery.dart';
 
@@ -21,6 +22,11 @@ class Guest {
 
   /// How far its speaker is from the timeline, as it last reported.
   int? errorMs;
+
+  SpeakerLevel level = const SpeakerLevel();
+  int delayMs = 0;
+  String output = 'Phone speaker';
+  bool bluetooth = false;
 
   void send(String message) {
     try {
@@ -40,12 +46,12 @@ class PartyHost extends ChangeNotifier {
   PartyHost({
     required this.engine,
     required this.name,
-    required int Function() latencyUs,
+    required this.speaker,
   }) {
     sync = SyncController(
       engine: engine,
       hostNowUs: Clock.nowUs,
-      latencyUs: latencyUs,
+      latencyUs: speaker.latencyUs,
       trackPath: (id) => _paths[id],
       trackTitle: (id) => _track(id)?.title ?? 'Song',
     );
@@ -55,6 +61,15 @@ class PartyHost extends ChangeNotifier {
   final AudioEngine engine;
   final String name;
   late final SyncController sync;
+
+  /// This phone's own output and delay.
+  final LocalSpeaker speaker;
+
+  /// This phone's own volume in the party.
+  SpeakerLevel level = const SpeakerLevel();
+
+  /// Start the playlist again after the last song.
+  bool repeat = false;
 
   /// How far ahead a start is scheduled, so every phone has time to seek.
   static const startLead = Duration(milliseconds: 700);
@@ -168,6 +183,17 @@ class PartyHost extends ChangeNotifier {
       case 'ready':
         if (m['id'] case final String id) g.ready.add(id);
         notifyListeners();
+      case 'info':
+        if (m['vol'] case final int v) {
+          g.level = g.level.copyWith(volume: v.clamp(0, 100) / 100);
+        }
+        if (m['muted'] case final bool muted) {
+          g.level = g.level.copyWith(muted: muted);
+        }
+        if (m['delay'] case final int d) g.delayMs = d;
+        if (m['out'] case final String o) g.output = o;
+        if (m['bt'] case final bool b) g.bluetooth = b;
+        notifyListeners();
     }
   }
 
@@ -179,6 +205,50 @@ class PartyHost extends ChangeNotifier {
     for (final g in guests) {
       g.send(message);
     }
+  }
+
+  /// Sets this phone's own volume.
+  void setLevel(SpeakerLevel l) {
+    level = l;
+    engine.setVolume(l.effective);
+    notifyListeners();
+  }
+
+  /// Sets another speaker's volume from the speakers list.
+  void setGuestLevel(Guest g, SpeakerLevel l) {
+    g.level = l;
+    g.send(encodeMessage(
+        'set', {'vol': (l.volume * 100).round(), 'muted': l.muted}));
+    notifyListeners();
+  }
+
+  /// Fine-tunes another speaker's sync delay from the speakers list.
+  void setGuestDelay(Guest g, int ms) {
+    g.delayMs = ms;
+    g.send(encodeMessage('set', {'delay': ms}));
+    notifyListeners();
+  }
+
+  /// Removes a phone from the party.
+  Future<void> kick(Guest g) async {
+    g.send(encodeMessage('kick'));
+    guests.remove(g);
+    notifyListeners();
+    await g.socket.close();
+  }
+
+  void toggleRepeat() {
+    repeat = !repeat;
+    notifyListeners();
+  }
+
+  /// Moves a song in the playlist (drag to reorder).
+  void moveTrack(int from, int to) {
+    if (from < 0 || from >= playlist.length) return;
+    final t = playlist.removeAt(from);
+    playlist.insert(to.clamp(0, playlist.length), t);
+    _sendPlaylist();
+    notifyListeners();
   }
 
   /// Adds a song file that is already in this phone's party folder.
@@ -275,6 +345,8 @@ class PartyHost extends ChangeNotifier {
     if (i < 0) return;
     if (i + 1 < playlist.length) {
       await playTrack(playlist[i + 1].id, autoplay: fromEnd || state.playing);
+    } else if (fromEnd && repeat) {
+      await playTrack(playlist.first.id);
     } else if (fromEnd) {
       await _setState(_pausedAt(playlist[i].id, 0)); // End of the playlist.
     }

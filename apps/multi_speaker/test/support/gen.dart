@@ -97,6 +97,11 @@ class ScriptedEngine implements AudioEngine {
   @override
   Future<void> setSpeed(double speed) async => speeds.add(speed);
 
+  final List<double> volumes = [];
+
+  @override
+  Future<void> setVolume(double volume) async => volumes.add(volume);
+
   @override
   Duration get position => positionOverride?.call() ?? _pos;
 
