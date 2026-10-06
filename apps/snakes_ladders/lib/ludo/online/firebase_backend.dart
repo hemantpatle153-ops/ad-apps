@@ -100,9 +100,35 @@ class FirebaseBackend implements RoomBackend {
         'members/$_uid': 0,
       });
       await _goOnline(code, 0);
+      unawaited(_sweepOldRooms());
       return code;
     }
     throw const RoomException(RoomError.offline);
+  }
+
+  /// Rooms older than this are finished or abandoned; any player may delete
+  /// them (the rules check the age with the server's clock).
+  static const roomLifetime = Duration(hours: 6);
+
+  /// Deletes a few expired rooms each time someone makes a room, so the
+  /// database never grows past the free plan without needing a server job.
+  Future<void> _sweepOldRooms() async {
+    try {
+      final cutoff =
+          DateTime.now().subtract(roomLifetime).millisecondsSinceEpoch;
+      final old = await _db
+          .ref('rooms')
+          .orderByChild('created')
+          .endAt(cutoff)
+          .limitToFirst(20)
+          .get();
+      for (final room in old.children) {
+        await room.ref.remove();
+      }
+    } catch (_) {
+      // Best effort: a clock that runs ahead or a dropped connection just
+      // leaves the cleanup for the next room.
+    }
   }
 
   @override

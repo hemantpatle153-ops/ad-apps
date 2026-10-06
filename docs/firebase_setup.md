@@ -48,13 +48,20 @@ A player may read a room and write only their own seat and the next move. The
 {
   "rules": {
     "rooms": {
+      ".indexOn": [
+        "created"
+      ],
+      ".read": "auth != null && query.orderByChild == 'created' && query.limitToFirst <= 20",
       "$code": {
+        ".write": "auth != null && !newData.exists() && data.child('created').val() < now - 21600000",
         ".read": "auth != null",
         "size": {
           ".write": "auth != null && !data.exists()",
           ".validate": "newData.isNumber() && newData.val() >= 2 && newData.val() <= 4"
         },
-        "rules": { ".write": "auth != null && !data.exists()" },
+        "rules": {
+          ".write": "auth != null && !data.exists()"
+        },
         "created": {
           ".write": "auth != null && !data.exists()",
           ".validate": "newData.val() == now"
@@ -64,7 +71,9 @@ A player may read a room and write only their own seat and the next move. The
           ".validate": "newData.isBoolean()"
         },
         "members": {
-          "$uid": { ".write": "auth != null && $uid == auth.uid" }
+          "$uid": {
+            ".write": "auth != null && $uid == auth.uid"
+          }
         },
         "seats": {
           "$seat": {
@@ -90,6 +99,15 @@ A player may read a room and write only their own seat and the next move. The
 }
 ```
 
-Old rooms are not deleted automatically by these rules. Once a month, open
-Realtime Database > Data and delete the `rooms` node, or add a scheduled
-Cloud Function if that becomes a chore.
+## Staying on the free plan
+
+The project is on the free Spark plan, which has no billing account, so it
+can never be charged; if a limit is reached, online rooms stop working until
+the next day or month instead. The limits that matter: 1 GB stored, 10 GB
+downloaded a month and 100 phones connected at once.
+
+To keep storage small without a paid server job, rooms delete themselves:
+every time someone creates a room, the app deletes up to 20 rooms older than
+6 hours (the rules let a signed-in phone list the oldest rooms 20 at a time, and
+delete a room only once it is that old, checked with the server's clock). Voice-call messages are deleted as
+soon as they are read.

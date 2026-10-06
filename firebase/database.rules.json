@@ -1,7 +1,12 @@
 {
   "rules": {
     "rooms": {
+      ".indexOn": [
+        "created"
+      ],
+      ".read": "auth != null && query.orderByChild == 'created' && query.limitToFirst <= 20",
       "$code": {
+        ".write": "auth != null && !newData.exists() && data.child('created').val() < now - 21600000",
         ".read": "auth != null",
         "size": {
           ".write": "auth != null && !data.exists()",
