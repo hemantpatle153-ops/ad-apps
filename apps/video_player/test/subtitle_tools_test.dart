@@ -1,9 +1,7 @@
-import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:video_player_app/src/library/online_subtitles.dart';
 import 'package:video_player_app/src/library/subtitle_cues.dart';
 import 'package:video_player_app/src/library/subtitle_sync.dart';
 import 'package:video_player_app/src/player/subtitle_session.dart';
@@ -136,102 +134,6 @@ void main() {
       expect(formatDelay(1500), '+1.5 s');
       expect(formatDelay(-300), '-0.3 s');
       expect(formatDelay(0), '0.0 s');
-    });
-  });
-
-  group('online search', () {
-    test('movie hash matches an independent sum', () async {
-      final dir = await Directory.systemTemp.createTemp('hash');
-      final file = File('${dir.path}/v.bin');
-      final bytes = Uint8List.fromList(
-          List.generate(200000, (i) => (i * 31 + 7) % 251));
-      await file.writeAsBytes(bytes);
-
-      var sum = BigInt.from(bytes.length);
-      final mask = (BigInt.one << 64) - BigInt.one;
-      BigInt word(int at) {
-        var w = BigInt.zero;
-        for (var k = 7; k >= 0; k--) {
-          w = (w << 8) | BigInt.from(bytes[at + k]);
-        }
-        return w;
-      }
-
-      for (var i = 0; i < 65536; i += 8) {
-        sum += word(i) + word(bytes.length - 65536 + i);
-      }
-      final expected = (sum & mask).toRadixString(16).padLeft(16, '0');
-      expect(await movieHash(file), expected);
-      await dir.delete(recursive: true);
-    });
-
-    test('no hash for tiny files', () async {
-      final dir = await Directory.systemTemp.createTemp('hash');
-      final file = File('${dir.path}/small.mp4')..writeAsBytesSync(List.filled(1000, 1));
-      expect(await movieHash(file), isNull);
-      await dir.delete(recursive: true);
-    });
-
-    test('search phrase from file names', () {
-      expect(searchQueryFor('The.Movie.2019.1080p.WEB-DL.x264.mkv'), 'The Movie 2019');
-      expect(searchQueryFor('Show_S01E02_720p.mp4'), 'Show S01E02');
-      expect(searchQueryFor('[Group] Some Film (Extended) 720p.mkv'), 'Some Film');
-      expect(searchQueryFor('Holiday clip.mp4'), 'Holiday clip');
-    });
-
-    test('results: exact file matches first, then most downloaded', () {
-      final r = parseSearch({
-        'data': [
-          {
-            'attributes': {
-              'language': 'en',
-              'release': 'Popular.Release',
-              'download_count': 9000,
-              'moviehash_match': false,
-              'files': [
-                {'file_id': 1, 'file_name': 'a.srt'},
-                {'file_id': 2, 'file_name': 'cd2.srt'},
-              ],
-            },
-          },
-          {
-            'attributes': {
-              'language': 'en',
-              'release': '',
-              'download_count': 10,
-              'moviehash_match': true,
-              'files': [
-                {'file_id': 3, 'file_name': 'exact.srt'},
-              ],
-            },
-          },
-          {
-            'attributes': {'language': 'en', 'files': []},
-          },
-          {'attributes': null},
-        ],
-      });
-      expect(r.map((s) => s.fileId), [3, 1]);
-      expect(r.first.name, 'exact.srt');
-      expect(r.first.hashMatch, isTrue);
-      expect(r.last.name, 'Popular.Release');
-      expect(parseSearch({}), isEmpty);
-    });
-
-    test('sign-in reply: token, assigned server, daily allowance', () {
-      final l = parseLogin({
-        'token': 'abc',
-        'base_url': 'vip-api.opensubtitles.com',
-        'user': {'allowed_downloads': 20},
-      })!;
-      expect(l.token, 'abc');
-      expect(l.host, 'vip-api.opensubtitles.com');
-      expect(l.allowedDownloads, 20);
-      expect(parseLogin({'token': 't', 'base_url': 'https://x.example.com/api'})!.host,
-          'x.example.com');
-      expect(parseLogin({'token': 't'})!.host, 'api.opensubtitles.com');
-      expect(parseLogin({'message': 'nope'}), isNull);
-      expect(parseLogin({'token': ''}), isNull);
     });
   });
 }

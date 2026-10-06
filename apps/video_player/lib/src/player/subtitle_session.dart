@@ -15,8 +15,8 @@ class SubtitleSession extends ChangeNotifier {
 
   final Player player;
 
-  /// Path of a subtitle file the app loaded (downloaded, picked or found
-  /// next to the video); null for tracks inside the video.
+  /// Path of a subtitle file the app loaded (picked or found next to the
+  /// video); null for tracks inside the video.
   String? file;
 
   /// Subtitles show this much later (negative: earlier).
@@ -59,7 +59,7 @@ class SubtitleSession extends ChangeNotifier {
   Future<String?> autoSync(PlayItem item) async {
     final path = file;
     if (path == null) {
-      return 'Auto sync works on subtitle files (downloaded or loaded). '
+      return 'Auto sync works on subtitle files loaded from the phone. '
           'Use the manual buttons for subtitles inside the video.';
     }
     if (item.isNetwork) return 'Auto sync works on videos stored on the phone.';

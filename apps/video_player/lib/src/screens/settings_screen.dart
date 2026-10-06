@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../app.dart';
 import '../settings.dart';
-import 'subtitle_account.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key, required this.settings});
@@ -104,11 +103,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               );
               if (v != null) s.setLeaveAction(v);
             },
-          ),
-          _header('Subtitles'),
-          ListenableBuilder(
-            listenable: s,
-            builder: (_, __) => SubtitleAccountTile(settings: s),
           ),
           _header('History'),
           ListTile(
