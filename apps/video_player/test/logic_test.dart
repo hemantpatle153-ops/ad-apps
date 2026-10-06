@@ -8,7 +8,8 @@ import 'package:video_player_app/src/library/video_library.dart';
 import 'package:video_player_app/src/player/play_item.dart';
 import 'package:video_player_app/src/settings.dart';
 
-VideoEntry _video(String id, String title, {int seconds = 60, int size = 0, int modified = 0}) {
+VideoEntry _video(String id, String title,
+    {int seconds = 60, int size = 0, int modified = 0}) {
   final v = VideoEntry(
     AssetEntity(
       id: id,
@@ -79,7 +80,8 @@ void main() {
   });
 
   test('play items from links and other apps', () {
-    expect(PlayItem.fromUrl('https://x.com/media/My%20Clip.mp4').title, 'My Clip.mp4');
+    expect(PlayItem.fromUrl('https://x.com/media/My%20Clip.mp4').title,
+        'My Clip.mp4');
     expect(PlayItem.fromUrl('https://x.com/').title, 'x.com');
     final ext = PlayItem.fromExternal('file:///sdcard/Download/show.mkv');
     expect(ext.title, 'show.mkv');
