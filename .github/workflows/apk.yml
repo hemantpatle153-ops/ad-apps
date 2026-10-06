@@ -14,6 +14,8 @@ on:
 jobs:
   apk:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -48,3 +50,21 @@ jobs:
           name: ${{ matrix.app }}
           path: apps/${{ matrix.app }}/build/app/outputs/flutter-apk/app-release.apk
           retention-days: 14
+      # Also keep the APK as the only file on branch apk-<app> (replaced on
+      # every build), which is easy to fetch with plain git.
+      - name: Save the APK on branch apk-${{ matrix.app }}
+        # Forked PRs get a read-only token; skip there.
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          APP: ${{ matrix.app }}
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          out="$RUNNER_TEMP/apk-branch"
+          mkdir -p "$out"
+          cp build/app/outputs/flutter-apk/app-release.apk "$out/$APP.apk"
+          cd "$out"
+          git init -q -b "apk-$APP"
+          git add "$APP.apk"
+          git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com \
+            commit -qm "$APP test APK from $GITHUB_SHA ($GITHUB_REF_NAME)"
+          git push -qf "https://x-access-token:$TOKEN@github.com/$GITHUB_REPOSITORY" "apk-$APP"
