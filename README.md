@@ -10,6 +10,7 @@ apps/doc_scanner    app 3: camera document scanner (auto edges, crop, filters) t
 apps/expense_tracker app 4: daily expenses, monthly budget, category insights, CSV export
 apps/water_habit    app 5: water goal and daily habits with streaks and local reminders
 apps/snakes_ladders app 6: Snakes & Ladders game, vs computer or 2-4 player pass-and-play, themes, sounds
+apps/video_player   video player: folders, gestures, subtitles, background audio, PiP, private folder
 ```
 
 Package names are `in.onlysoftware.<folder name>`. Every app works offline; the only network use is ads.

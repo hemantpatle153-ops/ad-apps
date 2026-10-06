@@ -19,6 +19,7 @@ jobs:
           - apps/expense_tracker
           - apps/water_habit
           - apps/snakes_ladders
+          - apps/video_player
     defaults:
       run:
         working-directory: ${{ matrix.package }}
