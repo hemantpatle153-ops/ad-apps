@@ -52,6 +52,10 @@ class PlayerEffects {
   final Player player;
   final adjust = VideoAdjust();
   double audioDelay = 0, subtitleDelay = 0;
+
+  /// Caption clock speed; not 1 only after auto sync found captions made
+  /// for another frame rate.
+  double subtitleSpeed = 1;
   Duration? loopA, loopB;
   bool loopOne = false;
 
@@ -105,6 +109,14 @@ class PlayerEffects {
   Future<void> setSubtitleDelay(double seconds) async {
     subtitleDelay = seconds;
     await set('sub-delay', seconds.toStringAsFixed(2));
+  }
+
+  /// Moves captions by [delaySeconds] and runs their clock at [speed].
+  Future<void> setSubtitleSync(double delaySeconds, double speed) async {
+    subtitleDelay = delaySeconds;
+    subtitleSpeed = speed;
+    await set('sub-delay', delaySeconds.toStringAsFixed(3));
+    await set('sub-speed', speed.toStringAsFixed(6));
   }
 
   /// Quick jump by [by] to the nearest keyframe: much faster than an exact

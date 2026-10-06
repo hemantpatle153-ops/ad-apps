@@ -19,12 +19,16 @@ class CaptionSearchSheet extends StatefulWidget {
     required this.settings,
     required this.item,
     this.service,
+    this.onLoaded,
   });
 
   final Player player;
   final Settings settings;
   final PlayItem item;
   final OpenSubtitles? service;
+
+  /// Called after downloaded captions are switched on.
+  final Future<void> Function()? onLoaded;
 
   @override
   State<CaptionSearchSheet> createState() => _CaptionSearchSheetState();
@@ -91,6 +95,7 @@ class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
       await widget.player.setSubtitleTrack(
           SubtitleTrack.uri(path, title: '${captionLanguages[r.language] ?? r.language} (downloaded)'));
       widget.settings.setCaption(widget.item.key, path);
+      await widget.onLoaded?.call();
       if (mounted) Navigator.pop(context);
       messenger?.showSnackBar(SnackBar(
           content: Text(r.exactMatch

@@ -87,6 +87,20 @@ class SystemChannel {
     } catch (_) {}
   }
 
+  /// Loudness of the video's sound in dB per [frameMs] frame, from
+  /// [startMs] for [durationMs]; -1000 marks frames with nothing decoded.
+  Future<Float32List> speechEnergy(String uri,
+      {required int startMs, required int durationMs, int frameMs = 100}) async {
+    final r = await _channel.invokeMethod<Float32List>('speechEnergy', {
+      'uri': uri,
+      'startMs': startMs,
+      'durationMs': durationMs,
+      'frameMs': frameMs,
+    });
+    if (r == null) throw StateError('no sound decoded');
+    return r;
+  }
+
   Future<String> deviceName() async {
     try {
       return await _channel.invokeMethod<String>('deviceName') ?? 'Phone';

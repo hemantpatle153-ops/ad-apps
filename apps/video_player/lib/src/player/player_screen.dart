@@ -18,6 +18,7 @@ import '../party/online.dart';
 import '../party/party_widgets.dart';
 import '../party/protocol.dart';
 import '../settings.dart';
+import '../captions/auto_sync.dart';
 import '../captions/caption_search_sheet.dart';
 import 'background_audio.dart';
 import 'effects.dart';
@@ -282,6 +283,8 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     if (settings.leaveAction == LeaveAction.audio || _backgroundSession) {
       unawaited(BackgroundAudio.instance.attach(player, it.title));
     }
+    // A caption speed fixed for the last video's file doesn't fit this one.
+    if (fx.subtitleSpeed != 1) unawaited(fx.setSubtitleSync(fx.subtitleDelay, 1));
     unawaited(_loadSidecar(it));
     _scheduleHide();
   }
@@ -1308,9 +1311,17 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       ));
   void _openSubtitles() =>
       _sheet((_) => SubtitleSheet(
-          player: player, settings: settings, fx: fx, onFindOnline: _openCaptionSearch));
-  void _openCaptionSearch() => _sheet(
-      (_) => CaptionSearchSheet(player: player, settings: settings, item: item));
+          player: player,
+          settings: settings,
+          fx: fx,
+          onFindOnline: _openCaptionSearch,
+          onAutoSync: () =>
+              autoSyncCaptions(player: player, fx: fx, videoUri: item.uri)));
+  void _openCaptionSearch() => _sheet((_) => CaptionSearchSheet(
+      player: player,
+      settings: settings,
+      item: item,
+      onLoaded: () => fx.setSubtitleSync(0, 1)));
   void _openEqualizer() =>
       _sheet((_) => EqualizerSheet(settings: settings, fx: fx));
   void _openSleep() =>
