@@ -59,7 +59,9 @@ class HabitsView extends StatelessWidget {
       ),
     );
     final text = name.text.trim();
-    name.dispose();
+    // Not disposed here: the dialog's TextField is still rebuilt during the
+    // closing animation, and a disposed controller would throw. It is
+    // garbage collected with the dialog.
     if (ok != true || text.isEmpty) return;
     if (habit == null) {
       await store.addHabit(text, reminder);
