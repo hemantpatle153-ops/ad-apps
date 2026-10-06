@@ -49,7 +49,7 @@
       }
     },
     "watch": {
-      ".read": "auth != null",
+      ".read": "auth != null && query.orderByChild == 'created' && query.limitToFirst <= 20",
       ".indexOn": [
         "created"
       ],
