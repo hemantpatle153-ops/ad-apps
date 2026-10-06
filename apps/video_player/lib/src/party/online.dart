@@ -12,21 +12,20 @@ import 'party.dart';
 import 'protocol.dart';
 
 /// Firebase project settings (the `dice-dhamaal` project, shared with the
-/// Ludo game). These client settings ship inside every APK anyway; the
+/// Ludo game; this app is registered there as in.onlysoftware.video_player). These client settings ship inside every APK anyway; the
 /// database rules protect the data. A build can point elsewhere with
 /// --dart-define=FIREBASE_API_KEY=... and the other names below.
 abstract final class FirebaseSetup {
   static const apiKey = String.fromEnvironment('FIREBASE_API_KEY',
       defaultValue: 'AIzaSyCRyrPruZ67YefPw1brA4cv0G6AeT9A7gk');
   static const appId = String.fromEnvironment('FIREBASE_APP_ID',
-      defaultValue: '1:448997235311:android:08295ed6078d5fcc6e8b9a');
+      defaultValue: '1:448997235311:android:1b54beb30bb19ea96e8b9a');
   static const projectId =
       String.fromEnvironment('FIREBASE_PROJECT_ID', defaultValue: 'dice-dhamaal');
   static const senderId =
       String.fromEnvironment('FIREBASE_SENDER_ID', defaultValue: '448997235311');
   static const dbUrl = String.fromEnvironment('FIREBASE_DB_URL',
-      defaultValue:
-          'https://dice-dhamaal-default-rtdb.asia-southeast1.firebasedatabase.app');
+      defaultValue: 'https://dice-dhamaal-default-rtdb.firebaseio.com');
 
   static FirebaseOptions get options => const FirebaseOptions(
         apiKey: apiKey,
@@ -198,7 +197,9 @@ class OnlineParty extends WatchParty {
           .ref('watch')
           .orderByChild('created')
           .endAt(serverNowMs - roomLifetime.inMilliseconds)
-          .limitToFirst(25)
+          // The database rules only allow this exact query, so phones can't
+          // list other people's rooms.
+          .limitToFirst(20)
           .get();
       for (final room in old.children) {
         await room.ref.remove();
