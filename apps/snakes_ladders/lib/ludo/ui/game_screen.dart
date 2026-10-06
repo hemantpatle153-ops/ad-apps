@@ -124,7 +124,6 @@ class _LudoGameScreenState extends State<LudoGameScreen>
     });
     final s = session;
     if (s != null) {
-      s.voice.start();
       s.seats.addListener(_onSeats);
       s.voice.error.addListener(_onVoiceError);
     }
@@ -606,6 +605,89 @@ class _LudoGameScreenState extends State<LudoGameScreen>
     );
   }
 
+  /// Mute (block) or report another player in an online room.
+  Future<void> _playerSheet(int seat, String name) async {
+    final s = session!;
+    final who = name.isEmpty ? 'this player' : name;
+    final action = await showModalBottomSheet<String>(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: ValueListenableBuilder<Set<int>>(
+          valueListenable: s.voice.blocked,
+          builder: (_, blocked, __) {
+            final isBlocked = blocked.contains(seat);
+            return Column(mainAxisSize: MainAxisSize.min, children: [
+              ListTile(
+                title: Text(who,
+                    style: const TextStyle(fontWeight: FontWeight.w800)),
+              ),
+              ListTile(
+                leading: Icon(isBlocked
+                    ? Icons.volume_up_rounded
+                    : Icons.volume_off_rounded),
+                title: Text(isBlocked ? 'Unmute $who' : 'Mute $who'),
+                subtitle: Text(isBlocked
+                    ? 'Hear each other again'
+                    : 'You stop hearing each other'),
+                onTap: () => Navigator.pop(ctx, isBlocked ? 'unmute' : 'mute'),
+              ),
+              ListTile(
+                leading: const Icon(Icons.flag_rounded, color: Colors.red),
+                title: Text('Report $who'),
+                onTap: () => Navigator.pop(ctx, 'report'),
+              ),
+            ]);
+          },
+        ),
+      ),
+    );
+    if (!mounted || action == null) return;
+    switch (action) {
+      case 'mute':
+        await s.voice.block(seat);
+        _say('$who is muted');
+      case 'unmute':
+        s.voice.unblock(seat);
+      case 'report':
+        await _report(seat, who);
+    }
+  }
+
+  static const _reasons = [
+    'Abusive language',
+    'Harassment or threats',
+    'Offensive name',
+    'Something else',
+  ];
+
+  Future<void> _report(int seat, String who) async {
+    final s = session!;
+    final reason = await showDialog<String>(
+      context: context,
+      builder: (ctx) => SimpleDialog(
+        title: Text('Report $who'),
+        children: [
+          for (final r in _reasons)
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(ctx, r),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Text(r),
+              ),
+            ),
+        ],
+      ),
+    );
+    if (!mounted || reason == null) return;
+    await s.voice.block(seat);
+    try {
+      await s.backend.report(s.code, seat: seat, name: who, reason: reason);
+      if (mounted) _say('Thanks. $who is reported and muted');
+    } catch (_) {
+      if (mounted) _say('Could not send the report. $who is muted');
+    }
+  }
+
   Widget _topBar(LudoTheme theme) {
     const fg = Colors.white;
     final s = session;
@@ -625,26 +707,48 @@ class _LudoGameScreenState extends State<LudoGameScreen>
                   color: fg, fontSize: 18, fontWeight: FontWeight.w800),
             ),
           ),
-          if (s != null) ...[
+          if (s != null)
             ValueListenableBuilder<bool>(
-              valueListenable: s.voice.muted,
-              builder: (_, muted, __) => IconButton(
-                icon: Icon(muted ? Icons.mic_off_rounded : Icons.mic_rounded,
-                    color: muted ? const Color(0xFFFF8A80) : fg),
-                tooltip: muted ? 'Unmute' : 'Mute',
-                onPressed: s.voice.toggleMute,
-              ),
-            ),
-            ValueListenableBuilder<bool>(
-              valueListenable: s.voice.speaker,
-              builder: (_, on, __) => IconButton(
-                icon: Icon(on ? Icons.volume_up_rounded : Icons.phone_in_talk,
-                    color: fg),
-                tooltip: on ? 'Use earpiece' : 'Use speaker',
-                onPressed: s.voice.toggleSpeaker,
-              ),
-            ),
-          ] else
+              valueListenable: s.voice.joined,
+              builder: (_, joined, __) => !joined
+                  ? TextButton.icon(
+                      style: TextButton.styleFrom(foregroundColor: fg),
+                      icon: const Icon(Icons.mic_none_rounded),
+                      label: const Text('Voice'),
+                      onPressed: s.voice.start,
+                    )
+                  : Row(mainAxisSize: MainAxisSize.min, children: [
+                      ValueListenableBuilder<bool>(
+                        valueListenable: s.voice.muted,
+                        builder: (_, muted, __) => IconButton(
+                          icon: Icon(
+                              muted ? Icons.mic_off_rounded : Icons.mic_rounded,
+                              color: muted ? const Color(0xFFFF8A80) : fg),
+                          tooltip: muted ? 'Unmute' : 'Mute',
+                          onPressed: s.voice.toggleMute,
+                        ),
+                      ),
+                      ValueListenableBuilder<bool>(
+                        valueListenable: s.voice.speaker,
+                        builder: (_, on, __) => IconButton(
+                          icon: Icon(
+                              on
+                                  ? Icons.volume_up_rounded
+                                  : Icons.phone_in_talk,
+                              color: fg),
+                          tooltip: on ? 'Use earpiece' : 'Use speaker',
+                          onPressed: s.voice.toggleSpeaker,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.call_end_rounded,
+                            color: Color(0xFFFF8A80)),
+                        tooltip: 'Leave voice',
+                        onPressed: s.voice.stop,
+                      ),
+                    ]),
+            )
+          else
             IconButton(
               icon: Icon(
                   store.sound
@@ -711,27 +815,32 @@ class _LudoGameScreenState extends State<LudoGameScreen>
           Stack(
             clipBehavior: Clip.none,
             children: [
-              _Avatar(
-                color: color,
-                active: active,
-                progress: _deadline != null && active
-                    ? _deadline!.difference(DateTime.now()).inMilliseconds /
-                        _turnLimit.inMilliseconds
+              GestureDetector(
+                onTap: s != null && seat != null && seat != s.mySeat && !p.isBot
+                    ? () => _playerSheet(seat, p.name)
                     : null,
-                child: p.isBot
-                    ? const Icon(Icons.smart_toy_rounded,
-                        color: Colors.white, size: 22)
-                    : Text(
-                        p.name.isEmpty
-                            ? '?'
-                            : p.name.characters.first.toUpperCase(),
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w900),
-                      ),
+                child: _Avatar(
+                  color: color,
+                  active: active,
+                  progress: _deadline != null && active
+                      ? _deadline!.difference(DateTime.now()).inMilliseconds /
+                          _turnLimit.inMilliseconds
+                      : null,
+                  child: p.isBot
+                      ? const Icon(Icons.smart_toy_rounded,
+                          color: Colors.white, size: 22)
+                      : Text(
+                          p.name.isEmpty
+                              ? '?'
+                              : p.name.characters.first.toUpperCase(),
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w900),
+                        ),
+                ),
               ),
-              if (s != null && seat != null && seat != s.mySeat)
+              if (s != null && seat != null && seat != s.mySeat && !p.isBot)
                 Positioned(
                   right: -4,
                   bottom: -2,
@@ -1000,23 +1109,28 @@ class _VoiceDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Map<int, PeerVoice>>(
-      valueListenable: voice.peers,
-      builder: (_, peers, __) {
-        final st = peers[seat];
-        final (color, icon) = away
-            ? (Colors.grey, Icons.wifi_off_rounded)
-            : switch (st) {
-                PeerVoice.connected => (
-                    const Color(0xFF00C853),
-                    Icons.mic_rounded
-                  ),
-                PeerVoice.failed => (
-                    const Color(0xFFFF5252),
-                    Icons.mic_off_rounded
-                  ),
-                _ => (Colors.blueGrey, Icons.more_horiz_rounded),
-              };
+    return ListenableBuilder(
+      listenable: Listenable.merge([voice.peers, voice.joined, voice.blocked]),
+      builder: (_, __) {
+        if (!voice.joined.value && !voice.blocked.value.contains(seat)) {
+          return const SizedBox.shrink();
+        }
+        final st = voice.peers.value[seat];
+        final (color, icon) = voice.blocked.value.contains(seat)
+            ? (const Color(0xFFFF5252), Icons.volume_off_rounded)
+            : away
+                ? (Colors.grey, Icons.wifi_off_rounded)
+                : switch (st) {
+                    PeerVoice.connected => (
+                        const Color(0xFF00C853),
+                        Icons.mic_rounded
+                      ),
+                    PeerVoice.failed => (
+                        const Color(0xFFFF5252),
+                        Icons.mic_off_rounded
+                      ),
+                    _ => (Colors.blueGrey, Icons.more_horiz_rounded),
+                  };
         return Container(
           width: 20,
           height: 20,

@@ -273,4 +273,17 @@ class FirebaseBackend implements RoomBackend {
       await ref.child('members/$_uid').remove();
     }
   }
+
+  @override
+  Future<void> report(String code,
+      {required int seat, required String name, required String reason}) {
+    return _db.ref('reports').push().set({
+      'code': code,
+      'seat': seat,
+      'name': name,
+      'reason': reason,
+      'by': _uid,
+      'at': ServerValue.timestamp,
+    });
+  }
 }

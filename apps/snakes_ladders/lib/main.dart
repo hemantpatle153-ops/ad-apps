@@ -16,7 +16,7 @@ const appName = 'Dice Dhamaal';
 const packageName = 'in.onlysoftware.dice_dhamaal';
 
 const privacyPolicyUrl =
-    'https://example.com/privacy'; // TODO: your hosted policy
+    'https://dice-dhamaal.web.app/privacy/dice_dhamaal.html';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

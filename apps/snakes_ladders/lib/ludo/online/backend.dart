@@ -135,7 +135,7 @@ class Signal {
 
   final int from;
 
-  /// offer, answer or ice.
+  /// offer, answer, ice, or hello (I just turned voice on, please call me).
   final String type;
   final Map<String, dynamic> data;
 }
@@ -168,6 +168,21 @@ abstract class RoomBackend {
   Stream<Signal> signals(String code, int seat);
 
   Future<void> leave(String code, int seat);
+
+  /// Reports the player in [seat] to the developer (abuse in voice chat or
+  /// a bad name). Reports can be written but never read by players.
+  Future<void> report(String code,
+      {required int seat, required String name, required String reason});
+}
+
+/// A report sent with [RoomBackend.report].
+class PlayerReport {
+  const PlayerReport(this.code, this.seat, this.name, this.reason);
+
+  final String code;
+  final int seat;
+  final String name;
+  final String reason;
 }
 
 /// Letters and digits that can't be confused when read aloud or typed.
@@ -218,6 +233,7 @@ class MemoryServer {
   final _roomCtl = StreamController<String>.broadcast();
   final _actionCtl = StreamController<String>.broadcast();
   final _signalCtl = StreamController<(String, int, Signal)>.broadcast();
+  final reports = <PlayerReport>[];
   var _uid = 0;
 
   void _changed(String code) => _roomCtl.add(code);
@@ -336,6 +352,12 @@ class MemoryBackend implements RoomBackend {
   Stream<Signal> signals(String code, int seat) => server._signalCtl.stream
       .where((e) => e.$1 == code && e.$2 == seat)
       .map((e) => e.$3);
+
+  @override
+  Future<void> report(String code,
+      {required int seat, required String name, required String reason}) async {
+    server.reports.add(PlayerReport(code, seat, name, reason));
+  }
 
   @override
   Future<void> leave(String code, int seat) async {

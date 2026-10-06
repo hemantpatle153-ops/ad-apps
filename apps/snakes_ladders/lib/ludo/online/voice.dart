@@ -10,6 +10,9 @@ enum PeerVoice { connecting, connected, failed }
 /// Group voice call for an online room: every phone talks directly to every
 /// other phone (at most three links). WebRTC encrypts all audio end to end
 /// with DTLS-SRTP; the room server only passes the connection details.
+///
+/// Voice is off until the player turns it on with [start], and each player
+/// can [block] anyone else, which drops the call with them both ways.
 class VoiceChat {
   VoiceChat(this.backend, this.code, this.mySeat);
 
@@ -31,6 +34,12 @@ class VoiceChat {
   };
 
   final peers = ValueNotifier<Map<int, PeerVoice>>({});
+
+  /// True while this phone is in the call.
+  final joined = ValueNotifier(false);
+
+  /// Seats this player blocked: no audio either way.
+  final blocked = ValueNotifier<Set<int>>({});
   final muted = ValueNotifier(false);
   final speaker = ValueNotifier(true);
 
@@ -41,11 +50,14 @@ class VoiceChat {
   final _pcs = <int, RTCPeerConnection>{};
   final _pendingIce = <int, List<RTCIceCandidate>>{};
   final _calling = <int>{};
+  final _greeted = <int>{};
   StreamSubscription<Signal>? _signals;
   StreamSubscription<RoomState?>? _room;
   bool _closed = false;
 
   Future<void> start() async {
+    if (joined.value || _closed) return;
+    error.value = null;
     try {
       _mic = await navigator.mediaDevices.getUserMedia({
         'audio': {
@@ -60,23 +72,70 @@ class VoiceChat {
       return;
     }
     if (_closed) return _mic?.dispose();
+    joined.value = true;
+    muted.value = false;
     await Helper.setSpeakerphoneOn(speaker.value).catchError((_) {});
     _signals = backend.signals(code, mySeat).listen(_onSignal);
-    // The lower seat calls the higher one, so each pair makes one call.
+    // The lower seat always calls the higher one, so each pair makes one
+    // call. To reach lower seats that are already in the call, say hello
+    // and they call back.
     _room = backend.watchRoom(code).listen((room) {
       if (room == null) return;
       for (final e in room.seats.entries) {
         final s = e.key;
         if (s == mySeat) continue;
-        if (!e.value.online) {
+        if (!e.value.online || blocked.value.contains(s)) {
+          _greeted.remove(s);
           _hangUp(s);
-        } else if (s > mySeat && !_pcs.containsKey(s) && _calling.add(s)) {
-          _call(s)
-              .catchError((_) => _set(s, PeerVoice.failed))
-              .whenComplete(() => _calling.remove(s));
+        } else if (s > mySeat) {
+          if (!_pcs.containsKey(s)) _ring(s);
+        } else if (_greeted.add(s)) {
+          _hello(s);
         }
       }
     });
+  }
+
+  void _ring(int seat) {
+    if (!_calling.add(seat)) return;
+    _call(seat)
+        .catchError((_) => _set(seat, PeerVoice.failed))
+        .whenComplete(() => _calling.remove(seat));
+  }
+
+  void _hello(int seat) => backend
+      .sendSignal(code, seat, Signal(from: mySeat, type: 'hello', data: {}))
+      .ignore();
+
+  /// Turns voice off on this phone; [start] turns it back on.
+  Future<void> stop() async {
+    joined.value = false;
+    await _signals?.cancel();
+    await _room?.cancel();
+    _signals = null;
+    _room = null;
+    _greeted.clear();
+    for (final s in _pcs.keys.toList()) {
+      await _hangUp(s);
+    }
+    for (final t in _mic?.getTracks() ?? const <MediaStreamTrack>[]) {
+      await t.stop();
+    }
+    await _mic?.dispose();
+    _mic = null;
+  }
+
+  /// Stops hearing [seat] and stops them hearing you.
+  Future<void> block(int seat) async {
+    blocked.value = {...blocked.value, seat};
+    _greeted.remove(seat);
+    await _hangUp(seat);
+  }
+
+  void unblock(int seat) {
+    blocked.value = {...blocked.value}..remove(seat);
+    if (!joined.value) return;
+    seat > mySeat ? _ring(seat) : _hello(seat);
   }
 
   void _set(int seat, PeerVoice? v) {
@@ -131,9 +190,15 @@ class VoiceChat {
   }
 
   Future<void> _onSignal(Signal s) async {
-    if (_closed || _mic == null) return;
+    if (_closed || _mic == null || blocked.value.contains(s.from)) return;
     try {
       switch (s.type) {
+        case 'hello':
+          // A higher seat just turned voice on: call it, dropping any old
+          // half-made call.
+          if (s.from <= mySeat) return;
+          await _hangUp(s.from);
+          _ring(s.from);
         case 'offer':
           // A fresh offer replaces any half-made call from that seat.
           await _hangUp(s.from);
@@ -196,15 +261,6 @@ class VoiceChat {
 
   Future<void> close() async {
     _closed = true;
-    await _signals?.cancel();
-    await _room?.cancel();
-    for (final s in _pcs.keys.toList()) {
-      await _hangUp(s);
-    }
-    for (final t in _mic?.getTracks() ?? const <MediaStreamTrack>[]) {
-      await t.stop();
-    }
-    await _mic?.dispose();
-    _mic = null;
+    await stop();
   }
 }

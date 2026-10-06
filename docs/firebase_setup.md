@@ -94,6 +94,48 @@ A player may read a room and write only their own seat and the next move. The
           }
         }
       }
+    },
+    "watch": {
+      ".read": "auth != null && query.orderByChild == 'created' && query.limitToFirst <= 20",
+      ".indexOn": [
+        "created"
+      ],
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && !newData.exists() && (data.child('host').val() == auth.uid || data.child('created').val() < now - 43200000)",
+        "host": {
+          ".write": "auth != null && !data.exists()",
+          ".validate": "newData.val() == auth.uid"
+        },
+        "created": {
+          ".write": "auth != null && !data.exists()",
+          ".validate": "newData.val() == now"
+        },
+        "video": {
+          ".write": "auth != null && newData.parent().child('host').val() == auth.uid"
+        },
+        "state": {
+          ".write": "auth != null && newData.parent().child('members/' + auth.uid).exists()",
+          ".validate": "newData.hasChildren(['playing', 'pos', 'at', 'rate'])"
+        },
+        "members": {
+          "$uid": {
+            ".write": "auth != null && $uid == auth.uid"
+          }
+        },
+        "chat": {
+          "$id": {
+            ".write": "auth != null && !data.exists() && newData.parent().parent().child('members/' + auth.uid).exists()",
+            ".validate": "newData.child('uid').val() == auth.uid && newData.child('text').isString() && newData.child('text').val().length <= 300"
+          }
+        }
+      }
+    },
+    "reports": {
+      "$id": {
+        ".write": "auth != null && !data.exists() && newData.exists()",
+        ".validate": "newData.hasChildren(['code','seat','name','reason','by','at']) && newData.child('by').val() == auth.uid && newData.child('at').val() == now && newData.child('code').isString() && newData.child('code').val().length <= 10 && newData.child('seat').isNumber() && newData.child('name').isString() && newData.child('name').val().length <= 40 && newData.child('reason').isString() && newData.child('reason').val().length <= 200"
+      }
     }
   }
 }
@@ -111,3 +153,8 @@ every time someone creates a room, the app deletes up to 20 rooms older than
 6 hours (the rules let a signed-in phone list the oldest rooms 20 at a time, and
 delete a room only once it is that old, checked with the server's clock). Voice-call messages are deleted as
 soon as they are read.
+
+Player reports (`reports/`) are write-only from the app: each holds the room
+code, the reported player's name and seat, a short reason and the reporter's
+anonymous id. Read them in the Firebase console under Realtime Database and
+delete each one after you deal with it, so storage stays small.

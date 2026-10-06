@@ -83,6 +83,12 @@
           }
         }
       }
+    },
+    "reports": {
+      "$id": {
+        ".write": "auth != null && !data.exists() && newData.exists()",
+        ".validate": "newData.hasChildren(['code','seat','name','reason','by','at']) && newData.child('by').val() == auth.uid && newData.child('at').val() == now && newData.child('code').isString() && newData.child('code').val().length <= 10 && newData.child('seat').isNumber() && newData.child('name').isString() && newData.child('name').val().length <= 40 && newData.child('reason').isString() && newData.child('reason').val().length <= 200"
+      }
     }
   }
 }

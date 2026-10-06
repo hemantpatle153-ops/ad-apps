@@ -81,4 +81,16 @@ void main() {
       unawaited(s.cancel());
     }
   });
+
+  test('a report keeps the room, player and reason', () async {
+    final server = MemoryServer();
+    final me = MemoryBackend(server);
+    await me.connect();
+    await me.report('ABCDEF',
+        seat: 2, name: 'Ravi', reason: 'Abusive language');
+    expect(server.reports, hasLength(1));
+    final r = server.reports.single;
+    expect((r.code, r.seat, r.name, r.reason),
+        ('ABCDEF', 2, 'Ravi', 'Abusive language'));
+  });
 }

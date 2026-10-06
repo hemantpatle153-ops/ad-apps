@@ -238,8 +238,9 @@ class _OnlineScreenState extends State<OnlineScreen> {
           ),
         const SizedBox(height: 16),
         const Text(
-          'Voice chat turns on when the game starts. Calls go straight '
-          'between phones and are encrypted.',
+          'Voice chat stays off until you tap Voice in the game. Calls go '
+          'straight between phones and are encrypted. Tap a player to mute '
+          'or report them. Only play with people you know.',
           textAlign: TextAlign.center,
           style: TextStyle(color: Colors.white70, fontSize: 13),
         ),
