@@ -153,7 +153,9 @@ int? parseAmount(String s) {
   final t = s.replaceAll(',', '').trim();
   if (!RegExp(r'^\d+(\.\d{0,2})?$').hasMatch(t)) return null;
   final parts = t.split('.');
-  final whole = int.parse(parts[0]);
+  // Reject absurd amounts instead of throwing / overflowing on `* 100`.
+  final whole = int.tryParse(parts[0]);
+  if (whole == null || whole > 999999999999999) return null;
   final frac = parts.length > 1 ? parts[1].padRight(2, '0') : '00';
   final v = whole * 100 + int.parse(frac.isEmpty ? '0' : frac);
   return v > 0 ? v : null;

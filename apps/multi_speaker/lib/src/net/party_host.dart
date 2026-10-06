@@ -4,9 +4,11 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
+import '../live/live_audio.dart';
 import '../sync/audio_engine.dart';
 import '../sync/clock.dart';
 import '../sync/protocol.dart';
+import '../sync/speaker.dart';
 import '../sync/sync_controller.dart';
 import 'discovery.dart';
 
@@ -22,7 +24,12 @@ class Guest {
   /// How far its speaker is from the timeline, as it last reported.
   int? errorMs;
 
-  void send(String message) {
+  SpeakerLevel level = const SpeakerLevel();
+  int delayMs = 0;
+  String output = 'Phone speaker';
+  bool bluetooth = false;
+
+  void send(Object message) {
     try {
       socket.add(message);
     } on Object {
@@ -40,12 +47,13 @@ class PartyHost extends ChangeNotifier {
   PartyHost({
     required this.engine,
     required this.name,
-    required int Function() latencyUs,
+    required this.speaker,
+    this.liveSource,
   }) {
     sync = SyncController(
       engine: engine,
       hostNowUs: Clock.nowUs,
-      latencyUs: latencyUs,
+      latencyUs: speaker.latencyUs,
       trackPath: (id) => _paths[id],
       trackTitle: (id) => _track(id)?.title ?? 'Song',
     );
@@ -55,6 +63,24 @@ class PartyHost extends ChangeNotifier {
   final AudioEngine engine;
   final String name;
   late final SyncController sync;
+
+  /// This phone's own output and delay.
+  final LocalSpeaker speaker;
+
+  /// Captures this phone's sound for live mode; null where it can't.
+  final LiveSource? liveSource;
+
+  /// Whether every speaker is playing this phone's sound live, instead of
+  /// the playlist.
+  bool live = false;
+  StreamSubscription<Uint8List>? _liveSub;
+  final _stamper = LiveStamper();
+
+  /// This phone's own volume in the party.
+  SpeakerLevel level = const SpeakerLevel();
+
+  /// Start the playlist again after the last song.
+  bool repeat = false;
 
   /// How far ahead a start is scheduled, so every phone has time to seek.
   static const startLead = Duration(milliseconds: 700);
@@ -164,9 +190,21 @@ class PartyHost extends ChangeNotifier {
         g.send(encodeMessage(
             'playlist', {'tracks': [for (final t in playlist) t.toJson()]}));
         g.send(encodeMessage('state', state.toJson()));
+        g.send(encodeMessage('live', {'on': live}));
         notifyListeners();
       case 'ready':
         if (m['id'] case final String id) g.ready.add(id);
+        notifyListeners();
+      case 'info':
+        if (m['vol'] case final int v) {
+          g.level = g.level.copyWith(volume: v.clamp(0, 100) / 100);
+        }
+        if (m['muted'] case final bool muted) {
+          g.level = g.level.copyWith(muted: muted);
+        }
+        if (m['delay'] case final int d) g.delayMs = d;
+        if (m['out'] case final String o) g.output = o;
+        if (m['bt'] case final bool b) g.bluetooth = b;
         notifyListeners();
     }
   }
@@ -179,6 +217,88 @@ class PartyHost extends ChangeNotifier {
     for (final g in guests) {
       g.send(message);
     }
+  }
+
+  /// Starts sending whatever this phone plays to every speaker. Android
+  /// asks the user first; false when they said no or the phone can't.
+  Future<bool> startLive() async {
+    if (live) return true;
+    final source = liveSource;
+    if (source == null || !await source.start()) return false;
+    await pause();
+    live = true;
+    _stamper.reset();
+    _liveSub = source.chunks.listen((pcm) {
+      // An empty chunk means Android stopped the capture, e.g. from its
+      // casting notification.
+      if (pcm.isEmpty) {
+        stopLive();
+        return;
+      }
+      final frame =
+          encodeLiveFrame(_stamper.stamp(Clock.nowUs(), pcm.length), pcm);
+      for (final g in guests) {
+        g.send(frame);
+      }
+    });
+    _broadcast(encodeMessage('live', {'on': true}));
+    notifyListeners();
+    return true;
+  }
+
+  Future<void> stopLive() async {
+    if (!live) return;
+    live = false;
+    await _liveSub?.cancel();
+    _liveSub = null;
+    await liveSource?.stop();
+    _broadcast(encodeMessage('live', {'on': false}));
+    _broadcast(encodeMessage('state', state.toJson()));
+    notifyListeners();
+  }
+
+  /// Sets this phone's own volume.
+  void setLevel(SpeakerLevel l) {
+    level = l;
+    engine.setVolume(l.effective);
+    notifyListeners();
+  }
+
+  /// Sets another speaker's volume from the speakers list.
+  void setGuestLevel(Guest g, SpeakerLevel l) {
+    g.level = l;
+    g.send(encodeMessage(
+        'set', {'vol': (l.volume * 100).round(), 'muted': l.muted}));
+    notifyListeners();
+  }
+
+  /// Fine-tunes another speaker's sync delay from the speakers list.
+  void setGuestDelay(Guest g, int ms) {
+    g.delayMs = ms;
+    g.send(encodeMessage('set', {'delay': ms}));
+    notifyListeners();
+  }
+
+  /// Removes a phone from the party.
+  Future<void> kick(Guest g) async {
+    g.send(encodeMessage('kick'));
+    guests.remove(g);
+    notifyListeners();
+    await g.socket.close();
+  }
+
+  void toggleRepeat() {
+    repeat = !repeat;
+    notifyListeners();
+  }
+
+  /// Moves a song in the playlist (drag to reorder).
+  void moveTrack(int from, int to) {
+    if (from < 0 || from >= playlist.length) return;
+    final t = playlist.removeAt(from);
+    playlist.insert(to.clamp(0, playlist.length), t);
+    _sendPlaylist();
+    notifyListeners();
   }
 
   /// Adds a song file that is already in this phone's party folder.
@@ -229,6 +349,7 @@ class PartyHost extends ChangeNotifier {
       anchorUs: Clock.nowUs() + startLead.inMicroseconds);
 
   Future<void> playTrack(String id, {bool autoplay = true}) async {
+    if (autoplay) await stopLive();
     final op = ++_op;
     await _setState(_pausedAt(id, 0));
     if (!autoplay) return;
@@ -244,6 +365,7 @@ class PartyHost extends ChangeNotifier {
       return;
     }
     if (state.playing) return;
+    await stopLive();
     final op = ++_op;
     await _waitForGuests(id);
     if (op != _op) return;
@@ -275,6 +397,8 @@ class PartyHost extends ChangeNotifier {
     if (i < 0) return;
     if (i + 1 < playlist.length) {
       await playTrack(playlist[i + 1].id, autoplay: fromEnd || state.playing);
+    } else if (fromEnd && repeat) {
+      await playTrack(playlist.first.id);
     } else if (fromEnd) {
       await _setState(_pausedAt(playlist[i].id, 0)); // End of the playlist.
     }
@@ -310,6 +434,7 @@ class PartyHost extends ChangeNotifier {
 
   Future<void> close() async {
     _op++;
+    await stopLive();
     _beacon?.stop();
     _broadcast(encodeMessage('bye'));
     for (final g in [...guests]) {

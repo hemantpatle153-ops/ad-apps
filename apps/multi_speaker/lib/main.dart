@@ -10,6 +10,7 @@ Future<void> main() async {
   await JustAudioBackground.init(
     androidNotificationChannelId: 'in.onlysoftware.multi_speaker.playback',
     androidNotificationChannelName: 'Party music',
+    androidNotificationIcon: 'drawable/ic_stat_speaker',
     // Keep the service alive while paused so the party survives the
     // screen going off.
     androidStopForegroundOnPause: false,

@@ -3,12 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
+import '../live/live_audio.dart';
 import '../sync/audio_engine.dart';
 import '../sync/clock.dart';
 import '../sync/protocol.dart';
+import '../sync/speaker.dart';
 import '../sync/sync_controller.dart';
 
-enum GuestStatus { connecting, connected, reconnecting, hostLeft, failed }
+enum GuestStatus { connecting, connected, reconnecting, hostLeft, removed, failed }
 
 /// A phone that joined someone's party: it copies the host's songs over the
 /// local network and plays them on the host's timeline.
@@ -18,16 +20,30 @@ class PartyGuest extends ChangeNotifier {
     required this.code,
     required this.name,
     required this.folder,
-    required int Function() latencyUs,
+    required this.speaker,
+    this.liveOutput,
   }) {
     sync = SyncController(
       engine: engine,
       hostNowUs: hostNowUs,
-      latencyUs: latencyUs,
+      latencyUs: speaker.latencyUs,
       trackPath: (id) => _paths[id],
       trackTitle: (id) => _track(id)?.title ?? 'Song',
     );
+    speaker.addListener(_sendInfo);
   }
+
+  /// This phone's output and delay; the host can change the delay.
+  final LocalSpeaker speaker;
+
+  /// Plays the host's live sound; null where it can't.
+  final LiveOutput? liveOutput;
+
+  /// Whether the host is streaming its phone's sound instead of songs.
+  bool live = false;
+
+  /// This speaker's volume in the party. The host can change it too.
+  SpeakerLevel level = const SpeakerLevel();
 
   final AudioEngine engine;
   final JoinCode code;
@@ -110,6 +126,7 @@ class PartyGuest extends ChangeNotifier {
     if (!clock.hasEstimate) _clockReady = Completer();
     ws.listen(_onMessage, onDone: _onClosed, onError: (_) => _onClosed());
     _send('hi', {'name': name, 'v': protocolVersion});
+    _sendInfo();
     for (final id in _paths.keys) {
       _send('ready', {'id': id});
     }
@@ -117,6 +134,28 @@ class PartyGuest extends ChangeNotifier {
     _download();
     notifyListeners();
   }
+
+  /// Sets this speaker's volume here and tells the host.
+  void setLevel(SpeakerLevel l) {
+    _applyLevel(l);
+    _sendInfo();
+  }
+
+  void _applyLevel(SpeakerLevel l) {
+    level = l;
+    engine.setVolume(l.effective);
+    liveOutput?.setVolume(l.effective);
+    notifyListeners();
+  }
+
+  /// Tells the host how this speaker is set up, for its speakers list.
+  void _sendInfo() => _send('info', {
+        'vol': (level.volume * 100).round(),
+        'muted': level.muted,
+        'delay': speaker.delayMs,
+        'out': speaker.outputLabel,
+        'bt': speaker.bluetooth,
+      });
 
   void _send(String type, [Map<String, Object?> body = const {}]) {
     try {
@@ -143,6 +182,10 @@ class PartyGuest extends ChangeNotifier {
 
   void _onMessage(Object? data) {
     final now = Clock.nowUs();
+    if (data is List<int>) {
+      _onLiveFrame(data);
+      return;
+    }
     final m = decodeMessage(data);
     if (m == null) return;
     switch (m['t']) {
@@ -167,11 +210,60 @@ class PartyGuest extends ChangeNotifier {
         notifyListeners();
         _applyWhenClockReady(state);
         _download();
+      case 'set':
+        // The host changed this speaker from its speakers list.
+        final vol = m['vol'];
+        final muted = m['muted'];
+        if (vol is int || muted is bool) {
+          _applyLevel(level.copyWith(
+            volume: vol is int ? vol.clamp(0, 100) / 100 : null,
+            muted: muted is bool ? muted : null,
+          ));
+        }
+        if (m['delay'] case final int delay) {
+          speaker.delayMs = delay; // Its listener reports back to the host.
+        } else {
+          _sendInfo();
+        }
+      case 'live':
+        _setLive(m['on'] == true);
+      case 'kick':
+        status = GuestStatus.removed;
+        sync.stop();
+        _setLive(false);
+        notifyListeners();
       case 'bye':
         status = GuestStatus.hostLeft;
         sync.stop();
+        _setLive(false);
         notifyListeners();
     }
+  }
+
+  void _setLive(bool on) {
+    if (on == live) return;
+    live = on;
+    final out = liveOutput;
+    if (on) {
+      sync.stop();
+      if (out != null) {
+        out.start().then((_) => out.setVolume(level.effective));
+      }
+    } else {
+      out?.stop();
+    }
+    notifyListeners();
+  }
+
+  /// Queues a chunk of the host's live sound to play [liveDelayUs] after
+  /// the host captured it, minus this speaker's own delay.
+  void _onLiveFrame(List<int> data) {
+    if (!live || !clock.hasEstimate) return;
+    final f = decodeLiveFrame(data);
+    if (f == null) return;
+    final inUs = f.hostUs + liveDelayUs - hostNowUs() - speaker.latencyUs();
+    if (inUs < -20000) return; // Too late; the speaker has moved on.
+    liveOutput?.push(f.pcm, inUs);
   }
 
   int _pongs = 0;
@@ -254,7 +346,11 @@ class PartyGuest extends ChangeNotifier {
   void _onClosed() {
     _pinger?.cancel();
     _ws = null;
-    if (_closed || status == GuestStatus.hostLeft) return;
+    if (_closed ||
+        status == GuestStatus.hostLeft ||
+        status == GuestStatus.removed) {
+      return;
+    }
     status = GuestStatus.reconnecting;
     notifyListeners();
     _reconnect();
@@ -271,6 +367,8 @@ class PartyGuest extends ChangeNotifier {
 
   Future<void> leave() async {
     _closed = true;
+    speaker.removeListener(_sendInfo);
+    _setLive(false);
     _pinger?.cancel();
     await _ws?.close();
     _http?.close(force: true);

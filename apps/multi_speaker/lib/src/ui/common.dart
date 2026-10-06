@@ -1,66 +1,11 @@
 import 'package:flutter/material.dart';
 
-import '../settings.dart';
-import '../speaker_delay.dart';
 import '../sync/sync_controller.dart';
 
 String formatTime(Duration d) {
   final m = d.inMinutes;
   final s = d.inSeconds % 60;
   return '$m:${s.toString().padLeft(2, '0')}';
-}
-
-/// "This speaker plays late? Slide right." control for the output in use.
-class DelayTile extends StatelessWidget {
-  const DelayTile({super.key, required this.delay});
-
-  final SpeakerDelay delay;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListenableBuilder(
-      listenable: delay,
-      builder: (context, _) {
-        final theme = Theme.of(context);
-        return Card(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(delay.output.bluetooth
-                        ? Icons.bluetooth_audio
-                        : Icons.speaker_phone),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(delay.outputLabel,
-                          style: theme.textTheme.titleSmall,
-                          overflow: TextOverflow.ellipsis),
-                    ),
-                    Text('${delay.ms} ms', style: theme.textTheme.titleSmall),
-                  ],
-                ),
-                Slider(
-                  value: delay.ms.toDouble(),
-                  max: Settings.maxDelayMs.toDouble(),
-                  divisions: Settings.maxDelayMs ~/ 10,
-                  label: '${delay.ms} ms',
-                  onChanged: (v) => delay.ms = v.round(),
-                ),
-                Text(
-                  'Speaker delay. If this speaker sounds behind the others, '
-                  'slide right. If it sounds ahead, slide left.',
-                  style: theme.textTheme.bodySmall,
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 }
 
 /// A small coloured chip that says how this phone is keeping up.

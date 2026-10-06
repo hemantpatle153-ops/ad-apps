@@ -28,11 +28,12 @@ class Habit {
   /// Consecutive completed days ending today (or yesterday if today is open).
   int streak(DateTime today) {
     var d = DateTime(today.year, today.month, today.day);
-    if (!doneOn(d)) d = d.subtract(const Duration(days: 1));
+    // Step by calendar day, not 24h, so DST changes don't skip a day.
+    if (!doneOn(d)) d = DateTime(d.year, d.month, d.day - 1);
     var n = 0;
     while (doneOn(d)) {
       n++;
-      d = d.subtract(const Duration(days: 1));
+      d = DateTime(d.year, d.month, d.day - 1);
     }
     return n;
   }
@@ -165,12 +166,13 @@ class AppStore extends ChangeNotifier {
 
   /// Consecutive days, ending today or yesterday, that reached the goal.
   int waterStreak() {
-    var d = DateTime.now();
-    if (mlOn(d) < goalMl) d = d.subtract(const Duration(days: 1));
+    final now = DateTime.now();
+    var d = DateTime(now.year, now.month, now.day);
+    if (mlOn(d) < goalMl) d = DateTime(d.year, d.month, d.day - 1);
     var n = 0;
     while (mlOn(d) >= goalMl && n < 400) {
       n++;
-      d = d.subtract(const Duration(days: 1));
+      d = DateTime(d.year, d.month, d.day - 1);
     }
     return n;
   }

@@ -56,14 +56,31 @@ class _HomeScreenState extends State<HomeScreen> {
     if (mounted) setState(() {});
   }
 
-  Future<void> _newGame(Difficulty d) async {
+  /// Shows the spinner while [make] runs on another isolate, then opens the
+  /// puzzle. Always clears the spinner, even if generation fails.
+  Future<void> _start(
+      Future<Puzzle> Function() make, GameState Function(Puzzle) toGame) async {
     setState(() => _busy = true);
+    Puzzle? p;
+    try {
+      p = await make();
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Couldn't create a puzzle. Try again.")),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+    if (p == null || !mounted) return;
+    await _open(toGame(p));
+  }
+
+  Future<void> _newGame(Difficulty d) {
     final seed = DateTime.now().microsecondsSinceEpoch;
-    // Generation can take a moment on hard levels, so keep the UI responsive.
-    final p = await Isolate.run(() => SudokuEngine(seed).generate(d));
-    if (!mounted) return;
-    setState(() => _busy = false);
-    await _open(GameState.fromPuzzle(d.name, d.label, p));
+    return _start(() => generatePuzzle(seed, d),
+        (p) => GameState.fromPuzzle(d.name, d.label, p));
   }
 
   Future<void> _daily() async {
@@ -71,11 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final key = Store.dayKey(today);
     final current = store.loadCurrent();
     if (current != null && current.id == 'daily_$key') return _open(current);
-    setState(() => _busy = true);
-    final p = await Isolate.run(() => SudokuEngine.daily(today));
-    if (!mounted) return;
-    setState(() => _busy = false);
-    await _open(GameState.fromPuzzle('daily_$key', 'Daily $key', p));
+    return _start(() => generateDaily(today),
+        (p) => GameState.fromPuzzle('daily_$key', 'Daily $key', p));
   }
 
   String _days(int n) => n == 1 ? '1 day' : '$n days';
@@ -151,6 +165,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+// Isolate.run sends its closure to the new isolate. A closure written inside
+// a State method can capture the State (and its BuildContext), which can't be
+// sent, so Isolate.run throws. These top-level closures only hold plain values.
+Future<Puzzle> generatePuzzle(int seed, Difficulty d) =>
+    Isolate.run(() => SudokuEngine(seed).generate(d));
+
+Future<Puzzle> generateDaily(DateTime day) =>
+    Isolate.run(() => SudokuEngine.daily(day));
 
 String formatTime(int s) =>
     '${(s ~/ 60).toString().padLeft(2, '0')}:${(s % 60).toString().padLeft(2, '0')}';

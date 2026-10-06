@@ -10,6 +10,9 @@ enum VideoSort { name, date, size, duration }
 
 enum FolderSort { name, count, date }
 
+/// Equalizer band centre frequencies in Hz.
+const eqBands = [31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
+
 /// One entry of the "Recently played" list.
 class RecentItem {
   RecentItem({
@@ -77,12 +80,22 @@ class Settings extends ChangeNotifier {
   late double subtitleSize;
   late int subtitleColor;
   late bool subtitleBackground;
+  late double subtitleLift;
   late double lastSpeed;
   late bool rememberSpeed;
   late bool resume;
   late List<RecentItem> recents;
   late List<String> streamHistory;
   late Map<String, int> _positions;
+  late int doubleTapSeconds;
+  late bool hardwareDecoding;
+  late bool gridView;
+  late Set<String> hiddenFolders;
+  late String partyName;
+  late List<double> eqGains;
+  late bool nightMode;
+  late Map<String, List<int>> _bookmarks;
+  late Map<String, String> _captions;
 
   void _load() {
     themeMode = ThemeMode.values[_p.getInt('theme') ?? ThemeMode.dark.index];
@@ -93,6 +106,7 @@ class Settings extends ChangeNotifier {
     subtitleSize = _p.getDouble('subSize') ?? 22;
     subtitleColor = _p.getInt('subColor') ?? 0xFFFFFFFF;
     subtitleBackground = _p.getBool('subBg') ?? false;
+    subtitleLift = _p.getDouble('subLift') ?? 0;
     lastSpeed = _p.getDouble('speed') ?? 1;
     rememberSpeed = _p.getBool('rememberSpeed') ?? false;
     resume = _p.getBool('resume') ?? true;
@@ -100,6 +114,24 @@ class Settings extends ChangeNotifier {
         .map((e) => RecentItem.fromJson(e.cast<String, Object?>()))
         .toList();
     streamHistory = _p.getStringList('streams') ?? [];
+    doubleTapSeconds = _p.getInt('dtSeconds') ?? 10;
+    hardwareDecoding = _p.getBool('hwdec') ?? true;
+    gridView = _p.getBool('grid') ?? false;
+    hiddenFolders = (_p.getStringList('hiddenFolders') ?? const []).toSet();
+    partyName = _p.getString('partyName') ?? '';
+    eqGains = (_p.getStringList('eq') ?? const [])
+        .map((e) => double.tryParse(e) ?? 0)
+        .toList();
+    if (eqGains.length != eqBands.length) eqGains = List.filled(eqBands.length, 0);
+    nightMode = _p.getBool('night') ?? false;
+    _bookmarks = ((_tryDecode(_p.getString('bookmarks')) as Map?) ?? const {}).map(
+        (k, v) => MapEntry(k as String, [for (final x in v as List) (x as num).toInt()]));
+    // Caption search settings from early test builds; search was removed.
+    for (final k in ['capLangs', 'osKey', 'osToken', 'osUser', 'osHost']) {
+      _p.remove(k);
+    }
+    _captions = ((_tryDecode(_p.getString('captions')) as Map?) ?? const {})
+        .map((k, v) => MapEntry(k as String, '$v'));
     _positions = (_tryDecode(_p.getString('positions')) as Map?)
             ?.map((k, v) => MapEntry(k as String, (v as num).toInt())) ??
         {};
@@ -143,7 +175,8 @@ class Settings extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setSubtitleStyle({double? size, int? color, bool? background}) {
+  void setSubtitleStyle({double? size, int? color, bool? background, double? lift}) {
+    if (lift != null) _p.setDouble('subLift', subtitleLift = lift);
     if (size != null) _p.setDouble('subSize', subtitleSize = size);
     if (color != null) _p.setInt('subColor', subtitleColor = color);
     if (background != null) _p.setBool('subBg', subtitleBackground = background);
@@ -165,6 +198,84 @@ class Settings extends ChangeNotifier {
     resume = v;
     _p.setBool('resume', v);
     notifyListeners();
+  }
+
+  void setDoubleTapSeconds(int v) {
+    doubleTapSeconds = v;
+    _p.setInt('dtSeconds', v);
+    notifyListeners();
+  }
+
+  void setHardwareDecoding(bool v) {
+    hardwareDecoding = v;
+    _p.setBool('hwdec', v);
+    notifyListeners();
+  }
+
+  void setGridView(bool v) {
+    gridView = v;
+    _p.setBool('grid', v);
+    notifyListeners();
+  }
+
+  void setFolderHidden(String id, bool hidden) {
+    hidden ? hiddenFolders.add(id) : hiddenFolders.remove(id);
+    _p.setStringList('hiddenFolders', hiddenFolders.toList());
+    notifyListeners();
+  }
+
+  void setPartyName(String v) {
+    partyName = v.trim();
+    _p.setString('partyName', partyName);
+    notifyListeners();
+  }
+
+  /// Equalizer gains in dB, one per [eqBands] entry; kept for every video.
+  void setEq(List<double> gains, {bool? night}) {
+    eqGains = [...gains];
+    _p.setStringList('eq', [for (final g in gains) g.toStringAsFixed(1)]);
+    if (night != null) _p.setBool('night', nightMode = night);
+    notifyListeners();
+  }
+
+  // Bookmarks ---------------------------------------------------------------
+
+  List<Duration> bookmarksFor(String key) =>
+      [for (final ms in _bookmarks[key] ?? const <int>[]) Duration(milliseconds: ms)];
+
+  void addBookmark(String key, Duration at) {
+    final list = _bookmarks.putIfAbsent(key, () => [])
+      ..add(at.inMilliseconds)
+      ..sort();
+    if (list.length > 50) list.removeAt(0);
+    _saveBookmarks();
+  }
+
+  void removeBookmark(String key, Duration at) {
+    _bookmarks[key]?.remove(at.inMilliseconds);
+    if (_bookmarks[key]?.isEmpty ?? false) _bookmarks.remove(key);
+    _saveBookmarks();
+  }
+
+  void _saveBookmarks() {
+    while (_bookmarks.length > 300) {
+      _bookmarks.remove(_bookmarks.keys.first);
+    }
+    _p.setString('bookmarks', jsonEncode(_bookmarks));
+    notifyListeners();
+  }
+
+  // Subtitle files picked per video ---------------------------------------
+
+  String? captionFor(String key) => _captions[key];
+
+  void setCaption(String key, String? path) {
+    _captions.remove(key);
+    if (path != null) _captions[key] = path;
+    while (_captions.length > 200) {
+      _captions.remove(_captions.keys.first);
+    }
+    _p.setString('captions', jsonEncode(_captions));
   }
 
   // Resume points ----------------------------------------------------------

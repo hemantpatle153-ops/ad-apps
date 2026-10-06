@@ -5,6 +5,7 @@ import 'package:app_core/app_core.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../live/live_audio.dart';
 import '../net/party_guest.dart';
 import '../platform/native.dart';
 import '../settings.dart';
@@ -13,6 +14,7 @@ import '../sync/audio_engine.dart';
 import '../sync/protocol.dart';
 import '../sync/sync_controller.dart';
 import 'common.dart';
+import 'widgets.dart';
 
 /// This phone as one speaker of someone else's party.
 class GuestScreen extends StatefulWidget {
@@ -51,7 +53,8 @@ class _GuestScreenState extends State<GuestScreen> {
       code: widget.code,
       name: name,
       folder: folder,
-      latencyUs: _delay.latencyUs,
+      speaker: _delay,
+      liveOutput: NativeLiveOutput(),
     );
     if (!mounted) return;
     setState(() => _guest = guest);
@@ -69,8 +72,9 @@ class _GuestScreenState extends State<GuestScreen> {
 
   Future<void> _leave() async {
     final g = _guest;
-    final live = g != null && g.status == GuestStatus.connected && g.state.playing;
-    if (live &&
+    final playing =
+        g != null && g.status == GuestStatus.connected && (g.state.playing || g.live);
+    if (playing &&
         !await confirmLeave(context,
             title: 'Leave the party?',
             body: 'This speaker stops. The others keep playing.',
@@ -119,6 +123,12 @@ class _GuestScreenState extends State<GuestScreen> {
               "same Wi-Fi, or that this phone is on the host's hotspot.",
           action: FilledButton(onPressed: g.connect, child: const Text('Try again')),
         );
+      case GuestStatus.removed:
+        return _Message(
+          icon: Icons.person_remove_outlined,
+          text: 'The host removed this phone from the party.',
+          action: FilledButton(onPressed: _leave, child: const Text('Done')),
+        );
       case GuestStatus.hostLeft:
         return _Message(
           icon: Icons.celebration,
@@ -132,33 +142,64 @@ class _GuestScreenState extends State<GuestScreen> {
     final track = g.current;
     final duration = g.sync.duration ?? Duration.zero;
     final pos = g.position;
+    final scheme = theme.colorScheme;
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
       children: [
         if (g.status == GuestStatus.reconnecting)
           Card(
-            color: theme.colorScheme.errorContainer,
+            color: scheme.errorContainer,
             child: const ListTile(
               leading: Icon(Icons.wifi_off),
               title: Text('Lost the host. Reconnecting...'),
+              subtitle: Text('The music keeps playing meanwhile.'),
             ),
           ),
+        if (g.live)
+          Card(
+            color: scheme.primaryContainer,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
+              child: Column(
+                children: [
+                  const SpeakerPulse(playing: true, size: 120),
+                  const SizedBox(height: 16),
+                  Text('Live from ${widget.code.name}',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 6),
+                  Text('This speaker plays whatever that phone plays.',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
+                ],
+              ),
+            ),
+          )
+        else
         Card(
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
             child: Column(
               children: [
                 ValueListenableBuilder(
                   valueListenable: g.sync.phase,
-                  builder: (context, phase, _) =>
-                      SpeakerPulse(playing: phase == SyncPhase.playing, size: 64),
+                  builder: (context, phase, _) => ArtworkTile(
+                      title: track?.title,
+                      size: 168,
+                      playing: phase == SyncPhase.playing),
                 ),
+                const SizedBox(height: 16),
                 Text(track?.title ?? 'Waiting for the host to pick a song',
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.titleLarge),
+                    style: theme.textTheme.titleLarge
+                        ?.copyWith(fontWeight: FontWeight.w700)),
                 const SizedBox(height: 4),
+                Text('From ${widget.code.name}',
+                    style: theme.textTheme.bodyMedium
+                        ?.copyWith(color: scheme.onSurfaceVariant)),
+                const SizedBox(height: 8),
                 SyncChip(
                     sync: g.sync,
                     downloadProgress:
@@ -169,42 +210,74 @@ class _GuestScreenState extends State<GuestScreen> {
                     icon: const Icon(Icons.play_arrow),
                     label: const Text('Play here again'),
                   ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
                 LinearProgressIndicator(
                   value: duration.inMilliseconds == 0
                       ? 0
                       : (pos.inMilliseconds / duration.inMilliseconds).clamp(0.0, 1.0),
                   borderRadius: BorderRadius.circular(4),
+                  minHeight: 6,
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 6),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text(formatTime(pos)), Text(formatTime(duration))],
+                  children: [
+                    Text(formatTime(pos), style: theme.textTheme.labelMedium),
+                    Text(formatTime(duration), style: theme.textTheme.labelMedium),
+                  ],
                 ),
-                const SizedBox(height: 4),
-                Text('The host controls the music. Use the volume buttons on '
-                    'this phone or speaker.',
-                    textAlign: TextAlign.center, style: theme.textTheme.bodySmall),
               ],
             ),
           ),
         ),
-        const SizedBox(height: 8),
-        DelayTile(delay: _delay),
-        const SizedBox(height: 16),
-        Text('Up next', style: theme.textTheme.titleMedium),
-        for (final t in g.playlist)
+        const SectionHeader('This speaker'),
+        ListenableBuilder(
+          listenable: _delay,
+          builder: (context, _) => SpeakerCard(
+            name: widget.settings.name ?? 'This phone',
+            output: _delay.outputLabel,
+            bluetooth: _delay.bluetooth,
+            isThisPhone: true,
+            level: g.level,
+            onLevel: g.setLevel,
+            delayMs: _delay.delayMs,
+            onDelay: (ms) => _delay.delayMs = ms,
+            footer: _delay.bluetooth
+                ? null
+                : Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 0, 8, 4),
+                    child: OutlinedButton.icon(
+                      onPressed: Native.openBluetoothSettings,
+                      icon: const Icon(Icons.bluetooth),
+                      label: const Text('Connect a Bluetooth speaker'),
+                    ),
+                  ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Text('The host can change this speaker\'s volume and delay too.',
+              style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
+        ),
+        if (g.playlist.isNotEmpty && !g.live) const SectionHeader('Up next'),
+        for (final t in g.live ? const <Track>[] : g.playlist)
           ListTile(
-            dense: true,
-            leading: Icon(t.id == g.state.trackId ? Icons.graphic_eq : Icons.music_note,
-                color: t.id == g.state.trackId ? theme.colorScheme.primary : null),
-            title: Text(t.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+            leading: ArtworkTile(title: t.title, size: 40),
+            title: Text(t.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: t.id == g.state.trackId
+                    ? const TextStyle(fontWeight: FontWeight.w700)
+                    : null),
             trailing: g.downloading.containsKey(t.id)
                 ? SizedBox.square(
                     dimension: 20,
                     child: CircularProgressIndicator(
                         strokeWidth: 2, value: g.downloading[t.id]))
-                : null,
+                : t.id == g.state.trackId
+                    ? Icon(Icons.graphic_eq, color: scheme.primary)
+                    : null,
           ),
       ],
     );

@@ -54,7 +54,9 @@ class WaterView extends StatelessWidget {
         ],
       ),
     );
-    c.dispose();
+    // Not disposed here: the dialog's TextField is still rebuilt during the
+    // closing animation, and a disposed controller would throw. It is
+    // garbage collected with the dialog.
     if (v != null && v > 0 && v <= 5000 && context.mounted) _add(context, v);
   }
 

@@ -1,25 +1,40 @@
 package `in`.onlysoftware.multi_speaker
 
+import android.Manifest
+import android.app.Activity
 import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothStatusCodes
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
+import android.media.projection.MediaProjectionConfig
+import android.media.projection.MediaProjectionManager
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.provider.Settings
 import com.ryanheise.audioservice.AudioServiceActivity
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
 // AudioServiceActivity (from just_audio_background) keeps music playing
 // with the screen off; the channel below adds the few Android calls the app
 // needs (see lib/src/platform/native.dart).
 class MainActivity : AudioServiceActivity() {
+    companion object {
+        private const val REQUEST_AUDIO = 4781
+        private const val REQUEST_CAPTURE = 4782
+    }
+
     private var wifiLock: WifiManager.WifiLock? = null
     private var multicastLock: WifiManager.MulticastLock? = null
+    private val livePlayer = LivePlayer()
+
+    // The Dart call waiting for the user to allow live capture.
+    private var captureResult: MethodChannel.Result? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -34,15 +49,98 @@ class MainActivity : AudioServiceActivity() {
                             result.success(null)
                         }
                         "openHotspotSettings" -> { openHotspotSettings(); result.success(null) }
+                        "openMediaOutput" -> { openMediaOutput(); result.success(null) }
                         "deviceName" -> result.success(deviceName())
                         "audioOutput" -> result.success(audioOutput())
                         "bluetoothFeatures" -> result.success(bluetoothFeatures())
+                        "liveCaptureSupported" -> result.success(Build.VERSION.SDK_INT >= 29)
+                        "liveCaptureStart" -> startCapture(result)
+                        "liveCaptureStop" -> {
+                            stopService(Intent(this, CaptureService::class.java))
+                            result.success(null)
+                        }
+                        "livePlayStart" -> { livePlayer.start(); result.success(null) }
+                        "livePlayPush" -> {
+                            val pcm = call.argument<ByteArray>("pcm")
+                            val inUs = call.argument<Number>("in")?.toLong()
+                            if (pcm != null && inUs != null) livePlayer.push(pcm, inUs)
+                            result.success(null)
+                        }
+                        "livePlayVolume" -> {
+                            livePlayer.setVolume(call.argument<Number>("v")?.toFloat() ?: 1f)
+                            result.success(null)
+                        }
+                        "livePlayStop" -> { livePlayer.stop(); result.success(null) }
                         else -> result.notImplemented()
                     }
                 } catch (e: Exception) {
                     result.error("native", e.message, null)
                 }
             }
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, "in.onlysoftware.multi_speaker/capture")
+            .setStreamHandler(object : EventChannel.StreamHandler {
+                override fun onListen(arguments: Any?, events: EventChannel.EventSink) {
+                    CaptureService.sink = { events.success(it) }
+                }
+                override fun onCancel(arguments: Any?) {
+                    CaptureService.sink = null
+                }
+            })
+    }
+
+    override fun onDestroy() {
+        livePlayer.stop()
+        if (Build.VERSION.SDK_INT >= 29) stopService(Intent(this, CaptureService::class.java))
+        super.onDestroy()
+    }
+
+    // Live mode: microphone-type permission first (Android requires it for
+    // playback capture), then the system "Start recording or casting?"
+    // prompt, then the capture service.
+    private fun startCapture(result: MethodChannel.Result) {
+        if (Build.VERSION.SDK_INT < 29) { result.success(false); return }
+        if (CaptureService.running) { result.success(true); return }
+        captureResult?.success(false)
+        captureResult = result
+        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQUEST_AUDIO)
+        } else {
+            askToCapture()
+        }
+    }
+
+    private fun askToCapture() {
+        val manager = getSystemService(MediaProjectionManager::class.java)
+        // Whole screen: sharing a single app doesn't capture other apps' sound.
+        val intent = if (Build.VERSION.SDK_INT >= 34) {
+            manager.createScreenCaptureIntent(MediaProjectionConfig.createConfigForDefaultDisplay())
+        } else {
+            manager.createScreenCaptureIntent()
+        }
+        startActivityForResult(intent, REQUEST_CAPTURE)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode != REQUEST_AUDIO) return
+        if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
+            askToCapture()
+        } else {
+            captureResult?.success(false)
+            captureResult = null
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != REQUEST_CAPTURE) return
+        val ok = resultCode == Activity.RESULT_OK && data != null
+        if (ok && Build.VERSION.SDK_INT >= 29) {
+            startForegroundService(Intent(this, CaptureService::class.java)
+                .putExtra(CaptureService.EXTRA_RESULT_DATA, data))
+        }
+        captureResult?.success(ok)
+        captureResult = null
     }
 
     private fun holdNetwork() {
@@ -74,6 +172,19 @@ class MainActivity : AudioServiceActivity() {
             startActivity(tether)
         } catch (e: Exception) {
             startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS))
+        }
+    }
+
+    // The "where is this playing" panel; on Samsung it is where Dual audio
+    // ticks two speakers. Falls back to Bluetooth settings.
+    private fun openMediaOutput() {
+        val panel = Intent("com.android.settings.panel.action.MEDIA_OUTPUT")
+            .putExtra("com.android.settings.panel.extra.PACKAGE_NAME", packageName)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        try {
+            startActivity(panel)
+        } catch (e: Exception) {
+            startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS))
         }
     }
 

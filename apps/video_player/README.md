@@ -9,18 +9,48 @@ phone, plays almost any format (libmpv through `media_kit`), and works offline.
   name, date, size or length; search across all videos; "NEW" badges
 - Plays mp4, mkv, avi, webm, 3gp, mov, flv, ts and more, plus http(s)/HLS links
 - Gestures: left side brightness, right side volume, swipe to seek,
-  double tap to skip 10 s (middle toggles play), pinch to zoom
+  double tap to skip 10 s (fast keyframe jumps over a 30 s read-ahead
+  cache; middle toggles play), press and hold for 2x speed, pinch to zoom
 - Screen lock, fit / stretch / crop / 16:9 / 4:3, rotation lock, speed 0.25x to 4x
 - Subtitles: embedded tracks, a matching .srt next to the video (Android 10 and
   older; Android 11+ only lets apps read media files, so pick the file there),
-  pick a file, text size, colour and background box
+  pick a file (remembered per video), text size, colour and background box.
+  Auto sync listens to the video and lines a subtitle file up with the
+  speech (also fixes frame-rate mix-ups). Or sync by tapping "Next line now" /
+  "Last line now" when a line is spoken, or with the delay buttons
 - Audio track choice, play audio in the background with notification controls
 - Picture-in-picture (button, or automatically when leaving the app)
 - Resume where you stopped, "Continue watching" card, recently played list
 - "Open with Video Player" from file managers and other apps
 - Private folder locked with a PIN (videos are moved into app storage and
   removed from the gallery; moving them back restores the original folder)
-- Dark and light themes
+- Dark and light themes, list or grid view, hide folders, share a video
+- Player tools: 10-band equalizer with presets and night mode, volume boost
+  to 200%, audio and subtitle delay, subtitle position, brightness / contrast /
+  saturation / gamma / hue, rotate and mirror, sleep timer, A-B repeat, repeat
+  one / all, shuffle, playing queue, frame-by-frame step, screenshots (saved to
+  Pictures/Video Player), bookmarks, chapters, hardware / software decoder
+
+## Watch together
+
+One phone opens a video and taps More, then Watch with friends, and picks:
+
+- **Online, with a code**: anywhere in the world. Firebase Realtime Database
+  (project `dice-dhamaal`, shared with the Ludo game, data under `watch/`)
+  carries only play, pause, seek, speed, chat and emoji. The video itself is
+  never uploaded: a link opens on every phone, and a phone video must already
+  be on each friend's phone (they pick their copy; the app ranks the one with
+  the same length first). Everyone follows a shared timeline on Firebase's
+  server clock. Rules to add in the Firebase console:
+  `/mnt/project-files/video_player/firebase_watch_rules.md` (project files).
+- **Nearby, on the same Wi-Fi or hotspot**: no internet or server. Friends
+  stream the video from the host phone (HTTP with range requests) and join by
+  QR code, the nearby list or the address. Clock sync over Wi-Fi, a seek when
+  more than 1.5 s off, small speed nudges below that.
+
+Both have chat and emoji reactions over the video. Live-streaming a phone
+file to friends over the internet is not built: it would use the host's
+upload data and, on many mobile networks, a paid TURN relay.
 
 ## Ads
 
@@ -34,7 +64,8 @@ Google's test ad IDs.
 
 `READ_MEDIA_VIDEO` on Android 13+, `READ_EXTERNAL_STORAGE` up to Android 12,
 `WRITE_EXTERNAL_STORAGE` only up to Android 10 (private folder), plus
-`FOREGROUND_SERVICE_MEDIA_PLAYBACK` for background audio. No
+`FOREGROUND_SERVICE_MEDIA_PLAYBACK` for background audio, `CAMERA` (optional) to
+scan a watch party QR code, Wi-Fi state and multicast to find parties nearby. No
 `MANAGE_EXTERNAL_STORAGE`. Play Console will ask for the photo and video
 permissions declaration: the app's core purpose is playing the user's videos.
 
