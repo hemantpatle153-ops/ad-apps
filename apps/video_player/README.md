@@ -58,5 +58,5 @@ flutter build apk --release      # same flags
 
 `tool/gen_icon.py` (run from this folder) draws the launcher and
 notification icons; `tool/icon_512.png` is the Play Store icon.
-The `Video Player APK` workflow builds a test APK on GitHub (debug-signed,
-test ads) for every change to this app.
+The `apk` job in CI builds a test APK on GitHub (debug-signed,
+test ads) and saves it on branch apk-video_player.
