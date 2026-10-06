@@ -76,7 +76,10 @@ class PlayerScreen extends StatefulWidget {
 
 class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver {
   late final Player player = Player(
-    configuration: const PlayerConfiguration(title: 'Video Player'),
+    // A bigger cache keeps the next and previous seconds in memory, so
+    // 10-second skips land without reloading.
+    configuration: const PlayerConfiguration(
+        title: 'Video Player', bufferSize: 96 * 1024 * 1024),
   );
   late final VideoController controller = VideoController(player);
   late final SubtitleSession subtitles = SubtitleSession(player);
@@ -108,6 +111,14 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   int _rippleSeconds = 0;
 
   Widget? _indicator;
+
+  // Hold-to-speed-up: the speed to go back to while a finger is held.
+  double? _holdFrom;
+
+  // Where repeated skips are heading, so quick taps add up even before the
+  // player reports the new position.
+  Duration? _seekTarget;
+  Timer? _seekTargetTimer;
   Duration? _resumedFrom;
   String? _error;
 
@@ -137,8 +148,22 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       player.stream.height.listen((_) => _videoSizeChanged()),
     ]);
     _saveTimer = Timer.periodic(const Duration(seconds: 5), (_) => _saveProgress());
+    unawaited(_tuneSeeking());
     _initDevice();
     _open(index);
+  }
+
+  /// Read ahead 20 s and keep what was played, so skips are served from
+  /// memory, and drop frames while catching up to the exact spot.
+  Future<void> _tuneSeeking() async {
+    final p = player.platform;
+    if (p is! NativePlayer) return;
+    try {
+      await p.setProperty('cache', 'yes');
+      await p.setProperty('demuxer-readahead-secs', '20');
+      await p.setProperty('cache-secs', '30');
+      await p.setProperty('hr-seek-framedrop', 'yes');
+    } catch (_) {}
   }
 
   Future<void> _initDevice() async {
@@ -359,11 +384,48 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   void _seekBy(Duration by) {
     final d = player.state.duration;
-    var t = player.state.position + by;
+    var t = (_seekTarget ?? player.state.position) + by;
     if (t < Duration.zero) t = Duration.zero;
     if (d > Duration.zero && t > d) t = d;
+    _seekTarget = t;
+    _seekTargetTimer?.cancel();
+    _seekTargetTimer = Timer(const Duration(milliseconds: 800), () => _seekTarget = null);
     player.seek(t);
   }
+
+  void _onLongPressStart(LongPressStartDetails d) {
+    if (_locked || !player.state.playing) return;
+    _holdFrom = player.state.rate;
+    final fast = _holdFrom! < 2 ? 2.0 : _holdFrom! * 2;
+    player.setRate(fast);
+    HapticFeedback.selectionClick();
+    setState(() {});
+  }
+
+  void _onLongPressEnd() {
+    final from = _holdFrom;
+    if (from == null) return;
+    player.setRate(from);
+    setState(() => _holdFrom = null);
+  }
+
+  Widget _holdPill() => IgnorePointer(
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Container(
+            margin: const EdgeInsets.only(top: 28),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+            decoration: BoxDecoration(
+                color: Colors.black54, borderRadius: BorderRadius.circular(20)),
+            child: Row(mainAxisSize: MainAxisSize.min, children: [
+              const Icon(Icons.fast_forward_rounded, color: Colors.white, size: 20),
+              const SizedBox(width: 6),
+              Text('${player.state.rate.toStringAsFixed(player.state.rate % 1 == 0 ? 0 : 1)}x',
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+            ]),
+          ),
+        ),
+      );
 
   void _onScaleStart(ScaleStartDetails d) {
     if (_locked) return;
@@ -458,7 +520,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     for (final s in _subs) {
       s.cancel();
     }
-    for (final t in [_hideTimer, _indicatorTimer, _saveTimer, _resumeTimer, _rippleTimer]) {
+    for (final t in [_hideTimer, _indicatorTimer, _saveTimer, _resumeTimer, _rippleTimer, _seekTargetTimer]) {
       t?.cancel();
     }
     BackgroundAudio.instance.detach();
@@ -511,6 +573,9 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
                         onScaleStart: _onScaleStart,
                         onScaleUpdate: (d) => _onScaleUpdate(d, size),
                         onScaleEnd: _onScaleEnd,
+                        onLongPressStart: _onLongPressStart,
+                        onLongPressEnd: (_) => _onLongPressEnd(),
+                        onLongPressCancel: _onLongPressEnd,
                       ),
                       if (_rippleForward != null)
                         IgnorePointer(
@@ -518,6 +583,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
                               forward: _rippleForward!, seconds: _rippleSeconds),
                         ),
                       _buffering(),
+                      if (_holdFrom != null) _holdPill(),
                       if (_indicator != null)
                         IgnorePointer(child: Center(child: _indicator)),
                       if (_error != null) _errorView(),

@@ -4,9 +4,11 @@ import 'dart:typed_data';
 
 import 'package:path_provider/path_provider.dart';
 
-/// Free subtitle search key, set at build time:
+/// The app's subtitle search key, set at build time:
 ///   flutter build apk --dart-define=OPENSUBTITLES_API_KEY=...
 /// Without it the "Find subtitles online" option explains it is unavailable.
+/// The service forbids asking users for their own key; users raise their
+/// daily limit by signing in with their own account instead.
 const openSubtitlesKey = String.fromEnvironment('OPENSUBTITLES_API_KEY');
 
 const _host = 'api.opensubtitles.com';
@@ -143,9 +145,51 @@ class SubtitleServiceException implements Exception {
   String toString() => message;
 }
 
+/// A signed-in session: the token and the server the service assigned.
+class SubtitleLogin {
+  const SubtitleLogin(this.token, this.host, this.allowedDownloads);
+  final String token;
+  final String host;
+  final int? allowedDownloads;
+}
+
+/// Reads the login reply; null when it has no token.
+SubtitleLogin? parseLogin(Map<String, Object?> json) {
+  final token = json['token'];
+  if (token is! String || token.isEmpty) return null;
+  var host = json['base_url'] as String? ?? _host;
+  host = host.replaceFirst(RegExp(r'^https?://'), '').split('/').first;
+  if (host.isEmpty) host = _host;
+  final user = json['user'] as Map?;
+  return SubtitleLogin(token, host, (user?['allowed_downloads'] as num?)?.toInt());
+}
+
 class OnlineSubtitles {
-  OnlineSubtitles({HttpClient? client}) : _client = client ?? HttpClient();
+  OnlineSubtitles({HttpClient? client, this.token, String? host})
+      : _client = client ?? HttpClient(),
+        host = host ?? _host;
   final HttpClient _client;
+
+  /// Signed-in token, if any, and the server to use with it.
+  final String? token;
+  final String host;
+
+  /// Signs in with the user's own account. Throws
+  /// [SubtitleServiceException] with a readable message on failure.
+  Future<SubtitleLogin> login(String username, String password) async {
+    final json = await _send('POST', Uri.https(_host, '/api/v1/login'),
+        {'username': username, 'password': password});
+    final login = parseLogin(json);
+    if (login == null) throw const SubtitleServiceException('Sign-in failed.');
+    return login;
+  }
+
+  Future<void> logout() async {
+    if (token == null) return;
+    try {
+      await _send('DELETE', Uri.https(host, '/api/v1/logout'));
+    } catch (_) {}
+  }
 
   Future<Map<String, Object?>> _send(String method, Uri uri, [Object? body]) async {
     final req = await _client.openUrl(method, uri).timeout(const Duration(seconds: 20));
@@ -153,6 +197,9 @@ class OnlineSubtitles {
       ..set('Api-Key', openSubtitlesKey)
       ..set(HttpHeaders.userAgentHeader, _userAgent)
       ..set(HttpHeaders.acceptHeader, 'application/json');
+    if (token != null) {
+      req.headers.set(HttpHeaders.authorizationHeader, 'Bearer $token');
+    }
     if (body != null) {
       req.headers.contentType = ContentType.json;
       req.write(jsonEncode(body));
@@ -166,9 +213,15 @@ class OnlineSubtitles {
     final map = json is Map ? json.cast<String, Object?>() : <String, Object?>{};
     if (res.statusCode >= 400) {
       final msg = map['message'] ?? map['errors']?.toString();
-      throw SubtitleServiceException(res.statusCode == 406 || res.statusCode == 429
-          ? 'Daily download limit reached. Try again tomorrow.'
-          : 'Subtitle search failed (${msg ?? res.statusCode}).');
+      throw SubtitleServiceException(switch (res.statusCode) {
+        401 when uri.path.endsWith('/login') => 'Wrong username or password.',
+        401 => 'Your subtitle sign-in has expired. Sign in again in Settings.',
+        406 || 429 => token == null
+            ? 'Daily download limit reached. Sign in with a free account in '
+                'Settings for more, or try again tomorrow.'
+            : 'Daily download limit reached. Try again tomorrow.',
+        _ => 'Subtitle service error (${msg ?? res.statusCode}).',
+      });
     }
     return map;
   }
@@ -187,13 +240,13 @@ class OnlineSubtitles {
     };
     final sorted = Map.fromEntries(
         params.entries.toList()..sort((a, b) => a.key.compareTo(b.key)));
-    final json = await _send('GET', Uri.https(_host, '/api/v1/subtitles', sorted));
+    final json = await _send('GET', Uri.https(host, '/api/v1/subtitles', sorted));
     return parseSearch(json);
   }
 
   /// Downloads [s] into the app's own storage and returns the file path.
   Future<String> download(OnlineSubtitle s, String videoTitle) async {
-    final json = await _send('POST', Uri.https(_host, '/api/v1/download'),
+    final json = await _send('POST', Uri.https(host, '/api/v1/download'),
         {'file_id': s.fileId, 'sub_format': 'srt'});
     final link = json['link'] as String?;
     if (link == null) {

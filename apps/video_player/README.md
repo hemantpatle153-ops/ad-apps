@@ -9,7 +9,12 @@ phone, plays almost any format (libmpv through `media_kit`), and works offline.
   name, date, size or length; search across all videos; "NEW" badges
 - Plays mp4, mkv, avi, webm, 3gp, mov, flv, ts and more, plus http(s)/HLS links
 - Gestures: left side brightness, right side volume, swipe to seek,
-  double tap to skip 10 s (middle toggles play), pinch to zoom
+  double tap to skip 10 s (middle toggles play), pinch to zoom, hold a
+  finger on the video to play at 2x (twice the current speed if already
+  faster) until it lifts
+- Quick skips: 96 MB cache that reads 20 s ahead and keeps what was
+  played, so 10-second skips usually come from memory; quick repeated taps
+  add up (+10, +20, +30) instead of restarting from the old position
 - Screen lock, fit / stretch / crop / 16:9 / 4:3, rotation lock, speed 0.25x to 4x
 - Subtitles: embedded tracks, a matching .srt next to the video (Android 10 and
   older; Android 11+ only lets apps read media files, so pick the file there),
@@ -70,6 +75,10 @@ API consumers). Add `--dart-define=OPENSUBTITLES_API_KEY=...` to both
 builds. Without it "Find subtitles online" says it isn't available; loading
 files and syncing still work. Without a user login the service allows a few
 downloads per day per phone (it reports the limit, which the app shows).
+Users can sign in with their own free OpenSubtitles account in Settings ->
+Subtitles for more downloads; only the session token is stored, never the
+password. The service bans apps that ask users for their own API key, so
+the app never does.
 
 `tool/gen_icon.py` (run from this folder) draws the launcher and
 notification icons; `tool/icon_512.png` is the Play Store icon.

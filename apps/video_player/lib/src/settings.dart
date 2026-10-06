@@ -78,6 +78,12 @@ class Settings extends ChangeNotifier {
   late int subtitleColor;
   late bool subtitleBackground;
   late String subtitleLanguage;
+
+  /// Sign-in for online subtitles (more downloads per day); the password
+  /// is never stored, only the session token the service returns.
+  late String? subtitleUser;
+  late String? subtitleToken;
+  late String? subtitleHost;
   late double lastSpeed;
   late bool rememberSpeed;
   late bool resume;
@@ -95,6 +101,9 @@ class Settings extends ChangeNotifier {
     subtitleColor = _p.getInt('subColor') ?? 0xFFFFFFFF;
     subtitleBackground = _p.getBool('subBg') ?? false;
     subtitleLanguage = _p.getString('subLang') ?? 'en';
+    subtitleUser = _p.getString('subUser');
+    subtitleToken = _p.getString('subToken');
+    subtitleHost = _p.getString('subHost');
     lastSpeed = _p.getDouble('speed') ?? 1;
     rememberSpeed = _p.getBool('rememberSpeed') ?? false;
     resume = _p.getBool('resume') ?? true;
@@ -155,6 +164,16 @@ class Settings extends ChangeNotifier {
   void setSubtitleLanguage(String code) {
     subtitleLanguage = code;
     _p.setString('subLang', code);
+  }
+
+  void setSubtitleAccount({String? user, String? token, String? host}) {
+    subtitleUser = user;
+    subtitleToken = token;
+    subtitleHost = host;
+    for (final (k, v) in [('subUser', user), ('subToken', token), ('subHost', host)]) {
+      v == null ? _p.remove(k) : _p.setString(k, v);
+    }
+    notifyListeners();
   }
 
   void setSpeed(double speed) {

@@ -217,5 +217,21 @@ void main() {
       expect(r.last.name, 'Popular.Release');
       expect(parseSearch({}), isEmpty);
     });
+
+    test('sign-in reply: token, assigned server, daily allowance', () {
+      final l = parseLogin({
+        'token': 'abc',
+        'base_url': 'vip-api.opensubtitles.com',
+        'user': {'allowed_downloads': 20},
+      })!;
+      expect(l.token, 'abc');
+      expect(l.host, 'vip-api.opensubtitles.com');
+      expect(l.allowedDownloads, 20);
+      expect(parseLogin({'token': 't', 'base_url': 'https://x.example.com/api'})!.host,
+          'x.example.com');
+      expect(parseLogin({'token': 't'})!.host, 'api.opensubtitles.com');
+      expect(parseLogin({'message': 'nope'}), isNull);
+      expect(parseLogin({'token': ''}), isNull);
+    });
   });
 }

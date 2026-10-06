@@ -25,7 +25,8 @@ class SubtitleSearchSheet extends StatefulWidget {
 }
 
 class _SubtitleSearchSheetState extends State<SubtitleSearchSheet> {
-  final _api = OnlineSubtitles();
+  late final _api = OnlineSubtitles(
+      token: widget.settings.subtitleToken, host: widget.settings.subtitleHost);
   late final _query = TextEditingController(text: searchQueryFor(_fileName));
   late String _language = widget.settings.subtitleLanguage;
   String? _hash;
