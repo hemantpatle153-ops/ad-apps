@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:multi_speaker/src/settings.dart';
 import 'package:multi_speaker/src/speaker_delay.dart';
+import 'package:multi_speaker/src/sync/speaker.dart';
 import 'package:multi_speaker/src/sync/sync_controller.dart';
 import 'package:multi_speaker/src/ui/bluetooth_help_screen.dart';
 import 'package:multi_speaker/src/ui/common.dart';
+import 'package:multi_speaker/src/ui/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'support/gen.dart';
@@ -84,27 +86,53 @@ void main() {
     });
   });
 
-  group('DelayTile', () {
+  // The speaker card's delay slider, wired to this phone's saved delay the
+  // way the host and guest screens wire it.
+  group('Speaker delay', () {
     Future<(Settings, SpeakerDelay)> setup(Map<String, Object> prefs) async {
       SharedPreferences.setMockInitialValues(prefs);
       final s = await Settings.load();
       return (s, SpeakerDelay(s));
     }
 
+    Widget card(SpeakerDelay d) => ListenableBuilder(
+          listenable: d,
+          builder: (context, _) => SpeakerCard(
+            name: 'Me',
+            output: d.outputLabel,
+            bluetooth: d.bluetooth,
+            isThisPhone: true,
+            level: const SpeakerLevel(),
+            onLevel: (_) {},
+            delayMs: d.delayMs,
+            onDelay: (ms) => d.delayMs = ms,
+          ),
+        );
+
+    Future<void> openDelay(WidgetTester tester) async {
+      await tester.tap(find.byTooltip('Sync delay'));
+      await tester.pumpAndSettle();
+    }
+
+    Slider delaySlider(WidgetTester tester) =>
+        tester.widget<Slider>(find.byType(Slider).last);
+
     for (final ms in [0, 120, 600]) {
       testWidgets('shows the phone delay of $ms ms', (tester) async {
         final (_, d) = await setup({'delay_phone': ms});
-        await tester.pumpWidget(_app(DelayTile(delay: d)));
+        await tester.pumpWidget(_app(card(d)));
+        await openDelay(tester);
         expect(find.text('$ms ms'), findsOneWidget);
         expect(find.text('Phone speaker or wired'), findsOneWidget);
-        expect(tester.widget<Slider>(find.byType(Slider)).value, ms.toDouble());
+        expect(delaySlider(tester).value, ms.toDouble());
         d.dispose();
       });
     }
     testWidgets('the slider covers 0 to 600 ms in 10 ms steps', (tester) async {
       final (_, d) = await setup({});
-      await tester.pumpWidget(_app(DelayTile(delay: d)));
-      final slider = tester.widget<Slider>(find.byType(Slider));
+      await tester.pumpWidget(_app(card(d)));
+      await openDelay(tester);
+      final slider = delaySlider(tester);
       expect(slider.min, 0);
       expect(slider.max, 600);
       expect(slider.divisions, 60);
@@ -112,8 +140,9 @@ void main() {
     });
     testWidgets('sliding saves the new delay', (tester) async {
       final (s, d) = await setup({});
-      await tester.pumpWidget(_app(DelayTile(delay: d)));
-      tester.widget<Slider>(find.byType(Slider)).onChanged!(250.4);
+      await tester.pumpWidget(_app(card(d)));
+      await openDelay(tester);
+      delaySlider(tester).onChanged!(250.4);
       await tester.pump();
       expect(s.delayMs(bluetooth: false), 250);
       expect(find.text('250 ms'), findsOneWidget);
@@ -123,8 +152,9 @@ void main() {
       _mockNative((call) async =>
           call.method == 'audioOutput' ? {'bluetooth': true, 'name': 'Boom'} : null);
       final (_, d) = await setup({'delay_bt': 220});
-      await tester.pumpWidget(_app(DelayTile(delay: d)));
+      await tester.pumpWidget(_app(card(d)));
       await tester.pump();
+      await openDelay(tester);
       expect(find.text('Bluetooth: Boom'), findsOneWidget);
       expect(find.text('220 ms'), findsOneWidget);
       expect(find.byIcon(Icons.bluetooth_audio), findsOneWidget);
@@ -208,23 +238,26 @@ void main() {
         _mockNative((call) async => call.method == 'bluetoothFeatures' ? c.$1 : null);
         await tester.pumpWidget(const MaterialApp(home: BluetoothHelpScreen()));
         await tester.pump();
-        expect(find.text('One phone per speaker (works everywhere)'), findsOneWidget);
-        expect(find.text('Samsung Dual audio (your phone has it)'),
-            c.$2 ? findsOneWidget : findsNothing);
-        expect(find.text('Audio sharing / Auracast (your phone has it)'),
+        expect(find.text('Many speakers, one phone'), findsOneWidget);
+        expect(find.text('Dual audio: your phone has it'), c.$2 ? findsOneWidget : findsNothing);
+        expect(find.text('Dual audio (Samsung phones)'), c.$2 ? findsNothing : findsOneWidget);
+        expect(find.text('Audio sharing (Auracast): your phone has it'),
             c.$3 ? findsOneWidget : findsNothing);
-        expect(find.text('Audio sharing / Auracast'), c.$4 ? findsOneWidget : findsNothing);
+        expect(find.text('Audio sharing (Auracast)'), c.$4 ? findsOneWidget : findsNothing);
       });
     });
-    testWidgets('the button opens Bluetooth settings', (tester) async {
+    testWidgets('the Auracast button opens Bluetooth settings', (tester) async {
       final calls = <String>[];
       _mockNative((call) async {
         calls.add(call.method);
-        return null;
+        return call.method == 'bluetoothFeatures'
+            ? {'maker': 'Google', 'leAudioBroadcast': true}
+            : null;
       });
       await tester.pumpWidget(const MaterialApp(home: BluetoothHelpScreen()));
       await tester.pump();
-      await tester.tap(find.text('Open Bluetooth settings'));
+      await tester.ensureVisible(find.text('Bluetooth settings'));
+      await tester.tap(find.text('Bluetooth settings'));
       await tester.pump();
       expect(calls, contains('openBluetoothSettings'));
     });

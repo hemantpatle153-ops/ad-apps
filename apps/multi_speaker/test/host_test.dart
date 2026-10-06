@@ -6,6 +6,7 @@ import 'dart:math';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:multi_speaker/src/net/party_guest.dart';
 import 'package:multi_speaker/src/net/party_host.dart';
+import 'package:multi_speaker/src/sync/speaker.dart';
 import 'package:multi_speaker/src/sync/clock.dart';
 import 'package:multi_speaker/src/sync/protocol.dart';
 
@@ -25,7 +26,7 @@ void main() {
   });
 
   PartyHost newHost({String name = 'host'}) {
-    final h = PartyHost(engine: FakeEngine(), name: name, latencyUs: () => 0);
+    final h = PartyHost(engine: FakeEngine(), name: name, speaker: SimpleSpeaker());
     hosts.add(h);
     return h;
   }
@@ -422,7 +423,7 @@ void main() {
         code: const JoinCode(hosts: ['10.0.0.1'], port: 1, name: 'h'),
         name: 'me',
         folder: dir,
-        latencyUs: () => 0,
+        speaker: SimpleSpeaker(),
       );
       expect(g.status, GuestStatus.connecting);
       expect(g.current, isNull);
@@ -442,7 +443,7 @@ void main() {
         code: JoinCode(hosts: ['127.0.0.1'], port: port, name: 'h'),
         name: 'me',
         folder: dir,
-        latencyUs: () => 0,
+        speaker: SimpleSpeaker(),
       );
       await g.connect();
       expect(g.status, GuestStatus.failed);
