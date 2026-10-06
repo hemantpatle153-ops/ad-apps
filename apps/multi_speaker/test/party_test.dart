@@ -6,6 +6,7 @@ import 'package:multi_speaker/src/net/party_guest.dart';
 import 'package:multi_speaker/src/net/party_host.dart';
 import 'package:multi_speaker/src/sync/clock.dart';
 import 'package:multi_speaker/src/sync/protocol.dart';
+import 'package:multi_speaker/src/sync/speaker.dart';
 import 'package:multi_speaker/src/sync/sync_controller.dart';
 
 import 'fake_engine.dart';
@@ -34,7 +35,7 @@ void main() {
       code: JoinCode(hosts: ['10.255.255.1', '127.0.0.1'], port: host.port, name: 'host'),
       name: name,
       folder: dir,
-      latencyUs: () => latencyMs * 1000,
+      speaker: SimpleSpeaker(delayMs: latencyMs),
     );
     await g.connect();
     return g;
@@ -42,7 +43,7 @@ void main() {
 
   test('two guests download the song and play in sync with the host', () async {
     final hostEngine = FakeEngine();
-    final host = PartyHost(engine: hostEngine, name: 'host', latencyUs: () => 0);
+    final host = PartyHost(engine: hostEngine, name: 'host', speaker: SimpleSpeaker());
     await host.start(beacon: false);
     // Songs bigger than one network chunk.
     final song = File('${tmp.path}/song.mp3')..writeAsBytesSync(List.filled(300000, 7));
@@ -93,7 +94,7 @@ void main() {
   }, timeout: const Timeout(Duration(seconds: 40)));
 
   test('a guest that joins mid-song starts at the right place', () async {
-    final host = PartyHost(engine: FakeEngine(), name: 'host', latencyUs: () => 0);
+    final host = PartyHost(engine: FakeEngine(), name: 'host', speaker: SimpleSpeaker());
     await host.start(beacon: false);
     final song = File('${tmp.path}/a.m4a')..writeAsBytesSync(List.filled(1000, 1));
     await host.addTrack(song.path, 'A');
@@ -113,7 +114,7 @@ void main() {
 
   test('next song plays on every phone when one ends', () async {
     final hostEngine = FakeEngine();
-    final host = PartyHost(engine: hostEngine, name: 'host', latencyUs: () => 0);
+    final host = PartyHost(engine: hostEngine, name: 'host', speaker: SimpleSpeaker());
     await host.start(beacon: false);
     for (final n in ['one', 'two']) {
       final f = File('${tmp.path}/$n.mp3')..writeAsBytesSync(List.filled(500, 2));
@@ -133,7 +134,7 @@ void main() {
 
   test('pausing from the host notification pauses the party', () async {
     final hostEngine = FakeEngine();
-    final host = PartyHost(engine: hostEngine, name: 'host', latencyUs: () => 0);
+    final host = PartyHost(engine: hostEngine, name: 'host', speaker: SimpleSpeaker());
     await host.start(beacon: false);
     final f = File('${tmp.path}/x.mp3')..writeAsBytesSync(List.filled(500, 2));
     await host.addTrack(f.path, 'x');
@@ -141,6 +142,64 @@ void main() {
     await waitFor(() => hostEngine.playing);
     hostEngine.userPause();
     await waitFor(() => !host.state.playing);
+    await host.close();
+  });
+
+  test('the host sets each speaker\'s volume, mute and delay, and can remove one',
+      () async {
+    final hostEngine = FakeEngine();
+    final host = PartyHost(engine: hostEngine, name: 'host', speaker: SimpleSpeaker());
+    await host.start(beacon: false);
+    final aEngine = FakeEngine();
+    final bEngine = FakeEngine();
+    final a = await join(host, 'a', aEngine);
+    final b = await join(host, 'b', bEngine, latencyMs: 200);
+    await waitFor(() => host.guests.length == 2 &&
+        host.guests.every((g) => g.name != 'Phone'));
+    final ga = host.guests.firstWhere((g) => g.name == 'a');
+    final gb = host.guests.firstWhere((g) => g.name == 'b');
+    // Each guest reported its own setup.
+    await waitFor(() => gb.delayMs == 200);
+
+    host.setGuestLevel(ga, const SpeakerLevel(volume: 0.3));
+    host.setGuestLevel(gb, const SpeakerLevel(volume: 0.8, muted: true));
+    await waitFor(() => aEngine.volume == 0.3 && bEngine.volume == 0);
+    expect(a.level.volume, 0.3);
+    expect(b.level.muted, isTrue);
+
+    // The guest changes its own volume; the host's list follows.
+    a.setLevel(const SpeakerLevel(volume: 0.5));
+    await waitFor(() => ga.level.volume == 0.5);
+
+    host.setGuestDelay(gb, 260);
+    await waitFor(() => b.speaker.delayMs == 260);
+
+    host.setLevel(const SpeakerLevel(volume: 0.6));
+    expect(hostEngine.volume, 0.6);
+
+    await host.kick(ga);
+    await waitFor(() => a.status == GuestStatus.removed);
+    expect(host.guests.map((g) => g.name), ['b']);
+    await a.leave();
+    await b.leave();
+    await host.close();
+  }, timeout: const Timeout(Duration(seconds: 40)));
+
+  test('repeat starts the playlist again; songs can be reordered', () async {
+    final hostEngine = FakeEngine();
+    final host = PartyHost(engine: hostEngine, name: 'host', speaker: SimpleSpeaker());
+    await host.start(beacon: false);
+    for (final n in ['one', 'two', 'three']) {
+      final f = File('${tmp.path}/$n.mp3')..writeAsBytesSync(List.filled(100, 3));
+      await host.addTrack(f.path, n);
+    }
+    host.moveTrack(2, 0);
+    expect(host.playlist.map((t) => t.title), ['three', 'one', 'two']);
+    host.toggleRepeat();
+    await host.playTrack(host.playlist.last.id);
+    await waitFor(() => hostEngine.playing);
+    hostEngine.finish();
+    await waitFor(() => host.current?.title == 'three' && host.state.playing);
     await host.close();
   });
 }

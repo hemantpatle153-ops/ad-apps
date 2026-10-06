@@ -17,6 +17,9 @@ abstract class AudioEngine {
 
   Future<void> setSpeed(double speed);
 
+  /// 0..1, this player only (the phone's own volume buttons still work).
+  Future<void> setVolume(double volume);
+
   Duration get position;
 
   bool get playing;
@@ -61,6 +64,9 @@ class JustAudioEngine implements AudioEngine {
 
   @override
   Future<void> setSpeed(double speed) => _player.setSpeed(speed);
+
+  @override
+  Future<void> setVolume(double volume) => _player.setVolume(volume);
 
   @override
   Duration get position => _player.position;

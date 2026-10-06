@@ -19,6 +19,10 @@ class FakeEngine implements AudioEngine {
   final _completed = StreamController<void>.broadcast();
   final _playingChanges = StreamController<bool>.broadcast();
   final List<double> speeds = [];
+  double volume = 1;
+
+  @override
+  Future<void> setVolume(double v) async => volume = v;
 
   @override
   Future<Duration?> load(String path, {required String id, required String title}) async {
