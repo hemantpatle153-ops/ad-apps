@@ -2,9 +2,12 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../player/tool_sheets.dart';
+import 'online.dart';
 import 'party.dart';
 import 'protocol.dart';
 
@@ -51,6 +54,7 @@ class _PartySheetState extends State<PartySheet> {
               Flexible(
                 child: ListView(shrinkWrap: true, children: [
                   if (host != null) _JoinCard(host: host),
+                  if (p is OnlineParty) _OnlineCard(party: p),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
                     child: Wrap(spacing: 6, runSpacing: 6, children: [
@@ -117,6 +121,61 @@ class _PartySheetState extends State<PartySheet> {
           ),
         );
       },
+    );
+  }
+}
+
+/// The room code for an online party, with a Share button.
+class _OnlineCard extends StatelessWidget {
+  const _OnlineCard({required this.party});
+
+  final OnlineParty party;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final video = party.video;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: scheme.primary.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(children: [
+            Text('Party code', style: TextStyle(color: scheme.onSurfaceVariant)),
+            GestureDetector(
+              onLongPress: () {
+                Clipboard.setData(ClipboardData(text: party.code));
+                ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+                    const SnackBar(content: Text('Code copied')));
+              },
+              child: Text(party.code,
+                  style: TextStyle(
+                      fontSize: 34,
+                      letterSpacing: 6,
+                      fontWeight: FontWeight.w800,
+                      color: scheme.primary)),
+            ),
+          ]),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          video.isLink
+              ? 'Friends open Watch together and enter this code. The link opens on their phone.'
+              : 'Friends need "${video.title}" on their phone. They open Watch together, '
+                  'enter this code and pick the video.',
+          style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 13),
+        ),
+        const SizedBox(height: 8),
+        FilledButton.tonalIcon(
+          onPressed: () => SharePlus.instance.share(ShareParams(text: party.inviteText)),
+          icon: const Icon(Icons.share_rounded),
+          label: const Text('Invite friends'),
+        ),
+      ]),
     );
   }
 }
