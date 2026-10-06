@@ -319,10 +319,11 @@ void main() {
     });
     tearDown(() async => ws.close());
 
-    test('"hi" is answered with the playlist and the state', () async {
+    test('"hi" is answered with the playlist, the state and live mode', () async {
       ws.add(encodeMessage('hi', {'name': 'Kitchen', 'v': protocolVersion}));
-      await waitFor(() => of('state').isNotEmpty);
-      expect(got.map((m) => m['t']), ['playlist', 'state']);
+      await waitFor(() => of('live').isNotEmpty);
+      expect(got.map((m) => m['t']), ['playlist', 'state', 'live']);
+      expect(got[2]['on'], isFalse);
       final tracks = (got.first['tracks'] as List).cast<Map<String, Object?>>();
       expect(Track.fromJson(tracks.single).title, 'First');
       expect(PlayState.fromJson(got[1]).trackId, host.state.trackId);
