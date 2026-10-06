@@ -86,4 +86,10 @@ jobs:
           git add "$APP.apk"
           git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com \
             commit -qm "$APP test APK from $GITHUB_SHA ($GITHUB_REF_NAME)"
-          git push -qf "https://x-access-token:$TOKEN@github.com/$GITHUB_REPOSITORY" "apk-$APP"
+          # Builds of several pushes can land at once and race for the
+          # branch; retry so the last one still gets its APK saved.
+          for i in 1 2 3; do
+            git push -qf "https://x-access-token:$TOKEN@github.com/$GITHUB_REPOSITORY" "apk-$APP" && exit 0
+            sleep $((i * 10))
+          done
+          exit 1
