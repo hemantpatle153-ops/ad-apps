@@ -28,18 +28,10 @@ One-time setup, about ten minutes. Everything offline works without it.
    | `FIREBASE_SENDER_ID` | Project settings > Cloud Messaging > Sender ID |
    | `FIREBASE_DB_URL` | Realtime Database > the `https://...firebasedatabase.app` link |
 
-7. Paste the five values in the project chat, and Claude saves them as
-   GitHub Actions variables so the APK built on GitHub has online rooms.
-   To build on your own computer instead, pass them like this:
-
-```
-flutter build appbundle \
-  --dart-define=FIREBASE_API_KEY=AIza... \
-  --dart-define=FIREBASE_APP_ID=1:123456789:android:abcdef \
-  --dart-define=FIREBASE_PROJECT_ID=dice-dhamaal \
-  --dart-define=FIREBASE_SENDER_ID=123456789 \
-  --dart-define=FIREBASE_DB_URL=https://dice-dhamaal-default-rtdb.asia-southeast1.firebasedatabase.app
-```
+7. The app has these values built in for the `dice-dhamaal` project (see
+   `FirebaseSetup` in `lib/ludo/online/firebase_backend.dart`), so a plain
+   `flutter build apk` has online rooms. To point a build at another
+   project, pass the five values with `--dart-define=NAME=value`.
 
 The free Spark plan covers this: rooms hold a few kilobytes each and are
 deleted by the rules below once they are a day old.

@@ -65,16 +65,7 @@ jobs:
       # heap gets the runner killed mid-build.
       - name: Fit Gradle in the runner's memory
         run: sed -i 's/^org.gradle.jvmargs=.*/org.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=1g -XX:ReservedCodeCacheSize=256m/' android/gradle.properties
-      # Firebase settings for Dice Dhamaal's online rooms come from the
-      # repository's Actions variables; apps that don't read them ignore them,
-      # and without them online rooms show "coming soon".
-      - run: >-
-          flutter build apk --release
-          --dart-define=FIREBASE_API_KEY=${{ vars.FIREBASE_API_KEY }}
-          --dart-define=FIREBASE_APP_ID=${{ vars.FIREBASE_APP_ID }}
-          --dart-define=FIREBASE_PROJECT_ID=${{ vars.FIREBASE_PROJECT_ID }}
-          --dart-define=FIREBASE_SENDER_ID=${{ vars.FIREBASE_SENDER_ID }}
-          --dart-define=FIREBASE_DB_URL=${{ vars.FIREBASE_DB_URL }}
+      - run: flutter build apk --release
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.app }}-apk

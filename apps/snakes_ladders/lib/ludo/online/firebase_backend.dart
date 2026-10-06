@@ -8,17 +8,22 @@ import '../engine.dart';
 import '../match.dart';
 import 'backend.dart';
 
-/// Firebase project settings, passed at build time so no config file has to
-/// live in the repository:
-///   --dart-define=FIREBASE_API_KEY=... --dart-define=FIREBASE_APP_ID=...
-///   --dart-define=FIREBASE_PROJECT_ID=... --dart-define=FIREBASE_SENDER_ID=...
-///   --dart-define=FIREBASE_DB_URL=https://PROJECT-default-rtdb.REGION.firebasedatabase.app
+/// Firebase project settings (project `dice-dhamaal`). These are client
+/// settings that ship inside every APK anyway, not secrets; the database
+/// rules are what protect the data. A build can point at another project
+/// with --dart-define=FIREBASE_API_KEY=... and the other names below.
 abstract final class FirebaseSetup {
-  static const apiKey = String.fromEnvironment('FIREBASE_API_KEY');
-  static const appId = String.fromEnvironment('FIREBASE_APP_ID');
-  static const projectId = String.fromEnvironment('FIREBASE_PROJECT_ID');
-  static const senderId = String.fromEnvironment('FIREBASE_SENDER_ID');
-  static const dbUrl = String.fromEnvironment('FIREBASE_DB_URL');
+  static const apiKey = String.fromEnvironment('FIREBASE_API_KEY',
+      defaultValue: 'AIzaSyCRyrPruZ67YefPw1brA4cv0G6AeT9A7gk');
+  static const appId = String.fromEnvironment('FIREBASE_APP_ID',
+      defaultValue: '1:448997235311:android:08295ed6078d5fcc6e8b9a');
+  static const projectId = String.fromEnvironment('FIREBASE_PROJECT_ID',
+      defaultValue: 'dice-dhamaal');
+  static const senderId = String.fromEnvironment('FIREBASE_SENDER_ID',
+      defaultValue: '448997235311');
+  static const dbUrl = String.fromEnvironment('FIREBASE_DB_URL',
+      defaultValue:
+          'https://dice-dhamaal-default-rtdb.asia-southeast1.firebasedatabase.app');
 
   /// False in builds made without the settings; online play then explains
   /// that it isn't available instead of failing.

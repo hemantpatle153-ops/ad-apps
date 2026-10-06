@@ -33,17 +33,10 @@ Firebase only passes the connection details. Public STUN servers are enough on
 most networks; a TURN relay is the next thing to add if some players can't
 hear each other.
 
-Builds without the Firebase settings below still work: everything offline
-plays as usual and "Play with Friends" says online rooms are coming soon.
-
-```
-flutter build appbundle \
-  --dart-define=FIREBASE_API_KEY=... \
-  --dart-define=FIREBASE_APP_ID=... \
-  --dart-define=FIREBASE_PROJECT_ID=... \
-  --dart-define=FIREBASE_SENDER_ID=... \
-  --dart-define=FIREBASE_DB_URL=https://PROJECT-default-rtdb.REGION.firebasedatabase.app
-```
+The Firebase settings for the `dice-dhamaal` project are built in
+(`FirebaseSetup`), so a plain build has online rooms. Another project can be
+used by passing `--dart-define=FIREBASE_API_KEY=...` and the other four
+names.
 
 See `docs/firebase_setup.md` in the repository for the one-time setup and the
 database rules.
