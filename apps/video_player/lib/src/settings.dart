@@ -96,6 +96,7 @@ class Settings extends ChangeNotifier {
   late bool nightMode;
   late Map<String, List<int>> _bookmarks;
   late List<String> captionLanguages;
+  late String openSubtitlesKey;
   late Map<String, String> _captions;
 
   void _load() {
@@ -128,6 +129,7 @@ class Settings extends ChangeNotifier {
     _bookmarks = ((_tryDecode(_p.getString('bookmarks')) as Map?) ?? const {}).map(
         (k, v) => MapEntry(k as String, [for (final x in v as List) (x as num).toInt()]));
     captionLanguages = _p.getStringList('capLangs') ?? ['en'];
+    openSubtitlesKey = _p.getString('osKey') ?? '';
     _captions = ((_tryDecode(_p.getString('captions')) as Map?) ?? const {})
         .map((k, v) => MapEntry(k as String, '$v'));
     _positions = (_tryDecode(_p.getString('positions')) as Map?)
@@ -268,6 +270,13 @@ class Settings extends ChangeNotifier {
   void setCaptionLanguages(List<String> langs) {
     captionLanguages = [...langs];
     _p.setStringList('capLangs', captionLanguages);
+    notifyListeners();
+  }
+
+  /// The person's own free OpenSubtitles.com API key, for caption search.
+  void setOpenSubtitlesKey(String key) {
+    openSubtitlesKey = key.trim();
+    _p.setString('osKey', openSubtitlesKey);
     notifyListeners();
   }
 

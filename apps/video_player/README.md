@@ -54,10 +54,11 @@ upload data and, on many mobile networks, a paid TURN relay.
 
 ## Caption search key
 
-Caption search needs a free OpenSubtitles.com API key, passed at build time
-with `--dart-define=OPENSUBTITLES_API_KEY=...`. CI reads it from the
-repository secret `OPENSUBTITLES_API_KEY`; it is never committed. Builds
-without it show that caption search isn't set up.
+Caption search uses OpenSubtitles.com. Each person pastes their own free API
+key (Settings > Caption search key, or straight from the search sheet), so
+downloads count against their own free quota. A build may also carry a
+fallback key with `--dart-define=OPENSUBTITLES_API_KEY=...` (CI reads the
+optional repository secret of that name); no key is ever committed.
 
 ## Ads
 

@@ -2,6 +2,7 @@ import 'package:app_core/app_core.dart';
 import 'package:flutter/material.dart';
 
 import '../app.dart';
+import '../captions/opensubtitles.dart';
 import '../library/video_library.dart';
 import '../settings.dart';
 
@@ -55,6 +56,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _editCaptionKey(Settings s) async {
+    final c = TextEditingController(text: s.openSubtitlesKey);
+    final v = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Caption search key'),
+        content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const Text('Captions come from OpenSubtitles.com. Sign in there, '
+              'create a free key under New consumer, and paste it here.'),
+          TextButton.icon(
+            onPressed: () => openLink(openSubtitlesKeyPage),
+            icon: const Icon(Icons.open_in_new_rounded),
+            label: const Text('Get a free key'),
+          ),
+          TextField(
+            controller: c,
+            decoration: const InputDecoration(hintText: 'API key'),
+            onSubmitted: (v) => Navigator.pop(ctx, v),
+          ),
+        ]),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          FilledButton(onPressed: () => Navigator.pop(ctx, c.text), child: const Text('Save')),
+        ],
+      ),
+    );
+    if (v != null) s.setOpenSubtitlesKey(v);
   }
 
   Future<void> _editPartyName(Settings s) async {
@@ -171,6 +201,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 'Smoother and saves battery. Turn off if a video shows a green or black picture.'),
             value: s.hardwareDecoding,
             onChanged: s.setHardwareDecoding,
+          ),
+          ListTile(
+            title: const Text('Caption search key'),
+            subtitle: Text(s.openSubtitlesKey.isEmpty
+                ? 'Add your free OpenSubtitles key to find captions online'
+                : 'Added  ·  ••••${s.openSubtitlesKey.length > 4 ? s.openSubtitlesKey.substring(s.openSubtitlesKey.length - 4) : ''}'),
+            onTap: () => _editCaptionKey(s),
           ),
           _header('Library'),
           SwitchListTile(

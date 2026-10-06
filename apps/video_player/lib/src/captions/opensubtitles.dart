@@ -2,11 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-/// OpenSubtitles.com REST API key. It is not stored in the repository:
-/// builds pass it with --dart-define=OPENSUBTITLES_API_KEY=... (CI reads it
-/// from a repository secret). Without it, caption search explains that it
-/// isn't available in this build.
+/// A built-in OpenSubtitles.com API key, optional: builds may pass one with
+/// --dart-define=OPENSUBTITLES_API_KEY=... (CI reads a repository secret).
+/// Otherwise each person pastes their own free key in Settings.
 const openSubtitlesApiKey = String.fromEnvironment('OPENSUBTITLES_API_KEY');
+
+/// Where people get their own free key.
+const openSubtitlesKeyPage = 'https://www.opensubtitles.com/en/consumers';
+
+/// The key to use: the person's own if they added one, else the build's.
+String captionApiKey(String own) => own.trim().isNotEmpty ? own.trim() : openSubtitlesApiKey;
 
 /// The OpenSubtitles "movie hash": file size plus the 64-bit sums of the
 /// first and last 64 KB, read as little-endian numbers. Two copies of the
@@ -155,7 +160,7 @@ class OpenSubtitles {
 
   Future<Map<String, Object?>> _call(String method, Uri uri, [Object? body]) async {
     if (!available) {
-      throw const CaptionException('Caption search is not set up in this build.');
+      throw const CaptionException('Add your free OpenSubtitles key in Settings first.');
     }
     try {
       final req = await _client.openUrl(method, uri);
@@ -172,6 +177,10 @@ class OpenSubtitles {
       if (res.statusCode == 406 || res.statusCode == 429) {
         throw const CaptionException(
             "Today's free caption downloads are used up. Try again tomorrow.");
+      }
+      if (res.statusCode == 401 || res.statusCode == 403) {
+        throw const CaptionException(
+            "The OpenSubtitles key isn't valid. Check it in Settings > Caption search key.");
       }
       if (res.statusCode >= 400) {
         throw CaptionException('Caption search failed (${res.statusCode}).');

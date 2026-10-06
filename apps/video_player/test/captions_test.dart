@@ -80,4 +80,15 @@ void main() {
     again.setCaption('video1', null);
     expect((await Settings.open()).captionFor('video1'), isNull);
   });
+
+  test("a person's own key is used and remembered", () async {
+    SharedPreferences.setMockInitialValues({});
+    final s = await Settings.open();
+    expect(s.openSubtitlesKey, '');
+    expect(captionApiKey(''), openSubtitlesApiKey);
+    s.setOpenSubtitlesKey('  abc123  ');
+    expect((await Settings.open()).openSubtitlesKey, 'abc123');
+    expect(captionApiKey(' abc123 '), 'abc123');
+    expect(OpenSubtitles(apiKey: captionApiKey('abc123')).available, isTrue);
+  });
 }

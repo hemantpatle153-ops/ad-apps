@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app_core/app_core.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:path_provider/path_provider.dart';
@@ -30,7 +31,9 @@ class CaptionSearchSheet extends StatefulWidget {
 }
 
 class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
-  late final OpenSubtitles api = widget.service ?? OpenSubtitles();
+  late OpenSubtitles api = widget.service ??
+      OpenSubtitles(apiKey: captionApiKey(widget.settings.openSubtitlesKey));
+  final _key = TextEditingController();
   late final TextEditingController _query;
   late final CaptionQuery _parsed;
   late Set<String> _langs = {...widget.settings.captionLanguages};
@@ -51,6 +54,7 @@ class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
   @override
   void dispose() {
     _query.dispose();
+    _key.dispose();
     super.dispose();
   }
 
@@ -101,6 +105,14 @@ class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
     }
   }
 
+  void _saveKey() {
+    final key = _key.text.trim();
+    if (key.isEmpty) return;
+    widget.settings.setOpenSubtitlesKey(key);
+    setState(() => api = OpenSubtitles(apiKey: captionApiKey(key)));
+    _search(firstTime: true);
+  }
+
   void _toggleLang(String code) {
     setState(() {
       _langs.contains(code) ? _langs.remove(code) : _langs.add(code);
@@ -113,16 +125,45 @@ class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     if (!api.available) {
-      return const SafeArea(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          SheetTitle('Find captions online'),
-          ListTile(
-            leading: Icon(Icons.info_outline_rounded),
-            title: Text('Caption search is not set up in this build yet'),
-            subtitle: Text('Load a subtitle file from your phone meanwhile.'),
-          ),
-          SizedBox(height: 12),
-        ]),
+      return SafeArea(
+        child: Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            const SheetTitle('Find captions online'),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                  'Captions come from OpenSubtitles.com. Get your own free key there '
+                  '(sign in, then New consumer), copy it and paste it here once.'),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: () => openLink(openSubtitlesKeyPage),
+                icon: const Icon(Icons.open_in_new_rounded),
+                label: const Text('Get a free key'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Row(children: [
+                Expanded(
+                  child: TextField(
+                    controller: _key,
+                    decoration: const InputDecoration(
+                      isDense: true,
+                      hintText: 'Paste your API key',
+                      border: OutlineInputBorder(),
+                    ),
+                    onSubmitted: (_) => _saveKey(),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                FilledButton(onPressed: _saveKey, child: const Text('Save')),
+              ]),
+            ),
+          ]),
+        ),
       );
     }
     final results = _results;
