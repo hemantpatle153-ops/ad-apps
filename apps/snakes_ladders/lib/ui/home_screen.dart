@@ -3,15 +3,16 @@ import 'package:flutter/material.dart';
 
 import '../audio/sfx.dart';
 import '../game/board.dart';
-import '../game/engine.dart';
 import '../game/store.dart';
 import '../game/themes.dart';
 import '../main.dart';
 import 'board_painter.dart';
+import 'dice.dart';
 import 'game_screen.dart';
 import 'settings_screen.dart';
 import 'setup_screen.dart';
 import 'tokens.dart';
+import 'widgets.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.store, required this.sfx});
@@ -21,8 +22,27 @@ class HomeScreen extends StatelessWidget {
 
   Future<void> _go(BuildContext context, Widget screen) {
     sfx.play(Sound.tap);
-    return Navigator.of(context)
-        .push(MaterialPageRoute(builder: (_) => screen));
+    return Navigator.of(context).push(gameRoute<void>(screen));
+  }
+
+  Future<void> _delete(BuildContext context, SavedGame s) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete this saved game?'),
+        content: Text('${s.game.board.name} with '
+            '${s.game.players.map((p) => p.name).join(', ')}'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Keep')),
+          FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Delete')),
+        ],
+      ),
+    );
+    if (ok == true) await store.deleteSaved(s.game.id);
   }
 
   @override
@@ -31,17 +51,11 @@ class HomeScreen extends StatelessWidget {
       listenable: store,
       builder: (context, _) {
         final theme = store.theme;
-        final saved = store.loadSaved();
+        final saved = store.savedGames;
         return Scaffold(
           bottomNavigationBar: const BannerAdSlot(),
-          body: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: theme.background,
-              ),
-            ),
+          body: GameBackground(
+            theme: theme,
             child: SafeArea(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
@@ -54,18 +68,7 @@ class HomeScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   Center(child: _Preview(theme: theme)),
                   const SizedBox(height: 24),
-                  if (saved != null) ...[
-                    _BigButton(
-                      color: const Color(0xFFFFB300),
-                      icon: Icons.play_circle_fill_rounded,
-                      label: 'Continue game',
-                      sub: _savedLabel(saved),
-                      onTap: () => _go(context,
-                          GameScreen(engine: saved, store: store, sfx: sfx)),
-                    ),
-                    const SizedBox(height: 12),
-                  ],
-                  _BigButton(
+                  BigButton(
                     color: tokenColors[0],
                     icon: Icons.smart_toy_rounded,
                     label: 'Play vs Computer',
@@ -74,7 +77,7 @@ class HomeScreen extends StatelessWidget {
                         SetupScreen(store: store, sfx: sfx, vsComputer: true)),
                   ),
                   const SizedBox(height: 12),
-                  _BigButton(
+                  BigButton(
                     color: tokenColors[1],
                     icon: Icons.groups_rounded,
                     label: 'Pass & Play',
@@ -82,8 +85,25 @@ class HomeScreen extends StatelessWidget {
                     onTap: () => _go(context,
                         SetupScreen(store: store, sfx: sfx, vsComputer: false)),
                   ),
+                  if (saved.isNotEmpty) ...[
+                    SectionTitle(
+                        'Unfinished games (${saved.length}/${Store.maxSaved})'),
+                    for (final s in saved)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: _SavedCard(
+                          saved: s,
+                          theme: theme,
+                          onPlay: () => _go(
+                              context,
+                              GameScreen(
+                                  engine: s.game, store: store, sfx: sfx)),
+                          onDelete: () => _delete(context, s),
+                        ),
+                      ),
+                  ],
                   const SizedBox(height: 12),
-                  _BigButton(
+                  BigButton(
                     color: tokenColors[3],
                     icon: Icons.palette_rounded,
                     label: 'Themes & Settings',
@@ -101,10 +121,121 @@ class HomeScreen extends StatelessWidget {
       },
     );
   }
+}
 
-  String _savedLabel(GameEngine g) {
-    final names = g.players.map((p) => p.name).join(', ');
-    return '${g.board.name} · $names';
+/// One unfinished game: board, players, who leads, and when it was played.
+class _SavedCard extends StatelessWidget {
+  const _SavedCard({
+    required this.saved,
+    required this.theme,
+    required this.onPlay,
+    required this.onDelete,
+  });
+
+  final SavedGame saved;
+  final BoardTheme theme;
+  final VoidCallback onPlay;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final g = saved.game;
+    final leader = g.standings.first;
+    final lead = g.positions[leader];
+    final vsBot = g.players.any((p) => p.isBot);
+    return GestureDetector(
+      onTap: onPlay,
+      child: Panel(
+        theme: theme,
+        padding: const EdgeInsets.fromLTRB(10, 10, 4, 10),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: SizedBox.square(
+                dimension: 58,
+                child: CustomPaint(
+                  painter: BoardPainter(g.board, theme, showNumbers: false),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${g.board.name} · ${vsBot ? 'vs Computer' : 'Pass & Play'}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w900, fontSize: 15),
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      for (var i = 0; i < g.players.length; i++)
+                        PawnIcon(color: g.players[i].color, size: 22),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          lead == 0
+                              ? 'Nobody has started'
+                              : '${g.players[leader].name} leads on $lead',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 13),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: lead / 100,
+                      minHeight: 6,
+                      color: tokenColors[g.players[leader].color],
+                      backgroundColor: theme.onPanel.withValues(alpha: 0.12),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Played ${timeAgo(saved.savedAt)} · '
+                    "${g.currentPlayer.name}'s turn",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: theme.onPanel.withValues(alpha: 0.7)),
+                  ),
+                ],
+              ),
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton.filled(
+                  onPressed: onPlay,
+                  tooltip: 'Continue',
+                  style: IconButton.styleFrom(
+                      backgroundColor: tokenColors[g.players[0].color]),
+                  icon:
+                      const Icon(Icons.play_arrow_rounded, color: Colors.white),
+                ),
+                IconButton(
+                  onPressed: onDelete,
+                  tooltip: 'Delete',
+                  visualDensity: VisualDensity.compact,
+                  icon: Icon(Icons.delete_outline_rounded,
+                      color: theme.onPanel.withValues(alpha: 0.6)),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -147,114 +278,99 @@ class _Title extends StatelessWidget {
 }
 
 /// A small tilted board with a few tokens, as cover art.
-class _Preview extends StatelessWidget {
+class _Preview extends StatefulWidget {
   const _Preview({required this.theme});
 
   final BoardTheme theme;
 
   @override
-  Widget build(BuildContext context) {
-    const size = 230.0;
-    return Transform.rotate(
-      angle: -0.06,
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(size / 28),
-          boxShadow: const [
-            BoxShadow(
-                color: Colors.black54, blurRadius: 24, offset: Offset(0, 12)),
-          ],
-        ),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: CustomPaint(
-                painter: BoardPainter(BoardLayout.classic, theme,
-                    showNumbers: false),
-              ),
-            ),
-            Positioned.fill(
-              child: CustomPaint(
-                painter: TokensPainter(TokenLayer(
-                  [0, 1, 2, 3],
-                  const [
-                    Offset(2.5, 7.5),
-                    Offset(6.5, 4.5),
-                    Offset(4.5, 1.5),
-                    Offset(8.5, 6.5)
-                  ],
-                )),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  State<_Preview> createState() => _PreviewState();
 }
 
-class _BigButton extends StatelessWidget {
-  const _BigButton({
-    required this.color,
-    required this.icon,
-    required this.label,
-    required this.sub,
-    required this.onTap,
-  });
+/// A small tilted board that gently floats, with two dice beside it.
+class _PreviewState extends State<_Preview>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c =
+      AnimationController(vsync: this, duration: const Duration(seconds: 4))
+        ..repeat(reverse: true);
 
-  final Color color;
-  final IconData icon;
-  final String label;
-  final String sub;
-  final VoidCallback onTap;
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final dark = Color.lerp(color, Colors.black, 0.3)!;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(22),
-        onTap: onTap,
-        child: Ink(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(22),
-            gradient: LinearGradient(colors: [color, dark]),
-            border: Border.all(
-                color: Colors.white.withValues(alpha: 0.6), width: 2),
-            boxShadow: [
-              BoxShadow(color: dark, offset: const Offset(0, 5)),
-            ],
+    const size = 220.0;
+    final board = Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(size / 28),
+        boxShadow: const [
+          BoxShadow(
+              color: Colors.black54, blurRadius: 24, offset: Offset(0, 12)),
+        ],
+      ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: CustomPaint(
+              painter: BoardPainter(BoardLayout.classic, widget.theme,
+                  showNumbers: false),
+            ),
           ),
-          child: Row(
+          Positioned.fill(
+            child: CustomPaint(
+              painter: TokensPainter(TokenLayer(
+                [0, 1, 2, 3],
+                const [
+                  Offset(2.5, 7.5),
+                  Offset(6.5, 4.5),
+                  Offset(4.5, 1.5),
+                  Offset(8.5, 6.5)
+                ],
+              )),
+            ),
+          ),
+        ],
+      ),
+    );
+    return SizedBox(
+      width: size + 80,
+      height: size + 40,
+      child: AnimatedBuilder(
+        animation: _c,
+        child: board,
+        builder: (context, child) {
+          final v = Curves.easeInOut.transform(_c.value);
+          return Stack(
+            alignment: Alignment.center,
             children: [
-              Icon(icon, color: Colors.white, size: 34),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(label,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 19,
-                            fontWeight: FontWeight.w900)),
-                    Text(sub,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.9),
-                            fontSize: 13)),
-                  ],
+              Transform.translate(
+                offset: Offset(0, -6 + 12 * v),
+                child: Transform.rotate(angle: -0.07 + 0.03 * v, child: child),
+              ),
+              Positioned(
+                left: 0,
+                bottom: 6 + 10 * v,
+                child: Transform.rotate(
+                  angle: -0.4 + 0.25 * v,
+                  child: DiceView(value: 6, color: tokenColors[0], size: 54),
                 ),
               ),
-              const Icon(Icons.chevron_right_rounded, color: Colors.white),
+              Positioned(
+                right: 2,
+                top: 4 + 10 * (1 - v),
+                child: Transform.rotate(
+                  angle: 0.35 - 0.25 * v,
+                  child: DiceView(value: 3, color: tokenColors[3], size: 44),
+                ),
+              ),
             ],
-          ),
-        ),
+          );
+        },
       ),
     );
   }

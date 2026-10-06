@@ -14,6 +14,7 @@ import 'confetti.dart';
 import 'dice.dart';
 import 'geometry.dart';
 import 'tokens.dart';
+import 'widgets.dart';
 
 enum _Corner { topLeft, topRight, bottomLeft, bottomRight }
 
@@ -259,9 +260,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       final next = GameEngine(board: board, players: g.players, rules: g.rules);
       await store.save(next);
       if (!mounted) return;
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (_) => GameScreen(engine: next, store: store, sfx: sfx),
-      ));
+      Navigator.of(context).pushReplacement(
+          gameRoute<void>(GameScreen(engine: next, store: store, sfx: sfx)));
     } else {
       Navigator.of(context).pop();
     }
@@ -305,14 +305,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         if (!didPop) _confirmLeave();
       },
       child: Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: theme.background,
-            ),
-          ),
+        body: GameBackground(
+          theme: theme,
           child: Stack(
             children: [
               SafeArea(
@@ -323,12 +317,13 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                       child: LayoutBuilder(builder: (context, box) {
                         // Keep the player panels hugging the board, like Ludo.
                         const panelRow = 84.0;
-                        final side = min(
-                            box.maxWidth - 16, box.maxHeight - 2 * panelRow);
+                        final side = min(box.maxWidth - 16,
+                            box.maxHeight - 2 * panelRow - 48);
                         return Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              _turnBanner(),
                               _panelRow(
                                   _Corner.topLeft, _Corner.topRight, theme),
                               _board(theme, side),
@@ -352,6 +347,68 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   ]),
                 ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Whose turn it is, in their colour, between the top bar and the board.
+  Widget _turnBanner() {
+    if (g.isOver) return const SizedBox(height: 44);
+    final p = g.players[_shown];
+    final color = tokenColors[p.color];
+    final humans = g.players.where((x) => !x.isBot).length;
+    final String text;
+    if (p.isBot) {
+      text = '${p.name} is playing…';
+    } else if (_busy) {
+      text = humans == 1 ? 'Moving…' : '${p.name} is moving…';
+    } else {
+      text = humans == 1
+          ? 'Your turn · tap the dice'
+          : "${p.name}'s turn · tap the dice";
+    }
+    final dark = p.color == 2; // yellow needs dark text
+    return SizedBox(
+      height: 44,
+      child: Center(
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 250),
+          transitionBuilder: (child, a) => FadeTransition(
+            opacity: a,
+            child: SlideTransition(
+              position: Tween(begin: const Offset(0, -0.3), end: Offset.zero)
+                  .animate(a),
+              child: child,
+            ),
+          ),
+          child: Container(
+            key: ValueKey(text),
+            padding: const EdgeInsets.fromLTRB(6, 3, 16, 3),
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(color: Colors.white, width: 2),
+              boxShadow: [
+                BoxShadow(color: color.withValues(alpha: 0.6), blurRadius: 12),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                PawnIcon(color: p.color, size: 26),
+                const SizedBox(width: 4),
+                Text(
+                  text,
+                  style: TextStyle(
+                    color: dark ? Colors.black87 : Colors.white,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 15,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -509,11 +566,15 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(side / 28),
-                boxShadow: const [
-                  BoxShadow(
+                boxShadow: [
+                  const BoxShadow(
                       color: Colors.black45,
                       blurRadius: 18,
                       offset: Offset(0, 8)),
+                  BoxShadow(
+                      color: theme.accent.withValues(alpha: 0.35),
+                      blurRadius: 24,
+                      spreadRadius: 1),
                 ],
               ),
               child: RepaintBoundary(
