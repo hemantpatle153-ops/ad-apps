@@ -399,8 +399,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                       title: Text(
                         r.seats[s] == null
                             ? 'Waiting…'
-                            : s == widget.mySeat &&
-                                    r.seats[s]!.name != 'You'
+                            : s == widget.mySeat && r.seats[s]!.name != 'You'
                                 ? '${r.seats[s]!.name} (you)'
                                 : r.seats[s]!.name,
                         style: TextStyle(

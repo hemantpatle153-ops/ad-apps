@@ -104,24 +104,23 @@ class LudoPanel extends StatelessWidget {
   final EdgeInsets padding;
 
   @override
-  Widget build(BuildContext context) => Container(
-        padding: padding,
-        decoration: BoxDecoration(
-          color: theme.panel.withValues(alpha: 0.96),
-          borderRadius: BorderRadius.circular(22),
-          boxShadow: const [
-            BoxShadow(
-                color: Colors.black26, blurRadius: 12, offset: Offset(0, 5)),
-          ],
-        ),
-        child: DefaultTextStyle.merge(
-          style: TextStyle(color: theme.onPanel),
-          child: IconTheme.merge(
-            data: IconThemeData(color: theme.onPanel),
-            child: ListTileTheme.merge(
-              textColor: theme.onPanel,
-              iconColor: theme.onPanel,
-              child: child,
+  Widget build(BuildContext context) => Material(
+        // A Material, not a plain box, so ListTile ripples show through.
+        color: theme.panel.withValues(alpha: 0.96),
+        borderRadius: BorderRadius.circular(22),
+        elevation: 4,
+        shadowColor: Colors.black45,
+        child: Padding(
+          padding: padding,
+          child: DefaultTextStyle.merge(
+            style: TextStyle(color: theme.onPanel),
+            child: IconTheme.merge(
+              data: IconThemeData(color: theme.onPanel),
+              child: ListTileTheme.merge(
+                textColor: theme.onPanel,
+                iconColor: theme.onPanel,
+                child: child,
+              ),
             ),
           ),
         ),
@@ -260,6 +259,7 @@ class ChunkyButton extends StatelessWidget {
 /// A selectable square tile (player count, colour).
 class ChoiceTile extends StatelessWidget {
   const ChoiceTile({
+    super.key,
     required this.selected,
     required this.color,
     required this.onTap,

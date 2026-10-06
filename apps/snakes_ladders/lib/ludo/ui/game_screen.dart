@@ -581,6 +581,7 @@ class _LudoGameScreenState extends State<LudoGameScreen>
                               _panelRow(_Corner.bottomLeft, _Corner.bottomRight,
                                   theme,
                                   top: false),
+                              _hint(theme),
                             ],
                           ),
                         );
@@ -797,7 +798,8 @@ class _LudoGameScreenState extends State<LudoGameScreen>
     final p = g.current;
     String? text;
     if (!_finished && !g.isOver && !_pumping && _human(p)) {
-      final who = _who(p) == 'You' || link.online ? 'Your' : "${g.players[p].name}'s";
+      final who =
+          _who(p) == 'You' || link.online ? 'Your' : "${g.players[p].name}'s";
       if (_choices.isNotEmpty) {
         text = 'Tap a piece to move ${g.lastRoll}';
       } else if (g.phase == Phase.roll && _sent != _applied) {
