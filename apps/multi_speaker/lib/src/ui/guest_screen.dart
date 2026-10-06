@@ -5,6 +5,7 @@ import 'package:app_core/app_core.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../live/live_audio.dart';
 import '../net/party_guest.dart';
 import '../platform/native.dart';
 import '../settings.dart';
@@ -53,6 +54,7 @@ class _GuestScreenState extends State<GuestScreen> {
       name: name,
       folder: folder,
       speaker: _delay,
+      liveOutput: NativeLiveOutput(),
     );
     if (!mounted) return;
     setState(() => _guest = guest);
@@ -70,8 +72,9 @@ class _GuestScreenState extends State<GuestScreen> {
 
   Future<void> _leave() async {
     final g = _guest;
-    final live = g != null && g.status == GuestStatus.connected && g.state.playing;
-    if (live &&
+    final playing =
+        g != null && g.status == GuestStatus.connected && (g.state.playing || g.live);
+    if (playing &&
         !await confirmLeave(context,
             title: 'Leave the party?',
             body: 'This speaker stops. The others keep playing.',
@@ -152,6 +155,27 @@ class _GuestScreenState extends State<GuestScreen> {
               subtitle: Text('The music keeps playing meanwhile.'),
             ),
           ),
+        if (g.live)
+          Card(
+            color: scheme.primaryContainer,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 28, 20, 24),
+              child: Column(
+                children: [
+                  const SpeakerPulse(playing: true, size: 120),
+                  const SizedBox(height: 16),
+                  Text('Live from ${widget.code.name}',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
+                  const SizedBox(height: 6),
+                  Text('This speaker plays whatever that phone plays.',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
+                ],
+              ),
+            ),
+          )
+        else
         Card(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
@@ -235,8 +259,8 @@ class _GuestScreenState extends State<GuestScreen> {
           child: Text('The host can change this speaker\'s volume and delay too.',
               style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
         ),
-        if (g.playlist.isNotEmpty) const SectionHeader('Up next'),
-        for (final t in g.playlist)
+        if (g.playlist.isNotEmpty && !g.live) const SectionHeader('Up next'),
+        for (final t in g.live ? const <Track>[] : g.playlist)
           ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 4),
             leading: ArtworkTile(title: t.title, size: 40),

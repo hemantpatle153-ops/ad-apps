@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import '../live/live_audio.dart';
 import '../net/party_host.dart';
 import '../platform/native.dart';
 import '../settings.dart';
@@ -53,7 +54,10 @@ class _HostScreenState extends State<HostScreen> {
       if (await folder.exists()) await folder.delete(recursive: true);
       await folder.create(recursive: true);
       final host = PartyHost(
-          engine: JustAudioEngine(), name: name, speaker: _delay);
+          engine: JustAudioEngine(),
+          name: name,
+          speaker: _delay,
+          liveSource: NativeLiveSource());
       await host.start();
       if (!mounted) {
         await host.close();
@@ -162,9 +166,13 @@ class _HostScreenState extends State<HostScreen> {
                   onDestinationSelected: (i) => setState(() => _tab = i),
                   destinations: [
                     const NavigationDestination(
-                        icon: Icon(Icons.music_note_outlined),
-                        selectedIcon: Icon(Icons.music_note),
-                        label: 'Music'),
+                        icon: Icon(Icons.cast_outlined),
+                        selectedIcon: Icon(Icons.cast_connected),
+                        label: 'Live'),
+                    const NavigationDestination(
+                        icon: Icon(Icons.library_music_outlined),
+                        selectedIcon: Icon(Icons.library_music),
+                        label: 'Songs'),
                     NavigationDestination(
                       icon: Badge(
                         label: Text('${host.guests.length + 1}'),
@@ -200,11 +208,154 @@ class _HostScreenState extends State<HostScreen> {
     return ListenableBuilder(
       listenable: host,
       builder: (context, _) => switch (_tab) {
-        0 => _MusicTab(host: host, adding: _adding, onAdd: _addSongs),
-        1 => _SpeakersTab(
-            host: host, delay: _delay, onInvite: () => setState(() => _tab = 2)),
+        0 => _LiveTab(host: host, onInvite: () => setState(() => _tab = 3)),
+        1 => _MusicTab(host: host, adding: _adding, onAdd: _addSongs),
+        2 => _SpeakersTab(
+            host: host, delay: _delay, onInvite: () => setState(() => _tab = 3)),
         _ => _InviteTab(host: host),
       },
+    );
+  }
+}
+
+/// Sends whatever this phone plays (YouTube, a music app, a game) to
+/// every speaker, live.
+class _LiveTab extends StatefulWidget {
+  const _LiveTab({required this.host, required this.onInvite});
+
+  final PartyHost host;
+  final VoidCallback onInvite;
+
+  @override
+  State<_LiveTab> createState() => _LiveTabState();
+}
+
+class _LiveTabState extends State<_LiveTab> {
+  bool? _supported;
+  bool _starting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    (widget.host.liveSource?.supported() ?? Future.value(false))
+        .then((v) => mounted ? setState(() => _supported = v) : null);
+  }
+
+  Future<void> _toggle() async {
+    final host = widget.host;
+    if (host.live) {
+      await host.stopLive();
+      return;
+    }
+    setState(() => _starting = true);
+    final ok = await host.startLive();
+    if (!mounted) return;
+    setState(() => _starting = false);
+    if (!ok) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Live needs your OK: tap Start live again and choose "Start now".')));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final host = widget.host;
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final speakers = host.guests.length;
+    final live = host.live;
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+      children: [
+        Card(
+          color: live ? scheme.primaryContainer : null,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 28, 20, 20),
+            child: Column(
+              children: [
+                SpeakerPulse(playing: live, size: 120),
+                const SizedBox(height: 16),
+                Text(live ? "Sending this phone's sound" : 'Play anything, everywhere',
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700)),
+                const SizedBox(height: 6),
+                Text(
+                  live
+                      ? speakers == 0
+                          ? 'No speakers yet. Invite one to hear it.'
+                          : 'Playing on $speakers speaker${speakers == 1 ? '' : 's'}. '
+                              'Open YouTube or any app and press play.'
+                      : 'YouTube, music apps, games: whatever this phone plays '
+                          'comes out of every speaker together.',
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+                ),
+                const SizedBox(height: 20),
+                if (_supported == false)
+                  Text('Live needs Android 10 or newer on this phone. Use Songs instead.',
+                      textAlign: TextAlign.center, style: TextStyle(color: scheme.error))
+                else
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: FilledButton.icon(
+                      style: live ? FilledButton.styleFrom(backgroundColor: scheme.error) : null,
+                      onPressed: _starting || _supported == null ? null : _toggle,
+                      icon: _starting
+                          ? const SizedBox.square(
+                              dimension: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                          : Icon(live ? Icons.stop_rounded : Icons.cast),
+                      label: Text(live ? 'Stop' : 'Start live',
+                          style: const TextStyle(fontSize: 18)),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+        if (speakers == 0)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.qr_code_2),
+              title: const Text('Add speakers'),
+              subtitle: const Text('Each speaker phone scans your code to join.'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: widget.onInvite,
+            ),
+          ),
+        const SectionHeader('How it works'),
+        const Card(
+          child: Column(
+            children: [
+              ListTile(
+                leading: CircleAvatar(child: Text('1')),
+                title: Text('Tap Start live'),
+                subtitle: Text('Android asks to record or cast this phone. Choose "Start now". '
+                    'Only sound is sent, never your screen.'),
+              ),
+              ListTile(
+                leading: CircleAvatar(child: Text('2')),
+                title: Text('Play anything'),
+                subtitle: Text('Open YouTube, a music app or a game and press play.'),
+              ),
+              ListTile(
+                leading: CircleAvatar(child: Text('3')),
+                title: Text('Turn this phone down'),
+                subtitle: Text('The speakers play about half a second after this phone, '
+                    'so its own sound would echo.'),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(4, 8, 4, 0),
+          child: Text(
+            'Some apps, like Netflix and other protected video, block their sound '
+            'from being shared. Then the speakers stay quiet.',
+            style: theme.textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -432,6 +583,15 @@ class _SpeakersTab extends StatelessWidget {
             label: const Text('Add speaker'),
           ),
         ),
+        if (host.live)
+          Card(
+            child: ListTile(
+              leading: const Icon(Icons.cast_connected),
+              title: Text(host.name),
+              subtitle: const Text('This phone sends the sound'),
+            ),
+          )
+        else
         ListenableBuilder(
           listenable: delay,
           builder: (context, _) => SpeakerCard(
@@ -457,12 +617,14 @@ class _SpeakersTab extends StatelessWidget {
             onLevel: (l) => host.setGuestLevel(g, l),
             delayMs: g.delayMs,
             onDelay: (ms) => host.setGuestDelay(g, ms),
-            status: id != null && !g.ready.contains(id)
-                ? 'Getting song'
-                : g.errorMs == null
-                    ? 'Ready'
-                    : 'In sync',
-            statusColor: id != null && !g.ready.contains(id)
+            status: host.live
+                ? 'Live'
+                : id != null && !g.ready.contains(id)
+                    ? 'Getting song'
+                    : g.errorMs == null
+                        ? 'Ready'
+                        : 'In sync',
+            statusColor: !host.live && id != null && !g.ready.contains(id)
                 ? scheme.tertiary
                 : Colors.green.shade600,
             onRemove: () => host.kick(g),

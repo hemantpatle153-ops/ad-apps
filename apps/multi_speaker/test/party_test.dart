@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:multi_speaker/src/live/live_audio.dart';
 import 'package:multi_speaker/src/net/party_guest.dart';
 import 'package:multi_speaker/src/net/party_host.dart';
 import 'package:multi_speaker/src/sync/clock.dart';
@@ -28,7 +31,7 @@ void main() {
   }
 
   Future<PartyGuest> join(PartyHost host, String name, FakeEngine engine,
-      {int latencyMs = 0}) async {
+      {int latencyMs = 0, LiveOutput? live}) async {
     final dir = await Directory('${tmp.path}/$name').create();
     final g = PartyGuest(
       engine: engine,
@@ -36,6 +39,7 @@ void main() {
       name: name,
       folder: dir,
       speaker: SimpleSpeaker(delayMs: latencyMs),
+      liveOutput: live,
     );
     await g.connect();
     return g;
@@ -202,4 +206,108 @@ void main() {
     await waitFor(() => host.current?.title == 'three' && host.state.playing);
     await host.close();
   });
+
+  test('live: what the host phone plays reaches every speaker on time', () async {
+    final source = FakeLiveSource();
+    final host = PartyHost(
+        engine: FakeEngine(), name: 'host', speaker: SimpleSpeaker(), liveSource: source);
+    await host.start(beacon: false);
+    final song = File('${tmp.path}/song.mp3')..writeAsBytesSync(List.filled(100, 1));
+    await host.addTrack(song.path, 'Song');
+    final out1 = FakeLiveOutput();
+    final out2 = FakeLiveOutput();
+    final g1 = await join(host, 'one', FakeEngine(), live: out1);
+    final g2 = await join(host, 'two', FakeEngine(), latencyMs: 200, live: out2);
+    await waitFor(() => host.guests.length == 2 && g1.clock.hasEstimate && g2.clock.hasEstimate);
+
+    // The user said no to Android's prompt.
+    source.allow = false;
+    expect(await host.startLive(), isFalse);
+    expect(host.live, isFalse);
+
+    source.allow = true;
+    expect(await host.startLive(), isTrue);
+    await waitFor(() => g1.live && g2.live && out1.started && out2.started);
+
+    // 20 ms chunks, as the phone captures them.
+    for (var i = 0; i < 10; i++) {
+      source.emit(Uint8List.fromList(List.filled(3840, i)));
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+    }
+    await waitFor(() => out1.pushes.length == 10 && out2.pushes.length == 10);
+    expect(out1.pushes.last.pcm.first, 9);
+    expect(out1.pushes.first.pcm.length, 3840);
+    // Each chunk plays the live delay after capture, the Bluetooth speaker
+    // 200 ms sooner to make up for its own delay.
+    for (final p in out1.pushes) {
+      expect(p.inUs, inInclusiveRange(liveDelayUs - 80000, liveDelayUs));
+    }
+    for (var i = 0; i < 10; i++) {
+      final gap = out1.pushes[i].inUs - out2.pushes[i].inUs;
+      expect(gap, inInclusiveRange(200000 - 30000, 200000 + 30000));
+    }
+
+    // Each speaker's volume reaches its live player.
+    host.setGuestLevel(host.guests.first, const SpeakerLevel(volume: 0.4));
+    await waitFor(() => out1.volume == 0.4 || out2.volume == 0.4);
+
+    // Playing a song ends live mode everywhere.
+    await host.play();
+    expect(host.live, isFalse);
+    expect(source.stopped, isTrue);
+    await waitFor(() => !g1.live && out1.stopped && !g2.live);
+    await waitFor(() => g1.sync.phase.value == SyncPhase.playing);
+
+    // Android stopping the capture (its notification) ends live too.
+    await host.startLive();
+    await waitFor(() => g1.live);
+    source.emit(Uint8List(0));
+    await waitFor(() => !host.live && !g1.live);
+
+    await g1.leave();
+    await g2.leave();
+    await host.close();
+  }, timeout: const Timeout(Duration(seconds: 40)));
+}
+
+class FakeLiveSource implements LiveSource {
+  bool allow = true;
+  bool stopped = false;
+  final _chunks = StreamController<Uint8List>.broadcast();
+
+  void emit(Uint8List pcm) => _chunks.add(pcm);
+
+  @override
+  Future<bool> supported() async => true;
+
+  @override
+  Future<bool> start() async {
+    stopped = false;
+    return allow;
+  }
+
+  @override
+  Stream<Uint8List> get chunks => _chunks.stream;
+
+  @override
+  Future<void> stop() async => stopped = true;
+}
+
+class FakeLiveOutput implements LiveOutput {
+  bool started = false;
+  bool stopped = false;
+  double volume = 1;
+  final pushes = <({Uint8List pcm, int inUs})>[];
+
+  @override
+  Future<void> start() async => started = true;
+
+  @override
+  void push(Uint8List pcm, int inUs) => pushes.add((pcm: Uint8List.fromList(pcm), inUs: inUs));
+
+  @override
+  Future<void> setVolume(double v) async => volume = v;
+
+  @override
+  Future<void> stop() async => stopped = true;
 }

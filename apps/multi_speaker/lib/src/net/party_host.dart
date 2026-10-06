@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
+import '../live/live_audio.dart';
 import '../sync/audio_engine.dart';
 import '../sync/clock.dart';
 import '../sync/protocol.dart';
@@ -28,7 +29,7 @@ class Guest {
   String output = 'Phone speaker';
   bool bluetooth = false;
 
-  void send(String message) {
+  void send(Object message) {
     try {
       socket.add(message);
     } on Object {
@@ -47,6 +48,7 @@ class PartyHost extends ChangeNotifier {
     required this.engine,
     required this.name,
     required this.speaker,
+    this.liveSource,
   }) {
     sync = SyncController(
       engine: engine,
@@ -64,6 +66,15 @@ class PartyHost extends ChangeNotifier {
 
   /// This phone's own output and delay.
   final LocalSpeaker speaker;
+
+  /// Captures this phone's sound for live mode; null where it can't.
+  final LiveSource? liveSource;
+
+  /// Whether every speaker is playing this phone's sound live, instead of
+  /// the playlist.
+  bool live = false;
+  StreamSubscription<Uint8List>? _liveSub;
+  final _stamper = LiveStamper();
 
   /// This phone's own volume in the party.
   SpeakerLevel level = const SpeakerLevel();
@@ -179,6 +190,7 @@ class PartyHost extends ChangeNotifier {
         g.send(encodeMessage(
             'playlist', {'tracks': [for (final t in playlist) t.toJson()]}));
         g.send(encodeMessage('state', state.toJson()));
+        g.send(encodeMessage('live', {'on': live}));
         notifyListeners();
       case 'ready':
         if (m['id'] case final String id) g.ready.add(id);
@@ -205,6 +217,44 @@ class PartyHost extends ChangeNotifier {
     for (final g in guests) {
       g.send(message);
     }
+  }
+
+  /// Starts sending whatever this phone plays to every speaker. Android
+  /// asks the user first; false when they said no or the phone can't.
+  Future<bool> startLive() async {
+    if (live) return true;
+    final source = liveSource;
+    if (source == null || !await source.start()) return false;
+    await pause();
+    live = true;
+    _stamper.reset();
+    _liveSub = source.chunks.listen((pcm) {
+      // An empty chunk means Android stopped the capture, e.g. from its
+      // casting notification.
+      if (pcm.isEmpty) {
+        stopLive();
+        return;
+      }
+      final frame =
+          encodeLiveFrame(_stamper.stamp(Clock.nowUs(), pcm.length), pcm);
+      for (final g in guests) {
+        g.send(frame);
+      }
+    });
+    _broadcast(encodeMessage('live', {'on': true}));
+    notifyListeners();
+    return true;
+  }
+
+  Future<void> stopLive() async {
+    if (!live) return;
+    live = false;
+    await _liveSub?.cancel();
+    _liveSub = null;
+    await liveSource?.stop();
+    _broadcast(encodeMessage('live', {'on': false}));
+    _broadcast(encodeMessage('state', state.toJson()));
+    notifyListeners();
   }
 
   /// Sets this phone's own volume.
@@ -299,6 +349,7 @@ class PartyHost extends ChangeNotifier {
       anchorUs: Clock.nowUs() + startLead.inMicroseconds);
 
   Future<void> playTrack(String id, {bool autoplay = true}) async {
+    if (autoplay) await stopLive();
     final op = ++_op;
     await _setState(_pausedAt(id, 0));
     if (!autoplay) return;
@@ -314,6 +365,7 @@ class PartyHost extends ChangeNotifier {
       return;
     }
     if (state.playing) return;
+    await stopLive();
     final op = ++_op;
     await _waitForGuests(id);
     if (op != _op) return;
@@ -382,6 +434,7 @@ class PartyHost extends ChangeNotifier {
 
   Future<void> close() async {
     _op++;
+    await stopLive();
     _beacon?.stop();
     _broadcast(encodeMessage('bye'));
     for (final g in [...guests]) {
