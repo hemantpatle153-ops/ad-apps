@@ -54,11 +54,13 @@ upload data and, on many mobile networks, a paid TURN relay.
 
 ## Caption search key
 
-Caption search uses OpenSubtitles.com. Each person pastes their own free API
-key (Settings > Caption search key, or straight from the search sheet), so
-downloads count against their own free quota. A build may also carry a
-fallback key with `--dart-define=OPENSUBTITLES_API_KEY=...` (CI reads the
-optional repository secret of that name); no key is ever committed.
+Caption search uses OpenSubtitles.com with one app key, passed at build time
+with `--dart-define=OPENSUBTITLES_API_KEY=...` (CI reads the repository secret
+of that name); no key is ever committed. OpenSubtitles asks apps not to make
+users create their own keys. Instead, users may sign in with a free
+OpenSubtitles account (Settings > Caption account) so downloads count against
+their own daily limit; only the sign-in token is stored, never the password.
+Builds without the key hide nothing but explain that search isn't set up.
 
 ## Ads
 

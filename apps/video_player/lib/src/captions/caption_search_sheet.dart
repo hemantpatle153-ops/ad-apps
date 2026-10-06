@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:app_core/app_core.dart';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:path_provider/path_provider.dart';
@@ -35,9 +34,8 @@ class CaptionSearchSheet extends StatefulWidget {
 }
 
 class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
-  late OpenSubtitles api = widget.service ??
-      OpenSubtitles(apiKey: captionApiKey(widget.settings.openSubtitlesKey));
-  final _key = TextEditingController();
+  late final OpenSubtitles api =
+      widget.service ?? OpenSubtitles(account: widget.settings.captionAccount);
   late final TextEditingController _query;
   late final CaptionQuery _parsed;
   late Set<String> _langs = {...widget.settings.captionLanguages};
@@ -58,7 +56,6 @@ class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
   @override
   void dispose() {
     _query.dispose();
-    _key.dispose();
     super.dispose();
   }
 
@@ -67,7 +64,8 @@ class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
       _busy = true;
       _error = null;
     });
-    final path = widget.item.path ?? (widget.item.isNetwork ? null : widget.item.uri);
+    final path =
+        widget.item.path ?? (widget.item.isNetwork ? null : widget.item.uri);
     if (firstTime && path != null && !path.startsWith('content:')) {
       _hash = await movieHash(path);
     }
@@ -77,7 +75,9 @@ class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
         : CaptionQuery.fromFileName(typed);
     try {
       final r = await api.search(
-          hash: _hash, query: query, languages: _langs.isEmpty ? ['en'] : _langs.toList());
+          hash: _hash,
+          query: query,
+          languages: _langs.isEmpty ? ['en'] : _langs.toList());
       if (mounted) setState(() => _results = r);
     } on CaptionException catch (e) {
       if (mounted) setState(() => _error = e.message);
@@ -90,10 +90,11 @@ class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
     setState(() => _downloading = r.fileId);
     final messenger = ScaffoldMessenger.maybeOf(context);
     try {
-      final dir = Directory('${(await getApplicationSupportDirectory()).path}/captions');
+      final dir = Directory(
+          '${(await getApplicationSupportDirectory()).path}/captions');
       final path = await api.download(r, dir);
-      await widget.player.setSubtitleTrack(
-          SubtitleTrack.uri(path, title: '${captionLanguages[r.language] ?? r.language} (downloaded)'));
+      await widget.player.setSubtitleTrack(SubtitleTrack.uri(path,
+          title: '${captionLanguages[r.language] ?? r.language} (downloaded)'));
       widget.settings.setCaption(widget.item.key, path);
       await widget.onLoaded?.call();
       if (mounted) Navigator.pop(context);
@@ -110,14 +111,6 @@ class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
     }
   }
 
-  void _saveKey() {
-    final key = _key.text.trim();
-    if (key.isEmpty) return;
-    widget.settings.setOpenSubtitlesKey(key);
-    setState(() => api = OpenSubtitles(apiKey: captionApiKey(key)));
-    _search(firstTime: true);
-  }
-
   void _toggleLang(String code) {
     setState(() {
       _langs.contains(code) ? _langs.remove(code) : _langs.add(code);
@@ -130,51 +123,23 @@ class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     if (!api.available) {
-      return SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const SheetTitle('Find captions online'),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                  'Captions come from OpenSubtitles.com. Get your own free key there '
-                  '(sign in, then New consumer), copy it and paste it here once.'),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton.icon(
-                onPressed: () => openLink(openSubtitlesKeyPage),
-                icon: const Icon(Icons.open_in_new_rounded),
-                label: const Text('Get a free key'),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: Row(children: [
-                Expanded(
-                  child: TextField(
-                    controller: _key,
-                    decoration: const InputDecoration(
-                      isDense: true,
-                      hintText: 'Paste your API key',
-                      border: OutlineInputBorder(),
-                    ),
-                    onSubmitted: (_) => _saveKey(),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                FilledButton(onPressed: _saveKey, child: const Text('Save')),
-              ]),
-            ),
-          ]),
-        ),
+      return const SafeArea(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          SheetTitle('Find captions online'),
+          Padding(
+            padding: EdgeInsets.fromLTRB(16, 0, 16, 24),
+            child: Text(
+                "Caption search isn't set up in this version of the app yet. "
+                'You can still load a caption file from Subtitles.'),
+          ),
+        ]),
       );
     }
     final results = _results;
     return SafeArea(
       child: Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           const SheetTitle('Find captions online'),
           Padding(
@@ -193,7 +158,9 @@ class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
                 ),
               ),
               const SizedBox(width: 8),
-              FilledButton(onPressed: _busy ? null : _search, child: const Text('Search')),
+              FilledButton(
+                  onPressed: _busy ? null : _search,
+                  child: const Text('Search')),
             ]),
           ),
           SizedBox(
@@ -225,7 +192,8 @@ class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
               if (results != null && results.isEmpty && !_busy)
                 const ListTile(
                   title: Text('No captions found'),
-                  subtitle: Text('Try a shorter name, or add another language.'),
+                  subtitle:
+                      Text('Try a shorter name, or add another language.'),
                 ),
               for (final r in results ?? const <CaptionResult>[])
                 ListTile(
@@ -234,7 +202,8 @@ class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
                     child: Text(r.language.split('-').first.toUpperCase(),
                         style: TextStyle(color: scheme.primary, fontSize: 13)),
                   ),
-                  title: Text(r.release, maxLines: 2, overflow: TextOverflow.ellipsis),
+                  title: Text(r.release,
+                      maxLines: 2, overflow: TextOverflow.ellipsis),
                   subtitle: Text([
                     if (r.exactMatch) 'Fits this file',
                     '${r.downloads} downloads',
@@ -242,8 +211,12 @@ class _CaptionSearchSheetState extends State<CaptionSearchSheet> {
                   ].join('  ·  ')),
                   trailing: _downloading == r.fileId
                       ? const SizedBox.square(
-                          dimension: 24, child: CircularProgressIndicator(strokeWidth: 2))
-                      : Icon(r.exactMatch ? Icons.verified_rounded : Icons.download_rounded,
+                          dimension: 24,
+                          child: CircularProgressIndicator(strokeWidth: 2))
+                      : Icon(
+                          r.exactMatch
+                              ? Icons.verified_rounded
+                              : Icons.download_rounded,
                           color: r.exactMatch ? scheme.primary : null),
                   onTap: _downloading == null ? () => _download(r) : null,
                 ),

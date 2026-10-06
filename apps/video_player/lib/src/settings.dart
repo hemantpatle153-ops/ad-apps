@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'captions/opensubtitles.dart';
+
 /// What happens when the user leaves the app while a video plays.
 enum LeaveAction { pause, pip, audio }
 
@@ -96,7 +98,8 @@ class Settings extends ChangeNotifier {
   late bool nightMode;
   late Map<String, List<int>> _bookmarks;
   late List<String> captionLanguages;
-  late String openSubtitlesKey;
+  /// Signed-in OpenSubtitles account for caption downloads, or null.
+  CaptionAccount? captionAccount;
   late Map<String, String> _captions;
 
   void _load() {
@@ -129,7 +132,14 @@ class Settings extends ChangeNotifier {
     _bookmarks = ((_tryDecode(_p.getString('bookmarks')) as Map?) ?? const {}).map(
         (k, v) => MapEntry(k as String, [for (final x in v as List) (x as num).toInt()]));
     captionLanguages = _p.getStringList('capLangs') ?? ['en'];
-    openSubtitlesKey = _p.getString('osKey') ?? '';
+    _p.remove('osKey'); // user keys from an early test build; no longer used
+    final osToken = _p.getString('osToken');
+    captionAccount = osToken == null || osToken.isEmpty
+        ? null
+        : CaptionAccount(
+            user: _p.getString('osUser') ?? '',
+            token: osToken,
+            host: _p.getString('osHost') ?? 'api.opensubtitles.com');
     _captions = ((_tryDecode(_p.getString('captions')) as Map?) ?? const {})
         .map((k, v) => MapEntry(k as String, '$v'));
     _positions = (_tryDecode(_p.getString('positions')) as Map?)
@@ -273,10 +283,18 @@ class Settings extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// The person's own free OpenSubtitles.com API key, for caption search.
-  void setOpenSubtitlesKey(String key) {
-    openSubtitlesKey = key.trim();
-    _p.setString('osKey', openSubtitlesKey);
+  /// Remembers the OpenSubtitles sign-in (token only), or forgets it.
+  void setCaptionAccount(CaptionAccount? a) {
+    captionAccount = a;
+    if (a == null) {
+      for (final k in ['osToken', 'osUser', 'osHost']) {
+        _p.remove(k);
+      }
+    } else {
+      _p.setString('osToken', a.token);
+      _p.setString('osUser', a.user);
+      _p.setString('osHost', a.host);
+    }
     notifyListeners();
   }
 

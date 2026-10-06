@@ -58,33 +58,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Future<void> _editCaptionKey(Settings s) async {
-    final c = TextEditingController(text: s.openSubtitlesKey);
-    final v = await showDialog<String>(
+  Future<void> _captionAccount(Settings s) async {
+    final current = s.captionAccount;
+    if (current != null) {
+      final out = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Caption account'),
+          content: Text('Signed in to OpenSubtitles as ${current.user}.'),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Close')),
+            FilledButton(
+                onPressed: () => Navigator.pop(ctx, true),
+                child: const Text('Sign out')),
+          ],
+        ),
+      );
+      if (out == true) s.setCaptionAccount(null);
+      return;
+    }
+    final account = await showDialog<CaptionAccount>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Caption search key'),
-        content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text('Captions come from OpenSubtitles.com. Sign in there, '
-              'create a free key under New consumer, and paste it here.'),
-          TextButton.icon(
-            onPressed: () => openLink(openSubtitlesKeyPage),
-            icon: const Icon(Icons.open_in_new_rounded),
-            label: const Text('Get a free key'),
-          ),
-          TextField(
-            controller: c,
-            decoration: const InputDecoration(hintText: 'API key'),
-            onSubmitted: (v) => Navigator.pop(ctx, v),
-          ),
-        ]),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-          FilledButton(onPressed: () => Navigator.pop(ctx, c.text), child: const Text('Save')),
-        ],
-      ),
+      builder: (_) => const _CaptionSignInDialog(),
     );
-    if (v != null) s.setOpenSubtitlesKey(v);
+    if (account != null) s.setCaptionAccount(account);
   }
 
   Future<void> _editPartyName(Settings s) async {
@@ -101,8 +100,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           onSubmitted: (v) => Navigator.pop(ctx, v),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-          FilledButton(onPressed: () => Navigator.pop(ctx, c.text), child: const Text('Save')),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+          FilledButton(
+              onPressed: () => Navigator.pop(ctx, c.text),
+              child: const Text('Save')),
         ],
       ),
     );
@@ -172,7 +174,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           (LeaveAction.audio, 'Keep playing the sound'),
                           (LeaveAction.pause, 'Pause'),
                         ])
-                          RadioListTile<LeaveAction>(value: a, title: Text(label)),
+                          RadioListTile<LeaveAction>(
+                              value: a, title: Text(label)),
                       ]),
                     ),
                   ],
@@ -203,11 +206,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             onChanged: s.setHardwareDecoding,
           ),
           ListTile(
-            title: const Text('Caption search key'),
-            subtitle: Text(s.openSubtitlesKey.isEmpty
-                ? 'Add your free OpenSubtitles key to find captions online'
-                : 'Added  ·  ••••${s.openSubtitlesKey.length > 4 ? s.openSubtitlesKey.substring(s.openSubtitlesKey.length - 4) : ''}'),
-            onTap: () => _editCaptionKey(s),
+            title: const Text('Caption account'),
+            subtitle: Text(s.captionAccount == null
+                ? 'Optional: sign in to OpenSubtitles for more caption downloads a day'
+                : 'Signed in as ${s.captionAccount!.user}'),
+            onTap: () => _captionAccount(s),
           ),
           _header('Library'),
           SwitchListTile(
@@ -226,7 +229,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _header('Watch together'),
           ListTile(
             title: const Text('My name in watch parties'),
-            subtitle: Text(s.partyName.isEmpty ? "This phone's name" : s.partyName),
+            subtitle:
+                Text(s.partyName.isEmpty ? "This phone's name" : s.partyName),
             onTap: () => _editPartyName(s),
           ),
           _header('History'),
@@ -258,6 +262,99 @@ class _SettingsScreenState extends State<SettingsScreen> {
           const SizedBox(height: 24),
         ]),
       ),
+    );
+  }
+}
+
+/// Signs in to OpenSubtitles; pops the account, never keeping the password.
+class _CaptionSignInDialog extends StatefulWidget {
+  const _CaptionSignInDialog();
+
+  @override
+  State<_CaptionSignInDialog> createState() => _CaptionSignInDialogState();
+}
+
+class _CaptionSignInDialogState extends State<_CaptionSignInDialog> {
+  final _user = TextEditingController();
+  final _pass = TextEditingController();
+  bool _busy = false;
+  String? _error;
+
+  @override
+  void dispose() {
+    _user.dispose();
+    _pass.dispose();
+    super.dispose();
+  }
+
+  Future<void> _signIn() async {
+    if (_user.text.trim().isEmpty || _pass.text.isEmpty) return;
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      final a = await OpenSubtitles().signIn(_user.text, _pass.text);
+      if (mounted) Navigator.pop(context, a);
+    } on CaptionException catch (e) {
+      if (mounted) setState(() => _error = e.message);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Caption account'),
+      content: SingleChildScrollView(
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                  'Captions come from OpenSubtitles.com. Signing in with your free '
+                  'account gives you your own daily downloads.'),
+              TextButton.icon(
+                onPressed: () => openLink(openSubtitlesSignUpPage),
+                icon: const Icon(Icons.open_in_new_rounded),
+                label: const Text('Create a free account'),
+              ),
+              TextField(
+                controller: _user,
+                autofillHints: const [AutofillHints.username],
+                decoration: const InputDecoration(labelText: 'User name'),
+              ),
+              TextField(
+                controller: _pass,
+                obscureText: true,
+                autofillHints: const [AutofillHints.password],
+                decoration: const InputDecoration(labelText: 'Password'),
+                onSubmitted: (_) => _signIn(),
+              ),
+              if (_error != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 12),
+                  child: Text(_error!,
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.error)),
+                ),
+            ]),
+      ),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel')),
+        FilledButton(
+          onPressed: _busy ? null : _signIn,
+          child: _busy
+              ? const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(strokeWidth: 2))
+              : const Text('Sign in'),
+        ),
+      ],
     );
   }
 }
