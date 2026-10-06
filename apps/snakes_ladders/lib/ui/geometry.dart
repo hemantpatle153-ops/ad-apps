@@ -21,7 +21,7 @@ List<Offset> snakePath(int head, int tail, {int samples = 64}) {
   final len = d.distance;
   final perp = Offset(-d.dy, d.dx) / len;
   // Longer snakes wiggle more; direction alternates per snake for variety.
-  final waves = (len / 1.7).clamp(1.2, 4.0);
+  final waves = (len / 2.6).clamp(1.0, 2.0);
   final sign = head.isEven ? 1.0 : -1.0;
   return [
     for (var i = 0; i <= samples; i++)
@@ -30,7 +30,7 @@ List<Offset> snakePath(int head, int tail, {int samples = 64}) {
         final taper = min(1.0, t * 5) * (1 - 0.6 * t);
         return a +
             d * t +
-            perp * (sign * sin(t * waves * 2 * pi) * 0.36 * taper);
+            perp * (sign * sin(t * waves * 2 * pi) * 0.22 * taper);
       }(),
   ];
 }

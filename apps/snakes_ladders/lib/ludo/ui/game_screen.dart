@@ -568,8 +568,8 @@ class _LudoGameScreenState extends State<LudoGameScreen>
                     Expanded(
                       child: LayoutBuilder(builder: (context, box) {
                         const panelRow = 96.0;
-                        final side = min(
-                            box.maxWidth - 12, box.maxHeight - 2 * panelRow);
+                        final side = min(box.maxWidth - 12,
+                            box.maxHeight - 2 * panelRow - 34);
                         return Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
@@ -789,6 +789,40 @@ class _LudoGameScreenState extends State<LudoGameScreen>
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: mirrored ? children.reversed.toList() : children,
+    );
+  }
+
+  /// One line telling the person on this phone what to do.
+  Widget _hint(LudoTheme theme) {
+    final p = g.current;
+    String? text;
+    if (!_finished && !g.isOver && !_pumping && _human(p)) {
+      final who = _who(p) == 'You' || link.online ? 'Your' : "${g.players[p].name}'s";
+      if (_choices.isNotEmpty) {
+        text = 'Tap a piece to move ${g.lastRoll}';
+      } else if (g.phase == Phase.roll && _sent != _applied) {
+        text = '$who turn · tap the dice';
+      }
+    }
+    return SizedBox(
+      height: 34,
+      child: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        child: text == null
+            ? const SizedBox.shrink()
+            : Container(
+                key: ValueKey(text),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(text,
+                    style: const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w800)),
+              ),
+      ),
     );
   }
 

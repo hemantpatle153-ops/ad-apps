@@ -105,7 +105,7 @@ class _LudoSetupScreenState extends State<LudoSetupScreen> {
             children: [
               for (final n in [2, 3, 4])
                 Expanded(
-                  child: _Choice(
+                  child: ChoiceTile(
                     selected: _count == n,
                     color: theme.accent,
                     onTap: () => setState(() => _count = n),
@@ -125,7 +125,7 @@ class _LudoSetupScreenState extends State<LudoSetupScreen> {
             children: [
               for (var c = 0; c < 4; c++)
                 Expanded(
-                  child: _Choice(
+                  child: ChoiceTile(
                     selected: _color == c,
                     color: theme.colors[c],
                     onTap: () => setState(() => _color = c),
@@ -218,36 +218,4 @@ class _LudoSetupScreenState extends State<LudoSetupScreen> {
       ],
     );
   }
-}
-
-class _Choice extends StatelessWidget {
-  const _Choice({
-    required this.selected,
-    required this.color,
-    required this.onTap,
-    required this.child,
-  });
-
-  final bool selected;
-  final Color color;
-  final VoidCallback onTap;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          margin: const EdgeInsets.all(4),
-          height: 56,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: selected ? color.withValues(alpha: 0.18) : null,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-                color: selected ? color : Colors.transparent, width: 3),
-          ),
-          child: child,
-        ),
-      );
 }

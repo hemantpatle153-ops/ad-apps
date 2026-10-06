@@ -186,14 +186,19 @@ class _OnlineScreenState extends State<OnlineScreen> {
           theme: theme,
           child: Column(
             children: [
-              SegmentedButton<int>(
-                segments: const [
-                  ButtonSegment(value: 2, label: Text('2 players')),
-                  ButtonSegment(value: 3, label: Text('3')),
-                  ButtonSegment(value: 4, label: Text('4')),
+              Row(
+                children: [
+                  const Expanded(child: Text('Players')),
+                  for (final n in [2, 3, 4])
+                    ChoiceTile(
+                      selected: _size == n,
+                      color: theme.accent,
+                      onTap: () => setState(() => _size = n),
+                      child: Text('$n',
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w900)),
+                    ),
                 ],
-                selected: {_size},
-                onSelectionChanged: (s) => setState(() => _size = s.first),
               ),
               SwitchListTile(
                 contentPadding: EdgeInsets.zero,
@@ -394,7 +399,8 @@ class _LobbyScreenState extends State<LobbyScreen> {
                       title: Text(
                         r.seats[s] == null
                             ? 'Waiting…'
-                            : s == widget.mySeat
+                            : s == widget.mySeat &&
+                                    r.seats[s]!.name != 'You'
                                 ? '${r.seats[s]!.name} (you)'
                                 : r.seats[s]!.name,
                         style: TextStyle(

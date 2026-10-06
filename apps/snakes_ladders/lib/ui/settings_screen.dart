@@ -30,12 +30,16 @@ class SettingsScreen extends StatelessWidget {
                 const Row(
                   children: [
                     BackButton(color: Colors.white),
-                    Text(
-                      'Themes & Settings',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w900),
+                    Expanded(
+                      child: Text(
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        'Themes & Settings',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900),
+                      ),
                     ),
                   ],
                 ),

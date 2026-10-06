@@ -256,3 +256,37 @@ class ChunkyButton extends StatelessWidget {
     );
   }
 }
+
+/// A selectable square tile (player count, colour).
+class ChoiceTile extends StatelessWidget {
+  const ChoiceTile({
+    required this.selected,
+    required this.color,
+    required this.onTap,
+    required this.child,
+  });
+
+  final bool selected;
+  final Color color;
+  final VoidCallback onTap;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          margin: const EdgeInsets.all(4),
+          height: 56,
+          constraints: const BoxConstraints(minWidth: 56),
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            color: selected ? color.withValues(alpha: 0.18) : null,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+                color: selected ? color : Colors.transparent, width: 3),
+          ),
+          child: child,
+        ),
+      );
+}

@@ -97,37 +97,41 @@ class DiceViewState extends State<DiceView> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.enabled ? widget.onTap : null,
-      child: AnimatedBuilder(
-        animation: Listenable.merge([_roll, _idle]),
-        builder: (context, _) {
-          final v = _roll.value;
-          final rolling = _roll.isAnimating;
-          final spin = rolling ? (1 - v) * (1 - v) * 4 * pi : 0.0;
-          final hop = rolling ? sin(v * pi * 3) * (1 - v) * 0.35 : 0.0;
-          final breathe = widget.enabled ? _idle.value * 0.06 : 0.0;
-          return Transform.translate(
-            offset: Offset(0, -hop.abs() * widget.size * 0.5),
-            child: Transform.rotate(
-              angle: spin,
-              child: Transform.scale(
-                scale: 1 + breathe + (rolling ? 0.1 : 0),
-                child: SizedBox.square(
-                  dimension: widget.size,
-                  child: CustomPaint(
-                    painter: _DiePainter(
-                      face: _face,
-                      color: widget.color,
-                      glow: widget.enabled ? 0.5 + _idle.value * 0.5 : 0,
-                      dim: widget.dim && !rolling,
+    return Semantics(
+      button: widget.enabled,
+      label: widget.enabled ? 'Roll the dice' : 'Dice showing ${widget.value}',
+      child: GestureDetector(
+        onTap: widget.enabled ? widget.onTap : null,
+        child: AnimatedBuilder(
+          animation: Listenable.merge([_roll, _idle]),
+          builder: (context, _) {
+            final v = _roll.value;
+            final rolling = _roll.isAnimating;
+            final spin = rolling ? (1 - v) * (1 - v) * 4 * pi : 0.0;
+            final hop = rolling ? sin(v * pi * 3) * (1 - v) * 0.35 : 0.0;
+            final breathe = widget.enabled ? _idle.value * 0.06 : 0.0;
+            return Transform.translate(
+              offset: Offset(0, -hop.abs() * widget.size * 0.5),
+              child: Transform.rotate(
+                angle: spin,
+                child: Transform.scale(
+                  scale: 1 + breathe + (rolling ? 0.1 : 0),
+                  child: SizedBox.square(
+                    dimension: widget.size,
+                    child: CustomPaint(
+                      painter: _DiePainter(
+                        face: _face,
+                        color: widget.color,
+                        glow: widget.enabled ? 0.5 + _idle.value * 0.5 : 0,
+                        dim: widget.dim && !rolling,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

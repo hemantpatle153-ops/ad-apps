@@ -103,12 +103,16 @@ class _SetupScreenState extends State<SetupScreen> {
               Row(
                 children: [
                   const BackButton(color: Colors.white),
-                  Text(
-                    vs ? 'Play vs Computer' : 'Pass & Play',
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w900),
+                  Expanded(
+                    child: Text(
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      vs ? 'Play vs Computer' : 'Pass & Play',
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w900),
+                    ),
                   ),
                 ],
               ),

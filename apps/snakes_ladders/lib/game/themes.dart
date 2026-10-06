@@ -49,13 +49,7 @@ class BoardTheme {
   static const classic = BoardTheme(
     name: 'Classic',
     background: [Color(0xFF2E7D32), Color(0xFF1B5E20)],
-    cells: [
-      Color(0xFFFFF3C4),
-      Color(0xFFFFCC80),
-      Color(0xFFC5E1A5),
-      Color(0xFFFFAB91),
-      Color(0xFF90CAF9),
-    ],
+    cells: [Color(0xFFFFF6E0), Color(0xFFF5DFB0)],
     frame: Color(0xFF5D4037),
     number: Color(0xFF4E342E),
     ladderRail: Color(0xFF8D5524),
@@ -74,12 +68,7 @@ class BoardTheme {
   static const jungle = BoardTheme(
     name: 'Jungle',
     background: [Color(0xFF004D40), Color(0xFF00251A)],
-    cells: [
-      Color(0xFFA5D6A7),
-      Color(0xFF81C784),
-      Color(0xFFDCEDC8),
-      Color(0xFFAED581),
-    ],
+    cells: [Color(0xFFE6F2D5), Color(0xFFC8E2A8)],
     frame: Color(0xFF3E2723),
     number: Color(0xFF1B5E20),
     ladderRail: Color(0xFF6D4C41),
@@ -97,16 +86,11 @@ class BoardTheme {
   static const night = BoardTheme(
     name: 'Neon Night',
     background: [Color(0xFF1A1A40), Color(0xFF0B0B1E)],
-    cells: [
-      Color(0xFF232356),
-      Color(0xFF2C2C6C),
-      Color(0xFF1F3A60),
-      Color(0xFF34295E),
-    ],
+    cells: [Color(0xFF262660), Color(0xFF1E1E4E)],
     frame: Color(0xFF00E5FF),
     number: Color(0xFFB3E5FC),
-    ladderRail: Color(0xFFFFEA00),
-    ladderRung: Color(0xFFFFF59D),
+    ladderRail: Color(0xFFFFC94D),
+    ladderRung: Color(0xFFFFE6A6),
     snakes: [
       (Color(0xFFFF4081), Color(0xFF7C4DFF)),
       (Color(0xFF00E676), Color(0xFF00B0FF)),
@@ -121,13 +105,7 @@ class BoardTheme {
   static const candy = BoardTheme(
     name: 'Candy',
     background: [Color(0xFFAD1457), Color(0xFF6A1B9A)],
-    cells: [
-      Color(0xFFFCE4EC),
-      Color(0xFFF8BBD0),
-      Color(0xFFE1BEE7),
-      Color(0xFFFFF9C4),
-      Color(0xFFB2EBF2),
-    ],
+    cells: [Color(0xFFFFF0F6), Color(0xFFF5DDF3)],
     frame: Color(0xFF880E4F),
     number: Color(0xFF6A1B9A),
     ladderRail: Color(0xFFEC407A),

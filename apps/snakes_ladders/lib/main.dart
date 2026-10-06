@@ -7,6 +7,7 @@ import 'game/store.dart';
 import 'hub_screen.dart';
 import 'ludo/sfx.dart';
 import 'ludo/store.dart';
+import 'ui/home_screen.dart';
 
 /// The app's name everywhere it shows in the UI. The launcher label lives in
 /// android/app/src/main/AndroidManifest.xml.
@@ -55,7 +56,39 @@ class PartyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: buildTheme(seed, Brightness.light),
       darkTheme: buildTheme(seed, Brightness.dark),
+      builder: _capTextScale,
       home: HubScreen(store: store, sfx: sfx, ludo: ludo, ludoSfx: ludoSfx),
+    );
+  }
+}
+
+/// Game layouts are sized to the screen; cap very large system font sizes
+/// so names and panels never overflow.
+Widget _capTextScale(BuildContext context, Widget? child) {
+  final mq = MediaQuery.of(context);
+  return MediaQuery(
+    data: mq.copyWith(textScaler: mq.textScaler.clamp(maxScaleFactor: 1.2)),
+    child: child!,
+  );
+}
+
+/// Snakes & Ladders on its own, without the game picker (used by tests).
+class SnakesApp extends StatelessWidget {
+  const SnakesApp({super.key, required this.store, required this.sfx});
+
+  final Store store;
+  final Sfx sfx;
+
+  @override
+  Widget build(BuildContext context) {
+    const seed = Color(0xFF2E7D32);
+    return MaterialApp(
+      title: appName,
+      debugShowCheckedModeBanner: false,
+      theme: buildTheme(seed, Brightness.light),
+      darkTheme: buildTheme(seed, Brightness.dark),
+      builder: _capTextScale,
+      home: HomeScreen(store: store, sfx: sfx),
     );
   }
 }
