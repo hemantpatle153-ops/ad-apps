@@ -15,6 +15,9 @@ dependencies:
   audio_service: ^0.18.19
   crypto: ^3.0.7
   file_picker: ^13.1.0
+  mobile_scanner: ^7.4.2
+  qr_flutter: ^4.1.0
+  share_plus: ^13.3.1
   flutter_volume_controller: ^2.0.2
   media_kit: ^1.2.6
   media_kit_libs_video: ^1.0.7

@@ -11,7 +11,11 @@ class PlayItem {
     this.assetId,
     this.path,
     this.isPrivate = false,
+    this.transient = false,
   });
+
+  /// Watch-party streams: no resume point, no recent entry.
+  final bool transient;
 
   /// Private-folder videos stay out of the recent list.
   final bool isPrivate;

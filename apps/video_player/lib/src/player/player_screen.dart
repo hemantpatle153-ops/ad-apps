@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:math';
 
 import 'package:app_core/app_core.dart';
 import 'package:flutter/material.dart';
@@ -6,16 +8,22 @@ import 'package:flutter/services.dart';
 import 'package:flutter_volume_controller/flutter_volume_controller.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:screen_brightness/screen_brightness.dart';
 
 import '../format.dart';
 import '../library/subtitles.dart';
+import '../party/party.dart';
+import '../party/party_widgets.dart';
+import '../party/protocol.dart';
 import '../settings.dart';
 import 'background_audio.dart';
+import 'effects.dart';
 import 'play_item.dart';
 import 'player_overlays.dart';
 import 'player_sheets.dart';
 import 'system_channel.dart';
+import 'tool_sheets.dart';
 
 enum FitMode {
   fit('Fit', BoxFit.contain, null, Icons.fit_screen_rounded),
@@ -43,6 +51,8 @@ enum Rotation {
 
 enum _Drag { none, seek, brightness, volume, zoom }
 
+enum _Repeat { off, one, all }
+
 /// Opens the player full screen. Shows an interstitial (with cooldown)
 /// only after the player closes, never during playback.
 Future<void> openPlayer(
@@ -50,10 +60,15 @@ Future<void> openPlayer(
   Settings settings,
   List<PlayItem> queue, {
   int index = 0,
+  WatchParty? party,
+  bool replace = false,
 }) async {
-  await Navigator.of(context).push(MaterialPageRoute<void>(
-    builder: (_) => PlayerScreen(settings: settings, queue: queue, index: index),
-  ));
+  final route = MaterialPageRoute<void>(
+    builder: (_) =>
+        PlayerScreen(settings: settings, queue: queue, index: index, party: party),
+  );
+  final nav = Navigator.of(context);
+  await (replace ? nav.pushReplacement(route) : nav.push(route));
   await AdService.instance.maybeShowInterstitial();
 }
 
@@ -63,11 +78,15 @@ class PlayerScreen extends StatefulWidget {
     required this.settings,
     required this.queue,
     this.index = 0,
+    this.party,
   });
 
   final Settings settings;
   final List<PlayItem> queue;
   final int index;
+
+  /// A watch party this player joined as a guest.
+  final WatchParty? party;
 
   @override
   State<PlayerScreen> createState() => _PlayerScreenState();
@@ -75,9 +94,22 @@ class PlayerScreen extends StatefulWidget {
 
 class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver {
   late final Player player = Player(
-    configuration: const PlayerConfiguration(title: 'Video Player'),
+    configuration: const PlayerConfiguration(
+      title: 'Video Player',
+      // A bigger buffer keeps links and watch parties smooth on slow Wi-Fi.
+      bufferSize: 64 * 1024 * 1024,
+    ),
   );
-  late final VideoController controller = VideoController(player);
+  late final VideoController controller = VideoController(
+    player,
+    configuration: VideoControllerConfiguration(
+      enableHardwareAcceleration: widget.settings.hardwareDecoding,
+      hwdec: widget.settings.hardwareDecoding ? null : 'no',
+    ),
+  );
+  late final fx = PlayerEffects(player);
+  late WatchParty? _party = widget.party;
+  bool get _isGuest => _party != null && !_party!.isHost;
   late int index = widget.index;
   Settings get settings => widget.settings;
   PlayItem get item => widget.queue[index];
@@ -91,6 +123,17 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   bool _showRemaining = false;
   bool _backgroundSession = false;
   bool _pipSupported = false;
+  _Repeat _repeat = _Repeat.off;
+  bool _shuffle = false;
+  final _rng = Random();
+
+  /// Sleep timer: null off, Duration.zero = end of this video.
+  Duration? _sleep;
+  DateTime? _sleepAt;
+  Timer? _sleepTimer;
+
+  /// Player volume above 100% (up to 200%), on top of the phone's volume.
+  double _boost = 1;
   FitMode _fit = FitMode.fit;
   Rotation? _rotation;
   double _zoom = 1;
@@ -135,9 +178,55 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       player.stream.height.listen((_) => _videoSizeChanged()),
     ]);
     _saveTimer = Timer.periodic(const Duration(seconds: 5), (_) => _saveProgress());
+    fx.applyGlobal(settings);
     _initDevice();
+    _party?.attach(player);
+    _party?.addListener(_onPartyChanged);
     _open(index);
   }
+
+  void _onPartyChanged() {
+    final p = _party;
+    if (p == null || !mounted) return;
+    setState(() {});
+    final reason = p.endedReason;
+    if (reason != null && p is PartyGuest && p.status == GuestStatus.ended) {
+      p.removeListener(_onPartyChanged);
+      showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Watch party ended'),
+          content: Text(reason),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('OK')),
+          ],
+        ),
+      ).then((_) {
+        if (mounted) Navigator.maybePop(context);
+      });
+    }
+  }
+
+  // Controls go through the watch party when there is one, so every
+  // phone does the same thing.
+  Future<void> _play() async =>
+      _isGuest ? _party!.requestPlay() : player.play();
+  Future<void> _pause() async =>
+      _isGuest ? _party!.requestPause() : player.pause();
+  Future<void> _togglePlay() => player.state.playing ? _pause() : _play();
+  Future<void> _seek(Duration to) async {
+    if (to < Duration.zero) to = Duration.zero;
+    if (_isGuest) {
+      await _party!.requestSeek(to);
+    } else if (_party is PartyHost) {
+      await _party!.requestSeek(to);
+    } else {
+      await player.seek(to);
+    }
+  }
+
+  void _setRate(double r) =>
+      _isGuest ? _party!.requestRate(r) : player.setRate(r);
 
   Future<void> _initDevice() async {
     _pipSupported = await SystemChannel.instance.pipSupported();
@@ -160,10 +249,12 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       _zoom = 1;
     });
     final it = item;
-    final saved = settings.resume ? settings.positionFor(it.key) : null;
+    final saved =
+        settings.resume && !it.transient ? settings.positionFor(it.key) : null;
     final start = saved != null && saved > Duration.zero ? saved : null;
     await player.open(Media(it.uri, start: start));
-    if (settings.rememberSpeed && settings.lastSpeed != 1) {
+    await fx.setAbLoop(null, null);
+    if (settings.rememberSpeed && settings.lastSpeed != 1 && _party == null) {
       await player.setRate(settings.lastSpeed);
     }
     if (start != null && mounted) {
@@ -173,7 +264,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         if (mounted) setState(() => _resumedFrom = null);
       });
     }
-    if (!it.isPrivate) {
+    if (!it.isPrivate && !it.transient) {
       settings.addRecent(RecentItem(
       key: it.key,
       title: it.title,
@@ -207,17 +298,159 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   void _saveProgress() {
     final d = player.state.duration;
-    if (d <= Duration.zero || widget.queue.isEmpty) return;
+    if (d <= Duration.zero || widget.queue.isEmpty || item.transient) return;
     settings.savePosition(item.key, player.state.position, d);
   }
 
   void _onCompleted() {
     _saveProgress();
-    if (index < widget.queue.length - 1) {
+    if (_sleep == Duration.zero) {
+      _setSleep(null);
+      _showControls(stay: true);
+      return;
+    }
+    final n = widget.queue.length;
+    if (_party != null || n == 0) {
+      _showControls(stay: true);
+    } else if (_shuffle && n > 1) {
+      var next = _rng.nextInt(n - 1);
+      if (next >= index) next++;
+      _open(next);
+    } else if (index < n - 1) {
       _open(index + 1);
+    } else if (_repeat == _Repeat.all) {
+      _open(0);
     } else {
       _showControls(stay: true);
     }
+  }
+
+  // Tools ---------------------------------------------------------------------
+
+  void _setSleep(Duration? d) {
+    _sleepTimer?.cancel();
+    setState(() {
+      _sleep = d;
+      _sleepAt = d == null || d == Duration.zero ? null : DateTime.now().add(d);
+    });
+    if (d != null && d > Duration.zero) {
+      _sleepTimer = Timer(d, () {
+        _pause();
+        if (mounted) {
+          setState(() {
+            _sleep = null;
+            _sleepAt = null;
+          });
+          _showControls(stay: true);
+          _flash(Icons.bedtime_rounded, 'Sleep timer: paused');
+        }
+      });
+      _flash(Icons.bedtime_rounded, 'Pausing in ${d.inMinutes} min');
+    } else if (d == Duration.zero) {
+      _flash(Icons.bedtime_rounded, 'Pausing at the end');
+    }
+  }
+
+  void _cycleRepeat() {
+    final next = _Repeat.values[(_repeat.index + 1) % _Repeat.values.length];
+    setState(() => _repeat = next);
+    fx.setLoopOne(next == _Repeat.one);
+    _flash(
+        switch (next) {
+          _Repeat.off => Icons.repeat_rounded,
+          _Repeat.one => Icons.repeat_one_rounded,
+          _Repeat.all => Icons.repeat_on_rounded,
+        },
+        switch (next) {
+          _Repeat.off => 'Repeat off',
+          _Repeat.one => 'Repeat this video',
+          _Repeat.all => 'Repeat all',
+        });
+  }
+
+  /// First tap marks A, second marks B and loops, third clears.
+  void _abRepeat() {
+    final pos = player.state.position;
+    if (fx.loopA == null) {
+      fx.setAbLoop(pos, null);
+      _flash(Icons.repeat_rounded, 'A set at ${formatDuration(pos)}', subtext: 'Tap again to set B');
+    } else if (fx.loopB == null && pos > fx.loopA!) {
+      fx.setAbLoop(fx.loopA, pos);
+      _flash(Icons.repeat_rounded, 'Looping A-B');
+    } else {
+      fx.setAbLoop(null, null);
+      _flash(Icons.repeat_rounded, 'A-B repeat off');
+    }
+    setState(() {});
+  }
+
+  Future<void> _screenshot() async {
+    final bytes = await player.screenshot(format: 'image/jpeg');
+    if (bytes == null) {
+      _flash(Icons.photo_camera_rounded, 'Couldn\'t take a screenshot');
+      return;
+    }
+    try {
+      await PhotoManager.editor.saveImage(
+        bytes,
+        filename: 'VideoPlayer_${DateTime.now().millisecondsSinceEpoch}.jpg',
+        relativePath: 'Pictures/Video Player',
+      );
+      _flash(Icons.photo_camera_rounded, 'Screenshot saved', subtext: 'Pictures/Video Player');
+    } catch (_) {
+      _flash(Icons.photo_camera_rounded, 'Couldn\'t save the screenshot');
+    }
+  }
+
+  Future<void> _toggleDecoder() async {
+    final hw = !settings.hardwareDecoding;
+    settings.setHardwareDecoding(hw);
+    await fx.setHardwareDecoding(hw);
+    _flash(Icons.memory_rounded, hw ? 'Hardware decoder' : 'Software decoder',
+        subtext: hw ? 'Smoother, uses less battery' : 'Plays files the hardware can\'t');
+  }
+
+  /// Starts a watch party with this video as host.
+  Future<void> _hostParty() async {
+    if (_party != null) {
+      _openParty();
+      return;
+    }
+    final it = item;
+    String? file;
+    if (!it.isNetwork) {
+      final path = it.path;
+      if (path != null && await File(path).exists()) file = path;
+      if (file == null) {
+        _flash(Icons.groups_rounded, 'Can\'t share this video',
+            subtext: 'Pick it from your folders and try again');
+        return;
+      }
+    }
+    final name = settings.partyName.isNotEmpty
+        ? settings.partyName
+        : await SystemChannel.instance.deviceName();
+    final host = PartyHost(
+      name,
+      video: PartyVideo(title: it.title, url: it.isNetwork ? it.uri : null),
+      filePath: file,
+    );
+    try {
+      await host.start();
+    } catch (_) {
+      _flash(Icons.groups_rounded, 'Couldn\'t start the watch party');
+      return;
+    }
+    host.attach(player);
+    host.addListener(_onPartyChanged);
+    setState(() => _party = host);
+    _openParty();
+  }
+
+  void _openParty() {
+    final p = _party;
+    if (p == null) return;
+    _sheet((_) => PartySheet(party: p));
   }
 
   // Orientation ------------------------------------------------------------
@@ -336,16 +569,18 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     if (_locked) return;
     final x = _doubleTapAt?.dx ?? size.width / 2;
     if (x > size.width * 0.35 && x < size.width * 0.65) {
-      player.playOrPause();
-      _flash(player.state.playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
-          player.state.playing ? 'Pause' : 'Play');
+      final wasPlaying = player.state.playing;
+      _togglePlay();
+      _flash(wasPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+          wasPlaying ? 'Pause' : 'Play');
       return;
     }
     final forward = x >= size.width / 2;
-    _seekBy(Duration(seconds: forward ? 10 : -10));
+    final step = settings.doubleTapSeconds;
+    _seekBy(Duration(seconds: forward ? step : -step));
     _rippleTimer?.cancel();
     setState(() {
-      _rippleSeconds = _rippleForward == forward ? _rippleSeconds + 10 : 10;
+      _rippleSeconds = _rippleForward == forward ? _rippleSeconds + step : step;
       _rippleForward = forward;
     });
     _rippleTimer = Timer(const Duration(milliseconds: 700), () {
@@ -358,7 +593,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     var t = player.state.position + by;
     if (t < Duration.zero) t = Duration.zero;
     if (d > Duration.zero && t > d) t = d;
-    player.seek(t);
+    _seek(t);
   }
 
   void _onScaleStart(ScaleStartDetails d) {
@@ -390,7 +625,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         _levelFrom = _brightness;
       } else {
         _drag = _Drag.volume;
-        _levelFrom = _volume;
+        _levelFrom = _volume + (_boost - 1);
       }
     }
     switch (_drag) {
@@ -414,11 +649,24 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         ScreenBrightness.instance.setApplicationScreenBrightness(v).catchError((_) {});
         _flash(Icons.brightness_6_rounded, '${(v * 100).round()}%', level: v);
       case _Drag.volume:
-        final v = (_levelFrom - delta.dy / (size.height * 0.75)).clamp(0.0, 1.0);
-        _volume = v;
-        FlutterVolumeController.setVolume(v).catchError((_) {});
-        _flash(v == 0 ? Icons.volume_off_rounded : Icons.volume_up_rounded,
-            '${(v * 100).round()}%', level: v);
+        // Above the phone's maximum the player itself gets louder, to 200%.
+        final l = (_levelFrom - delta.dy / (size.height * 0.75)).clamp(0.0, 2.0);
+        final v = l.clamp(0.0, 1.0);
+        final boost = l > 1 ? l : 1.0;
+        if (v != _volume) {
+          _volume = v;
+          FlutterVolumeController.setVolume(v).catchError((_) {});
+        }
+        if (boost != _boost) {
+          _boost = boost;
+          player.setVolume(100 * boost);
+        }
+        _flash(
+            l == 0
+                ? Icons.volume_off_rounded
+                : (l > 1 ? Icons.campaign_rounded : Icons.volume_up_rounded),
+            l > 1 ? 'Boost ${(l * 100).round()}%' : '${(v * 100).round()}%',
+            level: l / 2);
       case _Drag.none:
       case _Drag.zoom:
         break;
@@ -426,7 +674,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   void _onScaleEnd(ScaleEndDetails d) {
-    if (_drag == _Drag.seek) player.seek(_seekTo);
+    if (_drag == _Drag.seek) _seek(_seekTo);
     _drag = _Drag.none;
   }
 
@@ -457,6 +705,10 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     for (final t in [_hideTimer, _indicatorTimer, _saveTimer, _resumeTimer, _rippleTimer]) {
       t?.cancel();
     }
+    _sleepTimer?.cancel();
+    final party = _party;
+    party?.removeListener(_onPartyChanged);
+    party?.close().whenComplete(party.dispose);
     BackgroundAudio.instance.detach();
     player.dispose();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
@@ -518,6 +770,10 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
                       if (_error != null) _errorView(),
                       if (_locked) _lockOverlay() else _controls(context),
                       if (_resumedFrom != null && !_locked) _resumePill(),
+                      if (_party != null)
+                        PartyOverlay(
+                            party: _party!,
+                            bottom: _controlsVisible && !_locked ? 130 : 40),
                     ],
                   );
                 }),
@@ -535,7 +791,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
           return AnimatedPadding(
             duration: const Duration(milliseconds: 200),
             padding: EdgeInsets.fromLTRB(
-                24, 0, 24, pip ? 6 : (_controlsVisible && !_locked ? 120 : 28)),
+                24, 0, 24, pip ? 6 : (_controlsVisible && !_locked ? 120 : 28) + settings.subtitleLift),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: SubtitleText(
@@ -605,7 +861,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
                     style: const TextStyle(color: Colors.white)),
                 TextButton(
                   onPressed: () {
-                    player.seek(Duration.zero);
+                    _seek(Duration.zero);
                     setState(() => _resumedFrom = null);
                   },
                   child: const Text('Start over'),
@@ -707,6 +963,26 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
                 style: const TextStyle(
                     color: Colors.white, fontSize: 17, fontWeight: FontWeight.w600)),
           ),
+          if (_party != null)
+            _Chip(
+              icon: Icons.groups_rounded,
+              text: '${_party!.members.length}',
+              onTap: _openParty,
+            ),
+          if (_sleep != null)
+            _Chip(
+              icon: Icons.bedtime_rounded,
+              text: _sleepAt == null
+                  ? 'End'
+                  : '${max(1, _sleepAt!.difference(DateTime.now()).inMinutes)}m',
+              onTap: _openSleep,
+            ),
+          if (fx.loopA != null)
+            _Chip(
+              icon: Icons.repeat_rounded,
+              text: fx.loopB == null ? 'A' : 'A-B',
+              onTap: _abRepeat,
+            ),
           _icon(Icons.audiotrack_rounded, _openAudio, tip: 'Audio track'),
           _icon(Icons.subtitles_rounded, _openSubtitles, tip: 'Subtitles'),
           StreamBuilder<double>(
@@ -737,7 +1013,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
             children: [
               if (widget.queue.length > 1)
                 _icon(Icons.skip_previous_rounded,
-                    index > 0 ? () => _open(index - 1) : () => player.seek(Duration.zero),
+                    index > 0 ? () => _open(index - 1) : () => _seek(Duration.zero),
                     size: 36, tip: 'Previous'),
               const SizedBox(width: 12),
               _icon(Icons.replay_10_rounded, () => _seekBy(const Duration(seconds: -10)),
@@ -750,10 +1026,9 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
                   customBorder: const CircleBorder(),
                   onTap: () {
                     if (ended) {
-                      player.seek(Duration.zero);
-                      player.play();
+                      _seek(Duration.zero).then((_) => _play());
                     } else {
-                      player.playOrPause();
+                      _togglePlay();
                     }
                     _scheduleHide();
                   },
@@ -818,7 +1093,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
                     },
                     onChanged: max <= 0 ? null : (v) => setState(() => _scrub = v),
                     onChangeEnd: (v) {
-                      player.seek(Duration(milliseconds: v.round()));
+                      _seek(Duration(milliseconds: v.round()));
                       setState(() => _scrub = null);
                       _scheduleHide();
                     },
@@ -858,7 +1133,30 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
             _applyRotation(next);
             _flash(next.icon, next.label);
           }, tip: 'Rotation'),
+          if (_party == null)
+            _icon(
+                switch (_repeat) {
+                  _Repeat.off => Icons.repeat_rounded,
+                  _Repeat.one => Icons.repeat_one_rounded,
+                  _Repeat.all => Icons.repeat_on_rounded,
+                },
+                _cycleRepeat,
+                tip: 'Repeat'),
           const Spacer(),
+          StreamBuilder<bool>(
+            stream: player.stream.playing,
+            initialData: player.state.playing,
+            builder: (context, snap) => snap.data == true || _party != null
+                ? const SizedBox.shrink()
+                : Row(mainAxisSize: MainAxisSize.min, children: [
+                    _icon(Icons.chevron_left_rounded, () => fx.frameStep(back: true),
+                        tip: 'Previous frame'),
+                    _icon(Icons.chevron_right_rounded, () => fx.frameStep(),
+                        tip: 'Next frame'),
+                  ]),
+          ),
+          if (widget.queue.length > 1 && _party == null)
+            _icon(Icons.queue_music_rounded, _openQueue, tip: 'Queue'),
           _icon(Icons.headphones_rounded, _playInBackground, tip: 'Play audio in background'),
           _icon(_fit.icon, () {
             setState(() {
@@ -881,41 +1179,118 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     }
   }
 
-  void _openSpeed() => _sheet((_) => SpeedSheet(player: player, settings: settings));
-  void _openAudio() => _sheet((_) => AudioTrackSheet(player: player));
-  void _openSubtitles() =>
-      _sheet((_) => SubtitleSheet(player: player, settings: settings));
-
-  void _openMore() => _sheet((ctx) => SafeArea(
-        child: ListView(shrinkWrap: true, children: [
-          ListTile(
-            leading: const Icon(Icons.headphones_rounded),
-            title: const Text('Play audio in background'),
-            subtitle: const Text('Keeps playing with the screen off'),
-            onTap: () {
-              Navigator.pop(ctx);
-              _playInBackground();
-            },
-          ),
-          if (_pipSupported)
-            ListTile(
-              leading: const Icon(Icons.picture_in_picture_alt_rounded),
-              title: const Text('Picture-in-picture'),
-              onTap: () {
-                Navigator.pop(ctx);
-                _enterPip();
-              },
-            ),
-          ListTile(
-            leading: const Icon(Icons.info_outline_rounded),
-            title: const Text('Video info'),
-            onTap: () {
-              Navigator.pop(ctx);
-              _showInfo();
-            },
-          ),
-        ]),
+  void _openSpeed() => _sheet(
+      (_) => SpeedSheet(player: player, settings: settings, onRate: _setRate));
+  void _openAudio() => _sheet((_) => AudioTrackSheet(
+        player: player,
+        fx: fx,
+        onEqualizer: _openEqualizer,
       ));
+  void _openSubtitles() =>
+      _sheet((_) => SubtitleSheet(player: player, settings: settings, fx: fx));
+  void _openEqualizer() =>
+      _sheet((_) => EqualizerSheet(settings: settings, fx: fx));
+  void _openSleep() =>
+      _sheet((_) => SleepTimerSheet(active: _sleep, onPick: _setSleep));
+  void _openQueue() => _sheet((_) => QueueSheet(
+      queue: widget.queue, index: index, onPick: (i) => _open(i)));
+
+  void _openMore() {
+    final tools = <(IconData, String, VoidCallback)>[
+      if (!_isGuest)
+        (
+          Icons.groups_rounded,
+          _party == null ? 'Watch with friends' : 'Watch party',
+          _hostParty
+        ),
+      if (_isGuest) (Icons.groups_rounded, 'Watch party', _openParty),
+      (Icons.equalizer_rounded, 'Equalizer', _openEqualizer),
+      (
+        Icons.tune_rounded,
+        'Picture',
+        () => _sheet((_) => VideoAdjustSheet(fx: fx))
+      ),
+      (Icons.bedtime_rounded, 'Sleep timer', _openSleep),
+      if (_party == null) (Icons.repeat_rounded, 'A-B repeat', _abRepeat),
+      (Icons.photo_camera_rounded, 'Screenshot', _screenshot),
+      (
+        Icons.bookmarks_rounded,
+        'Bookmarks',
+        () => _sheet((_) => BookmarksSheet(
+              settings: settings,
+              item: item,
+              position: player.state.position,
+              onJump: _seek,
+            ))
+      ),
+      (
+        Icons.segment_rounded,
+        'Chapters',
+        () => _sheet((_) => ChaptersSheet(fx: fx, onJump: _seek))
+      ),
+      if (widget.queue.length > 1 && _party == null)
+        (Icons.queue_music_rounded, 'Queue', _openQueue),
+      if (widget.queue.length > 1 && _party == null)
+        (
+          _shuffle ? Icons.shuffle_on_rounded : Icons.shuffle_rounded,
+          _shuffle ? 'Shuffle on' : 'Shuffle',
+          () {
+            setState(() => _shuffle = !_shuffle);
+            _flash(Icons.shuffle_rounded, _shuffle ? 'Shuffle on' : 'Shuffle off');
+          }
+        ),
+      (Icons.headphones_rounded, 'Background', _playInBackground),
+      if (_pipSupported)
+        (Icons.picture_in_picture_alt_rounded, 'Pop-up', _enterPip),
+      (
+        Icons.memory_rounded,
+        settings.hardwareDecoding ? 'HW decoder' : 'SW decoder',
+        _toggleDecoder
+      ),
+      (Icons.info_outline_rounded, 'Info', _showInfo),
+    ];
+    _sheet((ctx) => SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(12, 4, 12, 12),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              children: [
+                for (final (icon, label, onTap) in tools)
+                  SizedBox(
+                    width: 88,
+                    height: 84,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () {
+                        Navigator.pop(ctx);
+                        onTap();
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            radius: 22,
+                            backgroundColor: Theme.of(ctx)
+                                .colorScheme
+                                .primary
+                                .withValues(alpha: 0.15),
+                            child: Icon(icon,
+                                color: Theme.of(ctx).colorScheme.primary),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(label,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 12)),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ));
+  }
 
   void _showInfo() {
     final s = player.state;
@@ -947,6 +1322,35 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
           ]),
         ));
   }
+}
+
+/// A small status pill in the top bar (watch party, sleep timer, A-B).
+class _Chip extends StatelessWidget {
+  const _Chip({required this.icon, required this.text, required this.onTap});
+  final IconData icon;
+  final String text;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 2),
+        child: Material(
+          color: Colors.white.withValues(alpha: 0.16),
+          borderRadius: BorderRadius.circular(14),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(14),
+            onTap: onTap,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Icon(icon, color: Colors.white, size: 16),
+                const SizedBox(width: 4),
+                Text(text, style: const TextStyle(color: Colors.white, fontSize: 12)),
+              ]),
+            ),
+          ),
+        ),
+      );
 }
 
 class _Scrim extends StatelessWidget {

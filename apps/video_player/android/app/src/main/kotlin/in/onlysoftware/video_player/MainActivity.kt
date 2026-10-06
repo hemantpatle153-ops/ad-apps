@@ -1,10 +1,13 @@
 package `in`.onlysoftware.video_player
 
 import android.app.PictureInPictureParams
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.net.wifi.WifiManager
 import android.os.Build
+import android.provider.Settings
 import android.util.Rational
 import com.ryanheise.audioservice.AudioServiceActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -16,6 +19,8 @@ class MainActivity : AudioServiceActivity() {
     private var autoPip = false
     private var aspect = Rational(16, 9)
     private var pendingUri: String? = null
+    private var wifiLock: WifiManager.WifiLock? = null
+    private var multicastLock: WifiManager.MulticastLock? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -38,6 +43,18 @@ class MainActivity : AudioServiceActivity() {
                         result.success(null)
                     }
                     "moveToBack" -> result.success(moveTaskToBack(true))
+                    "holdNetwork" -> {
+                        holdNetwork()
+                        result.success(null)
+                    }
+                    "releaseNetwork" -> {
+                        releaseNetwork()
+                        result.success(null)
+                    }
+                    "deviceName" -> result.success(
+                        Settings.Global.getString(contentResolver, "device_name")
+                            ?.takeIf { it.isNotBlank() } ?: Build.MODEL
+                    )
                     "takeOpenedUri" -> {
                         result.success(pendingUri)
                         pendingUri = null
@@ -59,6 +76,36 @@ class MainActivity : AudioServiceActivity() {
                 override fun notImplemented() {}
             })
         }
+    }
+
+    // Watch parties: keep Wi-Fi fast and listening to beacons.
+    private fun holdNetwork() {
+        try {
+            val wifi = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            if (wifiLock == null) {
+                @Suppress("DEPRECATION")
+                val mode = if (Build.VERSION.SDK_INT >= 29) WifiManager.WIFI_MODE_FULL_LOW_LATENCY
+                    else WifiManager.WIFI_MODE_FULL_HIGH_PERF
+                wifiLock = wifi.createWifiLock(mode, "video_player").apply {
+                    setReferenceCounted(false)
+                    acquire()
+                }
+            }
+            if (multicastLock == null) {
+                multicastLock = wifi.createMulticastLock("video_player").apply {
+                    setReferenceCounted(false)
+                    acquire()
+                }
+            }
+        } catch (_: Exception) {
+        }
+    }
+
+    private fun releaseNetwork() {
+        wifiLock?.release()
+        wifiLock = null
+        multicastLock?.release()
+        multicastLock = null
     }
 
     // "Open with" from a file manager or another app.

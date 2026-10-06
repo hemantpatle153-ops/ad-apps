@@ -20,7 +20,25 @@ phone, plays almost any format (libmpv through `media_kit`), and works offline.
 - "Open with Video Player" from file managers and other apps
 - Private folder locked with a PIN (videos are moved into app storage and
   removed from the gallery; moving them back restores the original folder)
-- Dark and light themes
+- Dark and light themes, list or grid view, hide folders, share a video
+- Player tools: 10-band equalizer with presets and night mode, volume boost
+  to 200%, audio and subtitle delay, subtitle position, brightness / contrast /
+  saturation / gamma / hue, rotate and mirror, sleep timer, A-B repeat, repeat
+  one / all, shuffle, playing queue, frame-by-frame step, screenshots (saved to
+  Pictures/Video Player), bookmarks, chapters, hardware / software decoder
+
+## Watch together
+
+One phone opens a video and taps More, then Watch with friends. Friends tap
+the people icon on the home screen and scan the QR code, pick the party found
+on the Wi-Fi, or type the address. Phone videos stream from the host; links
+open on every phone directly. Play, pause, seek and speed stay in sync (clock
+sync, seek when more than 1.5 s off, small speed nudges below that), with a
+chat and emoji reactions over the video.
+
+It works on the same Wi-Fi or the host's hotspot, with no server. Watching
+together over the internet would need a relay server (for example Firebase
+plus TURN) and is not built.
 
 ## Ads
 
@@ -34,7 +52,8 @@ Google's test ad IDs.
 
 `READ_MEDIA_VIDEO` on Android 13+, `READ_EXTERNAL_STORAGE` up to Android 12,
 `WRITE_EXTERNAL_STORAGE` only up to Android 10 (private folder), plus
-`FOREGROUND_SERVICE_MEDIA_PLAYBACK` for background audio. No
+`FOREGROUND_SERVICE_MEDIA_PLAYBACK` for background audio, `CAMERA` (optional) to
+scan a watch party QR code, Wi-Fi state and multicast to find parties nearby. No
 `MANAGE_EXTERNAL_STORAGE`. Play Console will ask for the photo and video
 permissions declaration: the app's core purpose is playing the user's videos.
 
