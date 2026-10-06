@@ -6,8 +6,16 @@ import 'package:snakes_ladders/game/board.dart';
 import 'package:snakes_ladders/game/engine.dart';
 import 'package:snakes_ladders/game/store.dart';
 
+const testBoard = BoardLayout(
+  id: 'test',
+  name: 'Test',
+  description: '',
+  ladders: {1: 38, 4: 14},
+  snakes: {16: 6},
+);
+
 GameEngine newGame() => GameEngine(
-      board: BoardLayout.classic,
+      board: testBoard,
       players: const [
         Player(name: 'A', color: 0, kind: PlayerKind.human),
         Player(name: 'B', color: 1, kind: PlayerKind.bot),

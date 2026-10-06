@@ -4,9 +4,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:snakes_ladders/game/board.dart';
 import 'package:snakes_ladders/game/engine.dart';
 
+/// A fixed board so these tests don't depend on the preset layouts.
+const testBoard = BoardLayout(
+  id: 'test',
+  name: 'Test',
+  description: '',
+  ladders: {1: 38, 4: 14},
+  snakes: {16: 6},
+);
+
 GameEngine game({GameRules rules = const GameRules(), int players = 2}) =>
     GameEngine(
-      board: BoardLayout.classic,
+      board: testBoard,
       players: [
         for (var i = 0; i < players; i++)
           Player(name: 'P$i', color: i, kind: PlayerKind.human),
@@ -15,9 +24,10 @@ GameEngine game({GameRules rules = const GameRules(), int players = 2}) =>
     );
 
 void main() {
-  test('preset boards are valid', () {
+  test('preset boards are valid and nothing crosses', () {
     for (final b in BoardLayout.presets) {
       expect(b.isValid, isTrue, reason: b.name);
+      expect(b.isTidy, isTrue, reason: b.name);
     }
   });
 
@@ -25,6 +35,7 @@ void main() {
     for (var seed = 0; seed < 300; seed++) {
       final b = BoardLayout.random(seed);
       expect(b.isValid, isTrue, reason: 'seed $seed');
+      expect(b.isTidy, isTrue, reason: 'seed $seed');
       expect(b.ladders.length, greaterThanOrEqualTo(6));
       expect(b.snakes.length, greaterThanOrEqualTo(6));
     }

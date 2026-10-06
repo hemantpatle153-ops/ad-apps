@@ -66,133 +66,172 @@ class BoardLayout {
         },
       );
 
+  // Preset layouts were picked so that no two snakes or ladders cross or
+  // touch, which keeps the board easy to read on a phone (see [isTidy]).
   static const classic = BoardLayout(
     id: 'classic',
     name: 'Classic',
-    description: 'The board everyone grew up with',
-    ladders: {
-      1: 38,
-      4: 14,
-      9: 31,
-      21: 42,
-      28: 84,
-      36: 44,
-      51: 67,
-      71: 91,
-      80: 100
-    },
-    snakes: {
-      16: 6,
-      47: 26,
-      49: 11,
-      56: 53,
-      62: 19,
-      64: 60,
-      87: 24,
-      93: 73,
-      95: 75,
-      98: 78,
-    },
+    description: 'A balanced board for any game',
+    ladders: {2: 21, 13: 48, 17: 37, 31: 50, 40: 78, 45: 85, 72: 91},
+    snakes: {35: 5, 43: 3, 47: 7, 52: 12, 75: 66, 95: 68, 97: 57, 98: 61},
   );
 
   static const jungle = BoardLayout(
     id: 'jungle',
     name: 'Jungle Rush',
-    description: 'Lots of ladders, quick games',
+    description: 'More ladders, quicker games',
     ladders: {
-      3: 22,
-      5: 8,
-      11: 26,
-      20: 29,
-      27: 56,
-      37: 58,
-      42: 63,
-      50: 69,
-      61: 81,
-      72: 91,
-      79: 97,
+      6: 46,
+      11: 51,
+      16: 25,
+      28: 53,
+      45: 83,
+      62: 99,
+      66: 85,
+      68: 89,
+      70: 90
     },
-    snakes: {
-      17: 4,
-      19: 7,
-      34: 12,
-      54: 35,
-      66: 45,
-      76: 57,
-      88: 65,
-      94: 74,
-      99: 41
-    },
+    snakes: {32: 9, 37: 4, 42: 3, 54: 34, 80: 40, 95: 74},
   );
 
   static const viper = BoardLayout(
     id: 'viper',
     name: 'Viper Pit',
     description: 'More snakes, long comebacks',
-    ladders: {6: 27, 13: 35, 23: 44, 40: 59, 57: 77, 63: 84, 78: 96},
+    ladders: {10: 31, 18: 57, 34: 73, 62: 99, 70: 92},
     snakes: {
-      25: 3,
-      32: 10,
-      46: 14,
-      52: 29,
-      58: 39,
-      69: 33,
-      74: 54,
-      83: 61,
-      89: 51,
-      92: 71,
-      97: 64,
-      99: 80,
+      25: 7,
+      42: 2,
+      52: 12,
+      55: 46,
+      61: 21,
+      65: 36,
+      78: 63,
+      95: 66,
+      98: 76
     },
   );
 
   static const presets = [classic, jungle, viper];
 
-  /// A fresh, fair board for the "Surprise" option.
+  /// Closest two snakes or ladders may come, in cells, measured between
+  /// the straight lines joining their ends.
+  static const minGap = 1.0;
+
+  /// True when no two snakes or ladders cross or come closer than [minGap].
+  bool get isTidy {
+    final segs = [
+      for (final e in [...ladders.entries, ...snakes.entries])
+        (cellCenter(e.key), cellCenter(e.value)),
+    ];
+    for (var i = 0; i < segs.length; i++) {
+      for (var j = i + 1; j < segs.length; j++) {
+        if (_segmentGap(segs[i].$1, segs[i].$2, segs[j].$1, segs[j].$2) <
+            minGap) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  /// A fresh, tidy board for the "Surprise" option.
   factory BoardLayout.random(int seed) {
     final rng = Random(seed);
+    for (var attempt = 0; attempt < 50; attempt++) {
+      final b = _tryRandom(rng, 7, 8);
+      if (b != null) return b._named(seed);
+    }
+    return classic;
+  }
+
+  BoardLayout _named(int seed) => BoardLayout(
+        id: 'random_$seed',
+        name: 'Surprise board',
+        description: 'A new layout every game',
+        ladders: ladders,
+        snakes: snakes,
+      );
+
+  static BoardLayout? _tryRandom(Random rng, int nLadders, int nSnakes) {
     final used = <int>{1, lastCell};
+    final segs = <(({double x, double y}), ({double x, double y}))>[];
     final ladders = <int, int>{};
     final snakes = <int, int>{};
 
-    int pick(int lo, int hi) {
-      for (var i = 0; i < 200; i++) {
-        final c = lo + rng.nextInt(hi - lo + 1);
-        if (!used.contains(c)) return c;
+    bool fits(int a, int b) {
+      if (used.contains(a) || used.contains(b)) return false;
+      final ga = cellGrid(a), gb = cellGrid(b);
+      final rows = (ga.row - gb.row).abs();
+      if (rows < 1 || rows > 4 || (ga.col - gb.col).abs() > 2) return false;
+      final pa = cellCenter(a), pb = cellCenter(b);
+      for (final s in segs) {
+        if (_segmentGap(pa, pb, s.$1, s.$2) < minGap) return false;
       }
-      return -1;
+      return true;
     }
 
-    while (ladders.length < 8) {
-      final bottom = pick(2, 80);
-      if (bottom < 0) break;
-      final rowsUp = 1 + rng.nextInt(4);
-      final top = min(99, bottom + rowsUp * 10 + rng.nextInt(9) - 4);
-      if (top <= bottom + 5 || used.contains(top)) continue;
+    void add(Map<int, int> into, int a, int b) {
+      into[a] = b;
       used
-        ..add(bottom)
-        ..add(top);
-      ladders[bottom] = top;
+        ..add(a)
+        ..add(b);
+      segs.add((cellCenter(a), cellCenter(b)));
     }
-    while (snakes.length < 9) {
-      final head = pick(20, 99);
-      if (head < 0) break;
-      final rowsDown = 1 + rng.nextInt(4);
-      final tail = max(2, head - rowsDown * 10 - rng.nextInt(9) + 4);
-      if (tail >= head - 5 || used.contains(tail)) continue;
-      used
-        ..add(head)
-        ..add(tail);
-      snakes[head] = tail;
+
+    for (var tries = 0;
+        tries < 4000 && (ladders.length < nLadders || snakes.length < nSnakes);
+        tries++) {
+      final ladderTurn = ladders.length < nLadders &&
+          (snakes.length >= nSnakes || rng.nextBool());
+      if (ladderTurn) {
+        final a = 2 + rng.nextInt(84);
+        final b = a + 9 + rng.nextInt(32);
+        if (b < lastCell && fits(a, b)) add(ladders, a, b);
+      } else {
+        final h = 15 + rng.nextInt(85);
+        final t = h - 9 - rng.nextInt(32);
+        if (h < lastCell && t >= 2 && fits(h, t)) add(snakes, h, t);
+      }
     }
+    if (ladders.length < nLadders || snakes.length < nSnakes) return null;
     return BoardLayout(
-      id: 'random_$seed',
+      id: 'random',
       name: 'Surprise board',
-      description: 'A new layout every game',
+      description: '',
       ladders: ladders,
       snakes: snakes,
     );
   }
+}
+
+/// Shortest distance between segments p1-p2 and q1-q2 (0 if they cross).
+double _segmentGap(({double x, double y}) p1, ({double x, double y}) p2,
+    ({double x, double y}) q1, ({double x, double y}) q2) {
+  double cross(({double x, double y}) a, ({double x, double y}) b,
+          ({double x, double y}) c) =>
+      (c.y - a.y) * (b.x - a.x) - (b.y - a.y) * (c.x - a.x);
+  if (cross(p1, q1, q2) * cross(p2, q1, q2) < 0 &&
+      cross(p1, p2, q1) * cross(p1, p2, q2) < 0) {
+    return 0;
+  }
+  double toSeg(({double x, double y}) p, ({double x, double y}) a,
+      ({double x, double y}) b) {
+    final dx = b.x - a.x, dy = b.y - a.y;
+    final len = dx * dx + dy * dy;
+    final t = len == 0
+        ? 0.0
+        : (((p.x - a.x) * dx + (p.y - a.y) * dy) / len).clamp(0.0, 1.0);
+    final ex = p.x - a.x - t * dx, ey = p.y - a.y - t * dy;
+    return sqrt(ex * ex + ey * ey);
+  }
+
+  return [
+    toSeg(p1, q1, q2),
+    toSeg(p2, q1, q2),
+    toSeg(q1, p1, p2),
+    toSeg(q2, p1, p2),
+  ].reduce(min);
 }
 
 /// Column and row (0..9, row 0 at the bottom) of a cell 1..100.
