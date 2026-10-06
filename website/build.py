@@ -94,16 +94,19 @@ APPS = {
     ]),
     "dice_dhamaal": ("Dice Dhamaal", [
         "Games against the computer and pass-and-play stay on your phone.",
-        "Online rooms (6-letter code) keep only the name you type, your colour "
-        "and the moves of the game, so all players see the same board. Room data "
-        "is deleted automatically within 6 hours. Only people with the room code "
-        "can see it. " + FIREBASE,
-        "Online games include voice chat, which starts with the game; you can "
-        "mute your microphone at any time, and it is used only during the game. "
-        "Voice goes directly between the players' phones, "
-        "encrypted (WebRTC). It is never recorded or stored. To connect the "
-        "phones, Google's public STUN servers see your IP address, and the other "
-        "players' phones can see it too, as with any direct call.",
+        "Voice chat is off until you tap Voice during an online game. Only then "
+        "does the app ask for microphone access. Calls go directly between the "
+        "players' phones and are encrypted. Audio is never recorded or stored. "
+        "To connect the phones, Google's public STUN servers see your IP "
+        "address, and the other players' phones can see it too, as with any "
+        "direct call.",
+        "You can mute any player, which stops audio both ways, or report them. "
+        "A report stores the room code, the reported player's display name and "
+        "seat, the reason you picked, a random anonymous id for you, and the "
+        "time. Reports are kept only until we review them.",
+        "Online rooms (player names, moves and call set-up messages) live in "
+        "Firebase Realtime Database and are deleted automatically within 6 "
+        "hours. Only people with the room code can see them. " + FIREBASE,
     ]),
 }
 
