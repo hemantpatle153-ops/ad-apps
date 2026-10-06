@@ -91,3 +91,59 @@ class VideoTile extends StatelessWidget {
     );
   }
 }
+
+/// One card in the grid view: a big thumbnail with the title under it.
+class VideoGridTile extends StatelessWidget {
+  const VideoGridTile({
+    super.key,
+    required this.video,
+    required this.settings,
+    required this.onTap,
+    this.onMore,
+  });
+
+  final VideoEntry video;
+  final Settings settings;
+  final VoidCallback onTap;
+  final VoidCallback? onMore;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: onTap,
+      onLongPress: onMore,
+      child: Padding(
+        padding: const EdgeInsets.all(6),
+        child: LayoutBuilder(builder: (context, c) {
+          final w = c.maxWidth;
+          return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            VideoThumb(
+              assetId: video.id,
+              width: w,
+              height: w * 9 / 16,
+              radius: 12,
+              badge: formatDuration(video.duration),
+              progress: settings.progressFor(video.id, video.duration),
+            ),
+            const SizedBox(height: 6),
+            Text(video.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.w600, height: 1.2)),
+            const SizedBox(height: 2),
+            Text(
+                [formatSize(video.size), qualityLabel(video.width, video.height)]
+                    .where((s) => s.isNotEmpty)
+                    .join('  ·  '),
+                maxLines: 1,
+                style: theme.textTheme.bodySmall
+                    ?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          ]);
+        }),
+      ),
+    );
+  }
+}

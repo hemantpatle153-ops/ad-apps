@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../format.dart';
 import '../library/private_vault.dart';
@@ -36,6 +37,14 @@ Future<void> showVideoActions(
           },
         ),
         ListTile(
+          leading: const Icon(Icons.share_rounded),
+          title: const Text('Share'),
+          onTap: () async {
+            Navigator.pop(ctx);
+            await shareVideo(context, video);
+          },
+        ),
+        ListTile(
           leading: const Icon(Icons.info_outline_rounded),
           title: const Text('Properties'),
           onTap: () {
@@ -63,6 +72,21 @@ Future<void> showVideoActions(
       ]),
     ),
   );
+}
+
+/// Sends the video file to another app (WhatsApp, Drive, Nearby Share...).
+Future<void> shareVideo(BuildContext context, VideoEntry video) async {
+  final messenger = ScaffoldMessenger.of(context);
+  try {
+    final file = await video.asset.file;
+    if (file == null) throw StateError('no file');
+    await SharePlus.instance.share(ShareParams(
+      files: [XFile(file.path, mimeType: video.asset.mimeType ?? 'video/*')],
+      title: video.title,
+    ));
+  } catch (_) {
+    messenger.showSnackBar(const SnackBar(content: Text("Couldn't share this video")));
+  }
 }
 
 Future<void> moveToPrivate(BuildContext context, VideoEntry video, PrivateVault vault) async {

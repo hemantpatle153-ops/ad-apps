@@ -80,6 +80,21 @@ class SystemChannel {
     } catch (_) {}
   }
 
+  /// Keeps Wi-Fi awake and hearing party beacons during a watch party.
+  Future<void> holdNetwork(bool on) async {
+    try {
+      await _channel.invokeMethod(on ? 'holdNetwork' : 'releaseNetwork');
+    } catch (_) {}
+  }
+
+  Future<String> deviceName() async {
+    try {
+      return await _channel.invokeMethod<String>('deviceName') ?? 'Phone';
+    } catch (_) {
+      return 'Phone';
+    }
+  }
+
   Future<void> moveToBack() async {
     try {
       await _channel.invokeMethod('moveToBack');

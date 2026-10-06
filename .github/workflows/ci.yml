@@ -33,7 +33,18 @@ jobs:
       - run: flutter pub get
       - run: flutter analyze
       - name: Test
-        run: if [ -d test ]; then flutter test; fi
+        # Failing tests are also posted as annotations, readable without
+        # downloading the full log.
+        run: |
+          [ -d test ] || exit 0
+          set +e
+          flutter test -r expanded 2>&1 | tee "$RUNNER_TEMP/test.log"
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            grep -E '\[E\]$|Expected:|Actual:|Which:|Error:|Exception' "$RUNNER_TEMP/test.log" \
+              | head -40 | while IFS= read -r line; do echo "::error::$line"; done
+          fi
+          exit "$status"
 
   # Builds test APKs so they can be shared without a laptop build. Signed
   # with debug keys: the Play upload key stays offline. To build another
@@ -71,19 +82,37 @@ jobs:
           name: ${{ matrix.app }}-apk
           path: apps/${{ matrix.app }}/build/app/outputs/flutter-apk/app-release.apk
           retention-days: 14
-      - name: Save the APK on branch apk-${{ matrix.app }}
-        # Forked PRs get a read-only token; skip there.
+      - name: Save the APK on a branch
+        # Main's build goes to apk-<app>; a PR's to apk-<app>-pr<number>, so
+        # parallel PRs don't overwrite each other or main. Forked PRs get a
+        # read-only token; skip there.
         if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         env:
           APP: ${{ matrix.app }}
+          PR: ${{ github.event.pull_request.number }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          branch="apk-$APP${PR:+-pr$PR}"
           out="$RUNNER_TEMP/apk-branch"
           mkdir -p "$out"
-          cp build/app/outputs/flutter-apk/app-release.apk "$out/$APP.apk"
+          apk=build/app/outputs/flutter-apk/app-release.apk
+          # GitHub refuses files over 100 MB. Fall back to a 64-bit ARM only
+          # APK, which nearly every phone since 2017 runs.
+          if [ "$(stat -c %s "$apk")" -gt 95000000 ]; then
+            flutter build apk --release --target-platform android-arm64
+          fi
+          echo "::notice::$APP APK is $(stat -c %s "$apk") bytes, saved on $branch"
+          cp "$apk" "$out/$APP.apk"
           cd "$out"
-          git init -q -b "apk-$APP"
+          git init -q -b "$branch"
           git add "$APP.apk"
           git -c user.name=github-actions -c user.email=github-actions@users.noreply.github.com \
             commit -qm "$APP test APK from $GITHUB_SHA ($GITHUB_REF_NAME)"
-          git push -qf "https://x-access-token:$TOKEN@github.com/$GITHUB_REPOSITORY" "apk-$APP"
+          for try in 1 2 3; do
+            if git push -qf "https://x-access-token:$TOKEN@github.com/$GITHUB_REPOSITORY" "$branch" 2> push.err; then
+              exit 0
+            fi
+            echo "::warning::push try $try: $(tr '\n' ' ' < push.err | cut -c1-300)"
+            sleep $((try * 15))
+          done
+          exit 1
