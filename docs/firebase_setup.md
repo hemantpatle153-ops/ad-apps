@@ -4,7 +4,7 @@ One-time setup, about ten minutes. Everything offline works without it.
 
 1. Open <https://console.firebase.google.com> and sign in with the Google
    account you use for Play. Click **Create a project**, name it
-   `ludo-party`, and turn Google Analytics off (not needed).
+   `dice-dhamaal`, and turn Google Analytics off (not needed).
 2. In the project, open **Build > Authentication > Get started**, pick
    **Anonymous** in the Sign-in method list and enable it. Players never see
    a login; this is only so the server can tell phones apart.
@@ -28,15 +28,17 @@ One-time setup, about ten minutes. Everything offline works without it.
    | `FIREBASE_SENDER_ID` | Project settings > Cloud Messaging > Sender ID |
    | `FIREBASE_DB_URL` | Realtime Database > the `https://...firebasedatabase.app` link |
 
-7. Build with them:
+7. Paste the five values in the project chat, and Claude saves them as
+   GitHub Actions variables so the APK built on GitHub has online rooms.
+   To build on your own computer instead, pass them like this:
 
 ```
 flutter build appbundle \
   --dart-define=FIREBASE_API_KEY=AIza... \
   --dart-define=FIREBASE_APP_ID=1:123456789:android:abcdef \
-  --dart-define=FIREBASE_PROJECT_ID=ludo-party \
+  --dart-define=FIREBASE_PROJECT_ID=dice-dhamaal \
   --dart-define=FIREBASE_SENDER_ID=123456789 \
-  --dart-define=FIREBASE_DB_URL=https://ludo-party-default-rtdb.asia-southeast1.firebasedatabase.app
+  --dart-define=FIREBASE_DB_URL=https://dice-dhamaal-default-rtdb.asia-southeast1.firebasedatabase.app
 ```
 
 The free Spark plan covers this: rooms hold a few kilobytes each and are
