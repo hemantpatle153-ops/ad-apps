@@ -1,4 +1,4 @@
-# Firebase setup for Ludo Party online rooms
+# Firebase setup for Dice Dhamaal online rooms
 
 One-time setup, about ten minutes. Everything offline works without it.
 
@@ -14,7 +14,7 @@ One-time setup, about ten minutes. Everything offline works without it.
 4. Open the **Rules** tab, replace everything with the rules at the bottom of
    this file and click **Publish**.
 5. Open **Project settings** (gear icon) **> General**, scroll to "Your apps"
-   and click the Android icon. Package name: `in.onlysoftware.ludo_party`.
+   and click the Android icon. Package name: `in.onlysoftware.dice_dhamaal`.
    Download of `google-services.json` is **not** needed; the app reads its
    settings from the build command instead.
 6. Still in Project settings, copy these four values and the database URL from

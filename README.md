@@ -9,7 +9,7 @@ apps/daily_sudoku   app 2: daily puzzle with streak, 4 levels, notes, hints (rew
 apps/doc_scanner    app 3: camera document scanner (auto edges, crop, filters) to multi-page PDF
 apps/expense_tracker app 4: daily expenses, monthly budget, category insights, CSV export
 apps/water_habit    app 5: water goal and daily habits with streaks and local reminders
-apps/snakes_ladders app 6: Ludo Party, two games in one: Ludo (vs computer, pass & play, online rooms with voice chat) and Snakes & Ladders
+apps/snakes_ladders app 6: Dice Dhamaal, two games in one: Ludo (vs computer, pass & play, online rooms with voice chat) and Snakes & Ladders
 ```
 
 Package names are `in.onlysoftware.<folder name>`. Every app works offline; the only network use is ads.
@@ -59,8 +59,8 @@ Debug builds show Google's **test ads**. Tapping them is safe. Never tap real ad
 
 ## Ad rules this code follows
 
-- Ludo Party asks for the microphone only when a player joins an online voice room, and only then.
-- Interstitials only at natural breaks, at most once every 2 minutes (`AdConfig.interstitialCooldown`): leaving a scan result (QR), finishing a puzzle (Sudoku), saving a PDF (Doc Scanner), every third saved expense (Expense Tracker), reaching the water goal or adding a habit (Water), finishing a game (Ludo Party).
+- Dice Dhamaal asks for the microphone only when a player joins an online voice room, and only then.
+- Interstitials only at natural breaks, at most once every 2 minutes (`AdConfig.interstitialCooldown`): leaving a scan result (QR), finishing a puzzle (Sudoku), saving a PDF (Doc Scanner), every third saved expense (Expense Tracker), reaching the water goal or adding a habit (Water), finishing a game (Dice Dhamaal).
 - Rewarded ads only when the user asks for something extra: a 4th+ Sudoku hint or a second chance after 3 mistakes.
 - One adaptive banner above the bottom navigation, never overlapping buttons.
 - No ads on app open. Google's consent form shows to EU/UK users before any ad request, with "Ad privacy choices" in Settings.

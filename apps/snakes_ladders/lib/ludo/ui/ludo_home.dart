@@ -145,11 +145,12 @@ class LudoHome extends StatelessWidget {
   }
 }
 
-/// Wordmark: "LUDO" with each letter in a board colour.
+/// Wordmark: [word] with each letter in a board colour.
 class LudoLogo extends StatelessWidget {
-  const LudoLogo({super.key, this.size = 40});
+  const LudoLogo({super.key, this.size = 40, this.word = 'LUDO'});
 
   final double size;
+  final String word;
 
   @override
   Widget build(BuildContext context) {
@@ -162,13 +163,13 @@ class LudoLogo extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        for (var i = 0; i < 4; i++)
+        for (var i = 0; i < word.length; i++)
           Text(
-            'LUDO'[i],
+            word[i],
             style: TextStyle(
               fontSize: size,
               fontWeight: FontWeight.w900,
-              color: colors[i],
+              color: colors[i % colors.length],
               letterSpacing: 2,
               shadows: const [
                 Shadow(color: Colors.white, offset: Offset(0, -1)),

@@ -111,14 +111,14 @@ class _Wordmark extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Column(
       children: [
-        LudoLogo(size: 48),
+        LudoLogo(size: 48, word: 'DICE'),
         Text(
-          'PARTY',
+          'DHAMAAL',
           style: TextStyle(
             color: Colors.white,
             fontSize: 22,
             fontWeight: FontWeight.w900,
-            letterSpacing: 10,
+            letterSpacing: 8,
             shadows: [Shadow(color: Colors.black54, blurRadius: 6)],
           ),
         ),

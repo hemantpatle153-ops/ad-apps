@@ -11,9 +11,9 @@ import 'ui/home_screen.dart';
 
 /// The app's name everywhere it shows in the UI. The launcher label lives in
 /// android/app/src/main/AndroidManifest.xml.
-const appName = 'Ludo Party';
+const appName = 'Dice Dhamaal';
 
-const packageName = 'in.onlysoftware.ludo_party';
+const packageName = 'in.onlysoftware.dice_dhamaal';
 
 const privacyPolicyUrl =
     'https://example.com/privacy'; // TODO: your hosted policy

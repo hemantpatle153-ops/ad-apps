@@ -1,8 +1,8 @@
-# Ludo Party
+# Dice Dhamaal
 
 Two classic board games in one app, picked from the home screen. The folder is
 still named `snakes_ladders` because the app grew out of it; the Play Store app
-is `in.onlysoftware.ludo_party`.
+is `in.onlysoftware.dice_dhamaal`.
 
 ## Ludo (`lib/ludo/`)
 
