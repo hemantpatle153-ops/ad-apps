@@ -447,7 +447,7 @@ class _PermissionView extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'Allow access to videos so the app can list them by folder. '
-            'Nothing leaves your phone.',
+            'Your videos stay on your phone.',
             textAlign: TextAlign.center,
             style: TextStyle(color: scheme.onSurfaceVariant),
           ),

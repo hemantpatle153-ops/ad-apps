@@ -47,8 +47,8 @@ APPS = {
         "Images are processed on your phone and are not saved or sent anywhere.",
         "Your scan history and the codes you create are stored only on your "
         "phone. You can delete them in the app.",
-        "When you choose to open a link, call a number or connect to Wi-Fi from a "
-        "scanned code, the app hands it to your phone's browser or settings.",
+        "When you choose to open a link or call a number from a scanned code, "
+        "the app hands it to your phone's browser or dialer.",
     ]),
     "daily_sudoku": ("Daily Sudoku", [
         "Your puzzles, progress, streak and settings are stored only on your "
@@ -85,7 +85,8 @@ APPS = {
         "Watch with friends on the same Wi-Fi streams the video directly from "
         "the host's phone to the friends' phones on that network.",
         "Online watch rooms (6-letter code) keep only what is needed to keep "
-        "everyone in sync: the name you type, the video's title or link, play "
+        "everyone in sync: your party name (your phone's name unless you set "
+        "one in Settings), the video's title or link, play "
         "and pause position, chat messages and reactions. Room data is deleted "
         "automatically within 12 hours. Only people with the room code can see "
         "it. " + FIREBASE,
@@ -97,8 +98,9 @@ APPS = {
         "and the moves of the game, so all players see the same board. Room data "
         "is deleted automatically within 6 hours. Only people with the room code "
         "can see it. " + FIREBASE,
-        "Voice chat in online rooms is optional and uses the microphone only "
-        "while it is on. Voice goes directly between the players' phones, "
+        "Online games include voice chat, which starts with the game; you can "
+        "mute your microphone at any time, and it is used only during the game. "
+        "Voice goes directly between the players' phones, "
         "encrypted (WebRTC). It is never recorded or stored. To connect the "
         "phones, Google's public STUN servers see your IP address, and the other "
         "players' phones can see it too, as with any direct call.",
