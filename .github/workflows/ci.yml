@@ -76,7 +76,10 @@ jobs:
       # heap gets the runner killed mid-build.
       - name: Fit Gradle in the runner's memory
         run: sed -i 's/^org.gradle.jvmargs=.*/org.gradle.jvmargs=-Xmx3g -XX:MaxMetaspaceSize=1g -XX:ReservedCodeCacheSize=256m/' android/gradle.properties
-      - run: flutter build apk --release
+      # Optional keys from repository secrets; builds work without them.
+      - run: flutter build apk --release --dart-define=OPENSUBTITLES_API_KEY="$OPENSUBTITLES_API_KEY"
+        env:
+          OPENSUBTITLES_API_KEY: ${{ secrets.OPENSUBTITLES_API_KEY }}
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.app }}-apk
@@ -91,6 +94,7 @@ jobs:
           APP: ${{ matrix.app }}
           PR: ${{ github.event.pull_request.number }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENSUBTITLES_API_KEY: ${{ secrets.OPENSUBTITLES_API_KEY }}
         run: |
           branch="apk-$APP${PR:+-pr$PR}"
           out="$RUNNER_TEMP/apk-branch"
@@ -99,7 +103,7 @@ jobs:
           # GitHub refuses files over 100 MB. Fall back to a 64-bit ARM only
           # APK, which nearly every phone since 2017 runs.
           if [ "$(stat -c %s "$apk")" -gt 95000000 ]; then
-            flutter build apk --release --target-platform android-arm64
+            flutter build apk --release --target-platform android-arm64 --dart-define=OPENSUBTITLES_API_KEY="$OPENSUBTITLES_API_KEY"
           fi
           echo "::notice::$APP APK is $(stat -c %s "$apk") bytes, saved on $branch"
           cp "$apk" "$out/$APP.apk"

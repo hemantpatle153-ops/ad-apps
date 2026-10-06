@@ -59,6 +59,24 @@ class MainActivity : AudioServiceActivity() {
                         result.success(pendingUri)
                         pendingUri = null
                     }
+                    "speechEnergy" -> {
+                        val uri = call.argument<String>("uri")
+                        val start = call.argument<Number>("startMs")?.toLong() ?: 0L
+                        val length = call.argument<Number>("durationMs")?.toLong() ?: 0L
+                        val frame = call.argument<Int>("frameMs") ?: 100
+                        if (uri == null || length <= 0) {
+                            result.error("args", "uri and durationMs are needed", null)
+                        } else {
+                            Thread {
+                                try {
+                                    val e = SpeechEnergy.read(applicationContext, uri, start, length, frame)
+                                    runOnUiThread { result.success(e) }
+                                } catch (ex: Exception) {
+                                    runOnUiThread { result.error("decode", ex.message, null) }
+                                }
+                            }.start()
+                        }
+                    }
                     else -> result.notImplemented()
                 }
             }

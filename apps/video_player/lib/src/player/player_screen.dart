@@ -18,6 +18,8 @@ import '../party/online.dart';
 import '../party/party_widgets.dart';
 import '../party/protocol.dart';
 import '../settings.dart';
+import '../captions/auto_sync.dart';
+import '../captions/caption_search_sheet.dart';
 import 'background_audio.dart';
 import 'effects.dart';
 import 'play_item.dart';
@@ -150,6 +152,10 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   int _rippleSeconds = 0;
 
   Widget? _indicator;
+
+  /// Speed before a press-and-hold fast forward; null when not holding.
+  double? _holdFromRate;
+  double _holdRate = 2;
   Duration? _resumedFrom;
   String? _error;
 
@@ -277,13 +283,18 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     if (settings.leaveAction == LeaveAction.audio || _backgroundSession) {
       unawaited(BackgroundAudio.instance.attach(player, it.title));
     }
+    // A caption speed fixed for the last video's file doesn't fit this one.
+    if (fx.subtitleSpeed != 1) unawaited(fx.setSubtitleSync(fx.subtitleDelay, 1));
     unawaited(_loadSidecar(it));
     _scheduleHide();
   }
 
   /// Loads "movie.srt" next to "movie.mp4" once the file has opened.
+  /// Also loads captions downloaded for this video earlier.
   Future<void> _loadSidecar(PlayItem it) async {
-    final srt = await findSidecarSubtitle(it.path);
+    var srt = await findSidecarSubtitle(it.path);
+    final saved = settings.captionFor(it.key);
+    if (srt == null && saved != null && await File(saved).exists()) srt = saved;
     if (srt == null) return;
     try {
       await player.stream.duration
@@ -628,6 +639,25 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
 
   // Gestures ----------------------------------------------------------------
 
+  /// Press and hold anywhere on the video plays at 2x until you let go.
+  /// Off in watch parties, where speed is shared with everyone.
+  void _holdFast(bool down) {
+    if (down) {
+      if (_locked || _party != null || !player.state.playing || _holdFromRate != null) return;
+      HapticFeedback.lightImpact();
+      _holdFromRate = player.state.rate;
+      _holdRate = max(2.0, _holdFromRate! * 2).clamp(0.25, 4.0);
+      player.setRate(_holdRate);
+      setState(() {});
+    } else {
+      final from = _holdFromRate;
+      if (from == null) return;
+      _holdFromRate = null;
+      player.setRate(from);
+      if (mounted) setState(() {});
+    }
+  }
+
   void _onDoubleTap(Size size) {
     if (_locked) return;
     final x = _doubleTapAt?.dx ?? size.width / 2;
@@ -652,6 +682,10 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   }
 
   void _seekBy(Duration by) {
+    if (_party == null && fx.isNative) {
+      fx.seekQuick(by);
+      return;
+    }
     final d = player.state.duration;
     var t = player.state.position + by;
     if (t < Duration.zero) t = Duration.zero;
@@ -818,6 +852,9 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
                         onTap: _toggleControls,
                         onDoubleTapDown: (d) => _doubleTapAt = d.localPosition,
                         onDoubleTap: () => _onDoubleTap(size),
+                        onLongPressStart: (_) => _holdFast(true),
+                        onLongPressEnd: (_) => _holdFast(false),
+                        onLongPressCancel: () => _holdFast(false),
                         onScaleStart: _onScaleStart,
                         onScaleUpdate: (d) => _onScaleUpdate(d, size),
                         onScaleEnd: _onScaleEnd,
@@ -833,6 +870,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
                       if (_error != null) _errorView(),
                       if (_locked) _lockOverlay() else _controls(context),
                       if (_resumedFrom != null && !_locked) _resumePill(),
+                      if (_holdFromRate != null) _fastPill(),
                       if (_party != null)
                         PartyOverlay(
                             party: _party!,
@@ -929,6 +967,28 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
                   },
                   child: const Text('Start over'),
                 ),
+              ]),
+            ),
+          ),
+        ),
+      );
+
+  Widget _fastPill() => Positioned(
+        top: 24,
+        left: 0,
+        right: 0,
+        child: IgnorePointer(
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.6),
+                  borderRadius: BorderRadius.circular(20)),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Text(formatSpeed(_holdRate),
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+                const SizedBox(width: 4),
+                const Icon(Icons.fast_forward_rounded, color: Colors.white, size: 20),
               ]),
             ),
           ),
@@ -1250,7 +1310,18 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         onEqualizer: _openEqualizer,
       ));
   void _openSubtitles() =>
-      _sheet((_) => SubtitleSheet(player: player, settings: settings, fx: fx));
+      _sheet((_) => SubtitleSheet(
+          player: player,
+          settings: settings,
+          fx: fx,
+          onFindOnline: _openCaptionSearch,
+          onAutoSync: () =>
+              autoSyncCaptions(player: player, fx: fx, videoUri: item.uri)));
+  void _openCaptionSearch() => _sheet((_) => CaptionSearchSheet(
+      player: player,
+      settings: settings,
+      item: item,
+      onLoaded: () => fx.setSubtitleSync(0, 1)));
   void _openEqualizer() =>
       _sheet((_) => EqualizerSheet(settings: settings, fx: fx));
   void _openSleep() =>

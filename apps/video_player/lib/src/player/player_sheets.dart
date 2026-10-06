@@ -239,11 +239,20 @@ class SubtitleSheet extends StatefulWidget {
     required this.player,
     required this.settings,
     required this.fx,
+    this.onFindOnline,
+    this.onAutoSync,
   });
 
   final Player player;
   final Settings settings;
   final PlayerEffects fx;
+
+  /// Opens the online caption search; hidden when null.
+  final VoidCallback? onFindOnline;
+
+  /// Lines the caption file up with the video's speech; returns null when
+  /// it worked, else why not. Hidden when null.
+  final Future<String?> Function()? onAutoSync;
 
   @override
   State<SubtitleSheet> createState() => _SubtitleSheetState();
@@ -252,6 +261,19 @@ class SubtitleSheet extends StatefulWidget {
 class _SubtitleSheetState extends State<SubtitleSheet> {
   Player get player => widget.player;
   Settings get settings => widget.settings;
+  bool _syncing = false;
+
+  Future<void> _autoSync() async {
+    setState(() => _syncing = true);
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    final problem = await widget.onAutoSync!();
+    if (!mounted) return;
+    setState(() => _syncing = false);
+    messenger?.showSnackBar(SnackBar(
+        content: Text(problem ??
+            'Captions synced to the speech '
+                '(${formatSubtitleShift(widget.fx.subtitleDelay)}).')));
+  }
 
   Future<void> _pickFile() async {
     final files = await FilePicker.pickFiles(
@@ -270,6 +292,7 @@ class _SubtitleSheetState extends State<SubtitleSheet> {
     }
     await player.setSubtitleTrack(
         SubtitleTrack.uri(path, title: files.first.name));
+    await widget.fx.setSubtitleSync(0, 1);
     if (mounted) Navigator.pop(context);
   }
 
@@ -311,7 +334,63 @@ class _SubtitleSheetState extends State<SubtitleSheet> {
               subtitle: const Text('.srt, .ass, .vtt'),
               onTap: _pickFile,
             ),
+            if (widget.onFindOnline != null)
+              ListTile(
+                leading: const Icon(Icons.travel_explore_rounded),
+                title: const Text('Find captions online'),
+                subtitle: const Text('Download in your language'),
+                onTap: () {
+                  Navigator.pop(context);
+                  widget.onFindOnline!();
+                },
+              ),
             const Divider(),
+            if (widget.onAutoSync != null)
+              ListTile(
+                leading: _syncing
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2.5))
+                    : const Icon(Icons.graphic_eq_rounded),
+                title: const Text('Auto sync'),
+                subtitle: Text(_syncing
+                    ? 'Listening to the video…'
+                    : 'Match caption files to the speech'),
+                enabled: !_syncing,
+                onTap: _autoSync,
+              ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+              child: Text('Sync: tap the moment you hear a line spoken',
+                  style: Theme.of(context).textTheme.bodySmall),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Row(children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () async {
+                      await widget.fx.subStep(-1);
+                      if (mounted) setState(() {});
+                    },
+                    icon: const Icon(Icons.skip_previous_rounded),
+                    label: const Text('Last line now'),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: FilledButton.tonalIcon(
+                    onPressed: () async {
+                      await widget.fx.subStep(1);
+                      if (mounted) setState(() {});
+                    },
+                    icon: const Icon(Icons.skip_next_rounded),
+                    label: const Text('Next line now'),
+                  ),
+                ),
+              ]),
+            ),
             DelayRow(
               label: 'Subtitle delay',
               value: widget.fx.subtitleDelay,
@@ -376,4 +455,10 @@ class _SubtitleSheetState extends State<SubtitleSheet> {
       ),
     );
   }
+}
+
+/// "+1.5 s", "-0.3 s", "0.0 s".
+String formatSubtitleShift(double seconds) {
+  final s = seconds.toStringAsFixed(1);
+  return seconds > 0.05 ? '+$s s' : s == '-0.0' ? '0.0 s' : '$s s';
 }
