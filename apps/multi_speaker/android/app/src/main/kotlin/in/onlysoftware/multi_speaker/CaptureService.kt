@@ -60,6 +60,10 @@ class CaptureService : Service() {
         try {
             val manager = getSystemService(MediaProjectionManager::class.java)
             val p = manager.getMediaProjection(Activity.RESULT_OK, data)
+            if (p == null) {
+                stopSelf()
+                return START_NOT_STICKY
+            }
             projection = p
             // Android 14 needs a callback before capturing; it also fires
             // when the user stops casting from the system.
