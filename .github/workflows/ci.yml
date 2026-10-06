@@ -33,7 +33,18 @@ jobs:
       - run: flutter pub get
       - run: flutter analyze
       - name: Test
-        run: if [ -d test ]; then flutter test; fi
+        # Failing tests are also posted as annotations, readable without
+        # downloading the full log.
+        run: |
+          [ -d test ] || exit 0
+          set +e
+          flutter test -r expanded 2>&1 | tee "$RUNNER_TEMP/test.log"
+          status=${PIPESTATUS[0]}
+          if [ "$status" -ne 0 ]; then
+            grep -E '\[E\]$|Expected:|Actual:|Which:|Error:|Exception' "$RUNNER_TEMP/test.log" \
+              | head -40 | while IFS= read -r line; do echo "::error::$line"; done
+          fi
+          exit "$status"
 
   # Builds test APKs so they can be shared without a laptop build. Signed
   # with debug keys: the Play upload key stays offline. To build another
