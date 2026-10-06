@@ -19,6 +19,8 @@ jobs:
           - apps/expense_tracker
           - apps/water_habit
           - apps/snakes_ladders
+          - apps/multi_speaker
+          - apps/video_player
     defaults:
       run:
         working-directory: ${{ matrix.package }}
@@ -44,7 +46,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        app: [snakes_ladders]
+        app: [multi_speaker, video_player, snakes_ladders]
     defaults:
       run:
         working-directory: apps/${{ matrix.app }}
