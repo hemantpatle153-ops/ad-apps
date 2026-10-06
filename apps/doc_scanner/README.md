@@ -3,11 +3,17 @@
 Scan documents to searchable PDFs and work with PDFs, all on the phone.
 No server: nothing is uploaded.
 
-**Scan (Adobe Scan style):** document scanner with auto edge detection,
-crop and cleanup (Google ML Kit), plain camera photos, ID card (both sides
+**Scan (Adobe Scan style):** the app's own document camera (no Google
+Play services scanner): live page outline, auto-capture when steady,
+flash, tap to focus, batch pages; pages are found, flattened (perspective
+correction) and cleaned up on the phone, with a crop editor and magnifier
+for manual corners. Also plain camera photos, ID card (both sides
 at real size on one A4 page), business card (reads name, phone, email,
 website and saves a contact), book/notes mode, gallery import, PDF import.
-Per-page filters (auto color, grayscale, whiteboard, B&W) and rotation.
+Per-page filters (magic color with shadow removal, clean B&W, auto color,
+grayscale, whiteboard, B&W), crop and rotation. PDFs open in an in-app
+viewer with print; Save to phone uses Android's Save dialog (no storage
+permission), and other apps can Open with / Share to Doc Scanner.
 On-device OCR adds a hidden text layer, so PDFs are searchable and the
 document list can be searched by the text inside them. Save as PDF or JPG.
 

@@ -64,6 +64,46 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
+  camera:
+    dependency: "direct main"
+    description:
+      name: camera
+      sha256: "3f30ca0ff376f91534f23afa2a7aea06ebb6c889fd9e260642437b37e3d9f753"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.12.1"
+  camera_android_camerax:
+    dependency: transitive
+    description:
+      name: camera_android_camerax
+      sha256: "47645ffd20c597cb0edab4de20f3c89447b7eca90425ee13683b746275b18e2b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.5+1"
+  camera_avfoundation:
+    dependency: transitive
+    description:
+      name: camera_avfoundation
+      sha256: e409a731fad3fca10daa9567cf981720398659e6390f871a4e0f576058ff8940
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.3+1"
+  camera_platform_interface:
+    dependency: transitive
+    description:
+      name: camera_platform_interface
+      sha256: "9365babc7488a9e93d0ed6dcccd917619fb12ea6f9e601519e1191d4890ee2fe"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.14.0"
+  camera_web:
+    dependency: transitive
+    description:
+      name: camera_web
+      sha256: "5aecf1ac4dd4a949c5a7820e590020acb2bc35425384ab87a030e1739bfe12e2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.5+6"
   characters:
     dependency: transitive
     description:
@@ -279,14 +319,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.13.0"
-  google_mlkit_document_scanner:
-    dependency: "direct main"
-    description:
-      name: google_mlkit_document_scanner
-      sha256: "8cc17a7f62d4285298f7970867d24c030d42840068d8b680b988655d50b196ec"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.6.1"
   google_mlkit_text_recognition:
     dependency: "direct main"
     description:
@@ -607,6 +639,54 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  permission_handler:
+    dependency: "direct main"
+    description:
+      name: permission_handler
+      sha256: e6bcecadfe40df6b888141f23cbaf6ba6c3da49fb33f6ff887d060dd48544fbd
+      url: "https://pub.dev"
+    source: hosted
+    version: "13.0.2"
+  permission_handler_android:
+    dependency: transitive
+    description:
+      name: permission_handler_android
+      sha256: b1ce660f4d0dcaffdf2605a19544c129fb5adda4e6fd039992ae356c4e437039
+      url: "https://pub.dev"
+    source: hosted
+    version: "14.1.0"
+  permission_handler_apple:
+    dependency: transitive
+    description:
+      name: permission_handler_apple
+      sha256: "066bbbc60031b63b916a3871e7bb4b6a8c5e7cec8146dafec53d1da304eff0a5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.6.2"
+  permission_handler_html:
+    dependency: transitive
+    description:
+      name: permission_handler_html
+      sha256: "6ea98b3f17f60d3b527f2647ed2ab4dc0f6bfe25b22cb1c363f5d8f62252f6ac"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.4+1"
+  permission_handler_platform_interface:
+    dependency: transitive
+    description:
+      name: permission_handler_platform_interface
+      sha256: ed86a61c190258fdd65de395ea0632822e3415c1faec38eae0c31b479c28a531
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.4.1"
+  permission_handler_windows:
+    dependency: transitive
+    description:
+      name: permission_handler_windows
+      sha256: caeae01858a0a7d2df67a445ac98e1ad95e55a0e77c73044f4e9b1c8c2289cbd
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.2"
   petitparser:
     dependency: transitive
     description:
@@ -663,6 +743,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  receive_sharing_intent:
+    dependency: "direct main"
+    description:
+      name: receive_sharing_intent
+      sha256: "72f229a38f2910029c11d840770c173b27072e348ef3376130b37514bc4556f6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.9.0"
   record_use:
     dependency: transitive
     description:
@@ -716,6 +804,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  stream_transform:
+    dependency: transitive
+    description:
+      name: stream_transform
+      sha256: a00e5f18bffc764f923e7dec1038527f7fe7a1791361a7117f0358193f13d53a
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.2"
   string_scanner:
     dependency: transitive
     description:

@@ -12,7 +12,6 @@ dependencies:
     sdk: flutter
   app_core:
     path: ../../packages/app_core
-  google_mlkit_document_scanner: any
   image_picker: any
   pdf: any
   path_provider: any
@@ -24,6 +23,9 @@ dependencies:
   file_picker: ^13.1.0
   image: ^4.10.1
   archive: ^4.3.0
+  camera: ^0.12.1
+  permission_handler: ^13.0.2
+  receive_sharing_intent: ^1.9.0
 
 dev_dependencies:
   flutter_test:
