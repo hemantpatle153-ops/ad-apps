@@ -15,6 +15,7 @@ import 'background_audio.dart';
 import 'play_item.dart';
 import 'player_overlays.dart';
 import 'player_sheets.dart';
+import 'subtitle_session.dart';
 import 'system_channel.dart';
 
 enum FitMode {
@@ -78,6 +79,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     configuration: const PlayerConfiguration(title: 'Video Player'),
   );
   late final VideoController controller = VideoController(player);
+  late final SubtitleSession subtitles = SubtitleSession(player);
   late int index = widget.index;
   Settings get settings => widget.settings;
   PlayItem get item => widget.queue[index];
@@ -163,6 +165,9 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
     final saved = settings.resume ? settings.positionFor(it.key) : null;
     final start = saved != null && saved > Duration.zero ? saved : null;
     await player.open(Media(it.uri, start: start));
+    // A new video starts with no subtitle file and no timing fix.
+    subtitles.useEmbedded();
+    await subtitles.reset();
     if (settings.rememberSpeed && settings.lastSpeed != 1) {
       await player.setRate(settings.lastSpeed);
     }
@@ -201,8 +206,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       return;
     }
     if (!mounted || item != it) return;
-    await player.setSubtitleTrack(
-        SubtitleTrack.uri(srt, title: srt.split('/').last));
+    await subtitles.load(srt, srt.split('/').last);
   }
 
   void _saveProgress() {
@@ -458,6 +462,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       t?.cancel();
     }
     BackgroundAudio.instance.detach();
+    subtitles.dispose();
     player.dispose();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     SystemChrome.setPreferredOrientations([]);
@@ -884,7 +889,8 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
   void _openSpeed() => _sheet((_) => SpeedSheet(player: player, settings: settings));
   void _openAudio() => _sheet((_) => AudioTrackSheet(player: player));
   void _openSubtitles() =>
-      _sheet((_) => SubtitleSheet(player: player, settings: settings));
+      _sheet((_) => SubtitleSheet(
+          player: player, settings: settings, item: item, session: subtitles));
 
   void _openMore() => _sheet((ctx) => SafeArea(
         child: ListView(shrinkWrap: true, children: [

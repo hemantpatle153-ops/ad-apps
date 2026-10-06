@@ -14,6 +14,15 @@ phone, plays almost any format (libmpv through `media_kit`), and works offline.
 - Subtitles: embedded tracks, a matching .srt next to the video (Android 10 and
   older; Android 11+ only lets apps read media files, so pick the file there),
   pick a file, text size, colour and background box
+- Find subtitles online: searches by the video file's hash (exact match,
+  timing already right) and by its cleaned-up name, in the chosen language,
+  then downloads the tapped one into app storage and loads it
+- Subtitle sync: manual (-1 s, -0.1 s, +0.1 s, +1 s, reset) and Auto sync,
+  which decodes three 4-minute stretches of the video's sound on the phone,
+  finds where speech is, and picks the delay (up to 2 minutes either way) and
+  frame-rate fix (23.976 / 24 / 25 fps) that best fit the subtitle lines.
+  Works on subtitle files (downloaded, picked or next to the video), not on
+  tracks inside the video; it says so when it isn't sure instead of guessing
 - Audio track choice, play audio in the background with notification controls
 - Picture-in-picture (button, or automatically when leaving the app)
 - Resume where you stopped, "Continue watching" card, recently played list
@@ -55,6 +64,12 @@ flutter build appbundle --release \
   --dart-define=ADMOB_INTERSTITIAL_ID=ca-app-pub-XXXX/2222
 flutter build apk --release      # same flags
 ```
+
+Online subtitles need a free API key from opensubtitles.com (Profile ->
+API consumers). Add `--dart-define=OPENSUBTITLES_API_KEY=...` to both
+builds. Without it "Find subtitles online" says it isn't available; loading
+files and syncing still work. Without a user login the service allows a few
+downloads per day per phone (it reports the limit, which the app shows).
 
 `tool/gen_icon.py` (run from this folder) draws the launcher and
 notification icons; `tool/icon_512.png` is the Play Store icon.

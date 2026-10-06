@@ -80,6 +80,20 @@ class SystemChannel {
     } catch (_) {}
   }
 
+  /// Loudness of the video's sound per [frameMs] from [startMs], for
+  /// subtitle auto sync. Throws when the sound can't be decoded.
+  Future<Float32List> speechEnergy(String uri,
+      {required int startMs, required int durationMs, int frameMs = 100}) async {
+    final r = await _channel.invokeMethod<Float32List>('speechEnergy', {
+      'uri': uri,
+      'startMs': startMs,
+      'durationMs': durationMs,
+      'frameMs': frameMs,
+    });
+    if (r == null) throw StateError('no sound decoded');
+    return r;
+  }
+
   Future<void> moveToBack() async {
     try {
       await _channel.invokeMethod('moveToBack');

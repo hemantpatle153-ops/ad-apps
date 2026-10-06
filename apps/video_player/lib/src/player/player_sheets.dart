@@ -5,6 +5,9 @@ import 'package:media_kit/media_kit.dart';
 import '../format.dart';
 import '../library/subtitles.dart';
 import '../settings.dart';
+import 'play_item.dart';
+import 'subtitle_search_sheet.dart';
+import 'subtitle_session.dart';
 
 const speeds = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.5, 3.0, 4.0];
 
@@ -194,12 +197,21 @@ class AudioTrackSheet extends StatelessWidget {
   }
 }
 
-/// Subtitle tracks, loading a file, and the text size and colour.
+/// Subtitle tracks, finding or loading a file, timing, and the text size
+/// and colour.
 class SubtitleSheet extends StatefulWidget {
-  const SubtitleSheet({super.key, required this.player, required this.settings});
+  const SubtitleSheet({
+    super.key,
+    required this.player,
+    required this.settings,
+    required this.item,
+    required this.session,
+  });
 
   final Player player;
   final Settings settings;
+  final PlayItem item;
+  final SubtitleSession session;
 
   @override
   State<SubtitleSheet> createState() => _SubtitleSheetState();
@@ -208,6 +220,43 @@ class SubtitleSheet extends StatefulWidget {
 class _SubtitleSheetState extends State<SubtitleSheet> {
   Player get player => widget.player;
   Settings get settings => widget.settings;
+  SubtitleSession get session => widget.session;
+
+  @override
+  void initState() {
+    super.initState();
+    session.addListener(_changed);
+  }
+
+  @override
+  void dispose() {
+    session.removeListener(_changed);
+    super.dispose();
+  }
+
+  void _changed() {
+    if (mounted) setState(() {});
+  }
+
+  void _toast(String text) => ScaffoldMessenger.of(context)
+      .showSnackBar(SnackBar(content: Text(text)));
+
+  Future<void> _findOnline() async {
+    final loaded = await showPlayerSheet<bool>(
+      context,
+      (_) => SubtitleSearchSheet(
+          item: widget.item, session: session, settings: settings),
+    );
+    if (loaded == true && mounted) Navigator.pop(context);
+  }
+
+  Future<void> _autoSync() async {
+    final problem = await session.autoSync(widget.item);
+    if (!mounted) return;
+    _toast(problem ??
+        'Subtitles synced (${formatDelay(session.delayMs)}'
+            '${session.speed != 1 ? ', speed fixed' : ''})');
+  }
 
   Future<void> _pickFile() async {
     final files = await FilePicker.pickFiles(
@@ -224,8 +273,7 @@ class _SubtitleSheetState extends State<SubtitleSheet> {
       }
       return;
     }
-    await player.setSubtitleTrack(
-        SubtitleTrack.uri(path, title: files.first.name));
+    await session.load(path, files.first.name);
     if (mounted) Navigator.pop(context);
   }
 
@@ -249,7 +297,7 @@ class _SubtitleSheetState extends State<SubtitleSheet> {
               title: const Text('Off'),
               onTap: () {
                 player.setSubtitleTrack(SubtitleTrack.no());
-                setState(() {});
+                session.useEmbedded();
               },
             ),
             for (final (i, t) in tracks.indexed)
@@ -258,14 +306,67 @@ class _SubtitleSheetState extends State<SubtitleSheet> {
                 title: Text(_trackName(t.id, t.title, t.language, i + 1)),
                 onTap: () {
                   player.setSubtitleTrack(t);
-                  setState(() {});
+                  // Tracks inside the video can't be auto synced.
+                  final file = session.file;
+                  if (file == null || t.title != file.split('/').last) {
+                    session.useEmbedded();
+                  } else {
+                    setState(() {});
+                  }
                 },
               ),
+            ListTile(
+              leading: const Icon(Icons.travel_explore_rounded),
+              title: const Text('Find subtitles online…'),
+              subtitle: const Text('Search and download by video name'),
+              enabled: !widget.item.isNetwork || widget.item.title.isNotEmpty,
+              onTap: _findOnline,
+            ),
             ListTile(
               leading: const Icon(Icons.file_open_rounded),
               title: const Text('Load subtitle file…'),
               subtitle: const Text('.srt, .ass, .vtt'),
               onTap: _pickFile,
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+              child: Text('Sync  ·  ${formatDelay(session.delayMs)}'
+                  '${session.speed != 1 ? '  ·  speed ${session.speed.toStringAsFixed(3)}x' : ''}'),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 4,
+                children: [
+                  for (final ms in const [-1000, -100, 100, 1000])
+                    OutlinedButton(
+                      onPressed: session.syncing ? null : () => session.nudge(ms),
+                      child: Text(ms < 0
+                          ? '-${(-ms / 1000).toStringAsFixed(1)} s'
+                          : '+${(ms / 1000).toStringAsFixed(1)} s'),
+                    ),
+                  TextButton(
+                    onPressed: session.syncing ? null : session.reset,
+                    child: const Text('Reset'),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: session.syncing
+                  ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(strokeWidth: 2.5))
+                  : const Icon(Icons.auto_fix_high_rounded),
+              title: const Text('Auto sync'),
+              subtitle: Text(session.syncing
+                  ? 'Listening to the video…'
+                  : 'Matches subtitle timing to the speech'),
+              enabled: !session.syncing,
+              onTap: _autoSync,
             ),
             const Divider(),
             Padding(

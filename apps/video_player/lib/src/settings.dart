@@ -77,6 +77,7 @@ class Settings extends ChangeNotifier {
   late double subtitleSize;
   late int subtitleColor;
   late bool subtitleBackground;
+  late String subtitleLanguage;
   late double lastSpeed;
   late bool rememberSpeed;
   late bool resume;
@@ -93,6 +94,7 @@ class Settings extends ChangeNotifier {
     subtitleSize = _p.getDouble('subSize') ?? 22;
     subtitleColor = _p.getInt('subColor') ?? 0xFFFFFFFF;
     subtitleBackground = _p.getBool('subBg') ?? false;
+    subtitleLanguage = _p.getString('subLang') ?? 'en';
     lastSpeed = _p.getDouble('speed') ?? 1;
     rememberSpeed = _p.getBool('rememberSpeed') ?? false;
     resume = _p.getBool('resume') ?? true;
@@ -148,6 +150,11 @@ class Settings extends ChangeNotifier {
     if (color != null) _p.setInt('subColor', subtitleColor = color);
     if (background != null) _p.setBool('subBg', subtitleBackground = background);
     notifyListeners();
+  }
+
+  void setSubtitleLanguage(String code) {
+    subtitleLanguage = code;
+    _p.setString('subLang', code);
   }
 
   void setSpeed(double speed) {
