@@ -21,7 +21,7 @@ class BoardPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final c = size.width / 10;
     final outer =
-        RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(c * 0.35));
+        RRect.fromRectAndRadius(Offset.zero & size, Radius.circular(c * 0.18));
     canvas.save();
     canvas.clipRRect(outer);
     _cells(canvas, c);
@@ -48,7 +48,9 @@ class BoardPainter extends CustomPainter {
     for (var cell = 1; cell <= 100; cell++) {
       final g = cellGrid(cell);
       final rect = Rect.fromLTWH(g.col * c, (9 - g.row) * c, c, c);
-      final base = theme.cells[(g.col + g.row) % n];
+      // Plain two-tone checkerboard: calm enough that snakes and ladders
+      // stand out.
+      final base = theme.cells[(g.col + g.row) % 2 % n];
       canvas.drawRect(
         rect,
         Paint()
@@ -66,7 +68,7 @@ class BoardPainter extends CustomPainter {
         Paint()
           ..style = PaintingStyle.stroke
           ..strokeWidth = 1
-          ..color = theme.number.withValues(alpha: 0.12),
+          ..color = theme.number.withValues(alpha: 0.06),
       );
       if (cell == 100) _finish(canvas, rect);
       if (showNumbers) _number(canvas, rect, cell);
@@ -100,9 +102,9 @@ class BoardPainter extends CustomPainter {
       text: TextSpan(
         text: '$cell',
         style: TextStyle(
-          fontSize: rect.width * 0.26,
+          fontSize: rect.width * 0.22,
           fontWeight: FontWeight.w800,
-          color: theme.number.withValues(alpha: cell == 100 ? 1 : 0.75),
+          color: theme.number.withValues(alpha: cell == 100 ? 1 : 0.5),
         ),
       ),
       textDirection: TextDirection.ltr,
@@ -117,13 +119,13 @@ class BoardPainter extends CustomPainter {
     final d = b - a;
     final dir = d / d.distance;
     final perp = Offset(-dir.dy, dir.dx);
-    final half = c * 0.2;
+    final half = c * 0.16;
     final start = a - dir * c * 0.18;
     final end = b + dir * c * 0.18;
     final shadow = Offset(c * 0.06, c * 0.08);
 
-    final rail = c * 0.075;
-    final rung = c * 0.055;
+    final rail = c * 0.06;
+    final rung = c * 0.045;
     void rails(Paint p, Offset shift) {
       for (final s in [-1.0, 1.0]) {
         canvas.drawLine(
@@ -133,7 +135,7 @@ class BoardPainter extends CustomPainter {
 
     void rungs(Paint p, Offset shift) {
       final len = (end - start).distance;
-      final count = max(2, (len / (c * 0.38)).floor());
+      final count = max(2, (len / (c * 0.42)).floor());
       for (var k = 1; k < count; k++) {
         final m = Offset.lerp(start, end, k / count)!;
         canvas.drawLine(m - perp * half + shift, m + perp * half + shift, p);
@@ -184,7 +186,7 @@ class BoardPainter extends CustomPainter {
       Canvas canvas, double c, int head, int tail, (Color, Color) colors) {
     final pts = [for (final p in snakePath(head, tail)) p * c];
     final n = pts.length;
-    double width(int i) => c * (0.30 - 0.22 * i / (n - 1));
+    double width(int i) => c * (0.24 - 0.17 * i / (n - 1));
 
     // Left and right edges of the body.
     final left = <Offset>[];
@@ -255,7 +257,7 @@ class BoardPainter extends CustomPainter {
     canvas.save();
     canvas.translate(h.dx, h.dy);
     canvas.rotate(ang);
-    final hw = c * 0.46, hh = c * 0.36;
+    final hw = c * 0.4, hh = c * 0.31;
     final tongue = Path()
       ..moveTo(hw * 0.4, 0)
       ..lineTo(hw * 0.85, 0)
@@ -285,9 +287,9 @@ class BoardPainter extends CustomPainter {
     );
     for (final s in [-1.0, 1.0]) {
       final eye = Offset(hw * 0.12, s * hh * 0.24);
-      canvas.drawCircle(eye, c * 0.065, Paint()..color = Colors.white);
+      canvas.drawCircle(eye, c * 0.056, Paint()..color = Colors.white);
       canvas.drawCircle(
-          eye + Offset(c * 0.015, 0), c * 0.035, Paint()..color = Colors.black);
+          eye + Offset(c * 0.013, 0), c * 0.03, Paint()..color = Colors.black);
     }
     canvas.restore();
   }

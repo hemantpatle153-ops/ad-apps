@@ -14,6 +14,7 @@ import 'confetti.dart';
 import 'dice.dart';
 import 'geometry.dart';
 import 'tokens.dart';
+import 'widgets.dart';
 
 enum _Corner { topLeft, topRight, bottomLeft, bottomRight }
 
@@ -46,7 +47,8 @@ class GameScreen extends StatefulWidget {
   State<GameScreen> createState() => _GameScreenState();
 }
 
-class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
+class _GameScreenState extends State<GameScreen>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   GameEngine get g => widget.engine;
   Store get store => widget.store;
   Sfx get sfx => widget.sfx;
@@ -85,11 +87,23 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     _lastRoll = List.filled(n, 6);
     _pulse.addListener(
         () => _tokens.setPulse(_pulse.value, _busy ? null : g.current));
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) => _maybeBot());
+  }
+
+  /// Computer players wait while the app is in the background.
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      if (!_busy) _maybeBot();
+    } else {
+      _botTimer?.cancel();
+    }
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _botTimer?.cancel();
     _move.dispose();
     _pulse.dispose();
@@ -259,9 +273,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
       final next = GameEngine(board: board, players: g.players, rules: g.rules);
       await store.save(next);
       if (!mounted) return;
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (_) => GameScreen(engine: next, store: store, sfx: sfx),
-      ));
+      Navigator.of(context).pushReplacement(
+          gameRoute<void>(GameScreen(engine: next, store: store, sfx: sfx)));
     } else {
       Navigator.of(context).pop();
     }
@@ -305,14 +318,8 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         if (!didPop) _confirmLeave();
       },
       child: Scaffold(
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: theme.background,
-            ),
-          ),
+        body: GameBackground(
+          theme: theme,
           child: Stack(
             children: [
               SafeArea(
@@ -320,24 +327,26 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   children: [
                     _topBar(theme),
                     Expanded(
-                      child: LayoutBuilder(builder: (context, box) {
-                        // Keep the player panels hugging the board, like Ludo.
-                        const panelRow = 84.0;
-                        final side = min(
-                            box.maxWidth - 16, box.maxHeight - 2 * panelRow);
-                        return Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              _panelRow(
-                                  _Corner.topLeft, _Corner.topRight, theme),
-                              _board(theme, side),
-                              _panelRow(_Corner.bottomLeft, _Corner.bottomRight,
-                                  theme),
-                            ],
-                          ),
-                        );
-                      }),
+                      // Panels hug the board like Ludo; the board takes
+                      // whatever height is left so small phones never
+                      // overflow.
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _turnBanner(),
+                            _panelRow(_Corner.topLeft, _Corner.topRight, theme),
+                            Flexible(
+                              child: LayoutBuilder(
+                                builder: (context, box) => _board(theme,
+                                    min(box.maxWidth - 16, box.maxHeight)),
+                              ),
+                            ),
+                            _panelRow(
+                                _Corner.bottomLeft, _Corner.bottomRight, theme),
+                          ],
+                        ),
+                      ),
                     ),
                     const BannerAdSlot(),
                   ],
@@ -352,6 +361,74 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   ]),
                 ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Whose turn it is, in their colour, between the top bar and the board.
+  Widget _turnBanner() {
+    if (g.isOver) return const SizedBox(height: 44);
+    final p = g.players[_shown];
+    final color = tokenColors[p.color];
+    final humans = g.players.where((x) => !x.isBot).length;
+    final String text;
+    if (p.isBot) {
+      text = '${p.name} is playing…';
+    } else if (_busy) {
+      text = humans == 1 ? 'Moving…' : '${p.name} is moving…';
+    } else {
+      text = humans == 1
+          ? 'Your turn · tap the dice'
+          : "${p.name}'s turn · tap the dice";
+    }
+    final dark = p.color == 2; // yellow needs dark text
+    return SizedBox(
+      height: 44,
+      child: Center(
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 250),
+          transitionBuilder: (child, a) => FadeTransition(
+            opacity: a,
+            child: SlideTransition(
+              position: Tween(begin: const Offset(0, -0.3), end: Offset.zero)
+                  .animate(a),
+              child: child,
+            ),
+          ),
+          child: Container(
+            key: ValueKey(text),
+            constraints:
+                BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width - 32),
+            padding: const EdgeInsets.fromLTRB(6, 3, 16, 3),
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(color: Colors.white, width: 2),
+              boxShadow: [
+                BoxShadow(color: color.withValues(alpha: 0.6), blurRadius: 12),
+              ],
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                PawnIcon(color: p.color, size: 26),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    text,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: dark ? Colors.black87 : Colors.white,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 15,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -429,11 +506,14 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (p.isBot && !mirrored)
+              if (p.isBot && !mirrored) ...[
                 Icon(Icons.smart_toy_rounded, size: 14, color: theme.onPanel),
+                const SizedBox(width: 3),
+              ],
               Flexible(
                 child: Text(
                   p.name,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                       color: theme.onPanel,
@@ -441,8 +521,10 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                       fontSize: 14),
                 ),
               ),
-              if (p.isBot && mirrored)
+              if (p.isBot && mirrored) ...[
+                const SizedBox(width: 3),
                 Icon(Icons.smart_toy_rounded, size: 14, color: theme.onPanel),
+              ],
             ],
           ),
           Text(
@@ -451,11 +533,15 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                 : pos == 0
                     ? 'Not started'
                     : 'On $pos',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
                 color: theme.onPanel.withValues(alpha: 0.75), fontSize: 12),
           ),
           if (canTap)
             Text('Tap to roll',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                     color: color, fontWeight: FontWeight.w800, fontSize: 12)),
         ],
@@ -509,11 +595,15 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(side / 28),
-                boxShadow: const [
-                  BoxShadow(
+                boxShadow: [
+                  const BoxShadow(
                       color: Colors.black45,
                       blurRadius: 18,
                       offset: Offset(0, 8)),
+                  BoxShadow(
+                      color: theme.accent.withValues(alpha: 0.35),
+                      blurRadius: 24,
+                      spreadRadius: 1),
                 ],
               ),
               child: RepaintBoundary(

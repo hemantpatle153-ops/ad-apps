@@ -34,6 +34,16 @@ class SnakesApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: buildTheme(seed, Brightness.light),
       darkTheme: buildTheme(seed, Brightness.dark),
+      // Game layouts are sized to the screen; cap very large system font
+      // sizes so names and panels never overflow.
+      builder: (context, child) {
+        final mq = MediaQuery.of(context);
+        return MediaQuery(
+          data:
+              mq.copyWith(textScaler: mq.textScaler.clamp(maxScaleFactor: 1.2)),
+          child: child!,
+        );
+      },
       home: HomeScreen(store: store, sfx: sfx),
     );
   }

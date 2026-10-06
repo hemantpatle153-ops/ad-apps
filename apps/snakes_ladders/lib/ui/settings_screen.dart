@@ -7,6 +7,7 @@ import '../game/store.dart';
 import '../game/themes.dart';
 import '../main.dart';
 import 'board_painter.dart';
+import 'widgets.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key, required this.store, required this.sfx});
@@ -19,80 +20,107 @@ class SettingsScreen extends StatelessWidget {
     return ListenableBuilder(
       listenable: store,
       builder: (context, _) => Scaffold(
-        appBar: AppBar(title: const Text('Themes & Settings')),
         bottomNavigationBar: const BannerAdSlot(),
-        body: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            Text('Board theme', style: Theme.of(context).textTheme.titleMedium),
-            const SizedBox(height: 8),
-            GridView.count(
-              crossAxisCount: 2,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 0.85,
+        body: GameBackground(
+          theme: store.theme,
+          child: SafeArea(
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
               children: [
-                for (var i = 0; i < BoardTheme.all.length; i++)
-                  _ThemeTile(
-                    theme: BoardTheme.all[i],
-                    selected: store.themeIndex == i,
-                    onTap: () {
-                      sfx.play(Sound.tap);
-                      store.themeIndex = i;
-                    },
+                const Row(
+                  children: [
+                    BackButton(color: Colors.white),
+                    Expanded(
+                      child: Text(
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        'Themes & Settings',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w900),
+                      ),
+                    ),
+                  ],
+                ),
+                const SectionTitle('Board theme'),
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  childAspectRatio: 0.85,
+                  children: [
+                    for (var i = 0; i < BoardTheme.all.length; i++)
+                      _ThemeTile(
+                        theme: BoardTheme.all[i],
+                        selected: store.themeIndex == i,
+                        onTap: () {
+                          sfx.play(Sound.tap);
+                          store.themeIndex = i;
+                        },
+                      ),
+                  ],
+                ),
+                const SectionTitle('Game'),
+                Panel(
+                  theme: store.theme,
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Column(
+                    children: [
+                      SwitchListTile(
+                        secondary: const Icon(Icons.volume_up_rounded),
+                        title: const Text('Sound effects'),
+                        value: store.sound,
+                        onChanged: (v) {
+                          store.sound = v;
+                          sfx.play(Sound.tap);
+                        },
+                      ),
+                      SwitchListTile(
+                        secondary: const Icon(Icons.vibration_rounded),
+                        title: const Text('Vibration'),
+                        value: store.vibration,
+                        onChanged: (v) {
+                          store.vibration = v;
+                          sfx.buzz();
+                        },
+                      ),
+                      SwitchListTile(
+                        secondary: const Icon(Icons.fast_forward_rounded),
+                        title: const Text('Fast moves'),
+                        subtitle: const Text(
+                            'Tokens and computer players move quicker'),
+                        value: store.fastMoves,
+                        onChanged: (v) => store.fastMoves = v,
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.star_rounded),
+                        title: const Text('Rate this app'),
+                        onTap: () => openStorePage(packageName),
+                      ),
+                      ListTile(
+                        leading: const Icon(Icons.privacy_tip_outlined),
+                        title: const Text('Privacy policy'),
+                        onTap: () => openLink(privacyPolicyUrl),
+                      ),
+                      FutureBuilder<bool>(
+                        future: AdService.instance.privacyOptionsRequired(),
+                        builder: (context, snap) => snap.data == true
+                            ? ListTile(
+                                leading: const Icon(Icons.ads_click_rounded),
+                                title: const Text('Ad privacy choices'),
+                                onTap: AdService.instance.showPrivacyOptions,
+                              )
+                            : const SizedBox.shrink(),
+                      ),
+                    ],
                   ),
+                ),
               ],
             ),
-            const SizedBox(height: 16),
-            SwitchListTile(
-              secondary: const Icon(Icons.volume_up_rounded),
-              title: const Text('Sound effects'),
-              value: store.sound,
-              onChanged: (v) {
-                store.sound = v;
-                sfx.play(Sound.tap);
-              },
-            ),
-            SwitchListTile(
-              secondary: const Icon(Icons.vibration_rounded),
-              title: const Text('Vibration'),
-              value: store.vibration,
-              onChanged: (v) {
-                store.vibration = v;
-                sfx.buzz();
-              },
-            ),
-            SwitchListTile(
-              secondary: const Icon(Icons.fast_forward_rounded),
-              title: const Text('Fast moves'),
-              subtitle: const Text('Tokens and computer players move quicker'),
-              value: store.fastMoves,
-              onChanged: (v) => store.fastMoves = v,
-            ),
-            const Divider(height: 32),
-            ListTile(
-              leading: const Icon(Icons.star_rounded),
-              title: const Text('Rate this app'),
-              onTap: () => openStorePage(packageName),
-            ),
-            ListTile(
-              leading: const Icon(Icons.privacy_tip_outlined),
-              title: const Text('Privacy policy'),
-              onTap: () => openLink(privacyPolicyUrl),
-            ),
-            FutureBuilder<bool>(
-              future: AdService.instance.privacyOptionsRequired(),
-              builder: (context, snap) => snap.data == true
-                  ? ListTile(
-                      leading: const Icon(Icons.ads_click_rounded),
-                      title: const Text('Ad privacy choices'),
-                      onTap: AdService.instance.showPrivacyOptions,
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          ],
+          ),
         ),
       ),
     );

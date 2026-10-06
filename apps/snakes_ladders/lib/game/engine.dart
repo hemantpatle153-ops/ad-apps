@@ -99,6 +99,7 @@ class TurnResult {
 /// can be saved and resumed.
 class GameEngine {
   GameEngine({
+    String? id,
     required this.board,
     required this.players,
     this.rules = const GameRules(),
@@ -111,11 +112,19 @@ class GameEngine {
     List<int>? snakeBites,
     List<int>? laddersClimbed,
     Random? random,
-  })  : positions = positions ?? List.filled(players.length, 0),
+  })  : id = id ?? _newId(),
+        positions = positions ?? List.filled(players.length, 0),
         rolls = rolls ?? List.filled(players.length, 0),
         snakeBites = snakeBites ?? List.filled(players.length, 0),
         laddersClimbed = laddersClimbed ?? List.filled(players.length, 0),
         _random = random ?? Random();
+
+  /// Identifies this game among the saved ones.
+  final String id;
+
+  static int _idCounter = 0;
+  static String _newId() =>
+      '${DateTime.now().microsecondsSinceEpoch}_${_idCounter++}';
 
   final BoardLayout board;
   final List<Player> players;
@@ -244,6 +253,7 @@ class GameEngine {
   }
 
   Map<String, dynamic> toJson() => {
+        'id': id,
         'board': board.toJson(),
         'players': [for (final p in players) p.toJson()],
         'rules': rules.toJson(),
@@ -260,6 +270,7 @@ class GameEngine {
   factory GameEngine.fromJson(Map<String, dynamic> j) {
     List<int> ints(String k) => [for (final v in j[k] as List) v as int];
     return GameEngine(
+      id: j['id'] as String?,
       board: BoardLayout.fromJson(j['board'] as Map<String, dynamic>),
       players: [
         for (final p in j['players'] as List)

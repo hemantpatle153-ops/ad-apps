@@ -73,27 +73,62 @@ class Store extends ChangeNotifier {
       final r = g.rolls[w];
       if (fastestWin == 0 || r < fastestWin) await _p.setInt('fastestWin', r);
     }
-    await clearSaved();
-    notifyListeners();
+    await deleteSaved(g.id);
   }
 
-  GameEngine? loadSaved() {
-    final raw = _p.getString('saved');
-    if (raw == null) return null;
-    try {
-      final g = GameEngine.fromJson(jsonDecode(raw) as Map<String, dynamic>);
-      return g.isOver ? null : g;
-    } catch (_) {
-      return null;
+  /// How many unfinished games are kept; saving one more drops the oldest.
+  static const maxSaved = 5;
+
+  /// Unfinished games, most recently played first.
+  List<SavedGame> get savedGames {
+    final out = <SavedGame>[];
+    final raw = _p.getString('savedGames');
+    if (raw != null) {
+      try {
+        for (final e in jsonDecode(raw) as List) {
+          final m = e as Map<String, dynamic>;
+          final g = GameEngine.fromJson(m['game'] as Map<String, dynamic>);
+          if (g.isOver) continue;
+          out.add(SavedGame(
+              g, DateTime.fromMillisecondsSinceEpoch(m['savedAt'] as int)));
+        }
+      } catch (_) {
+        // A corrupt entry must not lose the rest; keep what parsed.
+      }
     }
+    // Games saved by version 1, which kept only one.
+    final legacy = _p.getString('saved');
+    if (legacy != null) {
+      try {
+        final g =
+            GameEngine.fromJson(jsonDecode(legacy) as Map<String, dynamic>);
+        if (!g.isOver) out.add(SavedGame(g, DateTime.now()));
+      } catch (_) {}
+    }
+    out.sort((a, b) => b.savedAt.compareTo(a.savedAt));
+    return out;
   }
 
   Future<void> save(GameEngine g) async {
-    await _p.setString('saved', jsonEncode(g.toJson()));
-    notifyListeners();
+    final list = savedGames.where((s) => s.game.id != g.id).toList()
+      ..insert(0, SavedGame(g, DateTime.now()));
+    await _writeSaved(list.take(maxSaved).toList());
   }
 
-  Future<void> clearSaved() async {
+  Future<void> deleteSaved(String id) =>
+      _writeSaved(savedGames.where((s) => s.game.id != id).toList());
+
+  Future<void> _writeSaved(List<SavedGame> list) async {
+    await _p.setString(
+      'savedGames',
+      jsonEncode([
+        for (final s in list)
+          {
+            'savedAt': s.savedAt.millisecondsSinceEpoch,
+            'game': s.game.toJson(),
+          },
+      ]),
+    );
     await _p.remove('saved');
     notifyListeners();
   }
@@ -102,4 +137,11 @@ class Store extends ChangeNotifier {
     write();
     notifyListeners();
   }
+}
+
+class SavedGame {
+  const SavedGame(this.game, this.savedAt);
+
+  final GameEngine game;
+  final DateTime savedAt;
 }
