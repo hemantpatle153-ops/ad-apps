@@ -9,14 +9,14 @@ import 'sudoku_engine.dart';
 
 const packageName = 'in.onlysoftware.daily_sudoku';
 
-const privacyPolicyUrl = 'https://example.com/privacy'; // TODO: your hosted policy
+const privacyPolicyUrl = 'https://dice-dhamaal.web.app/privacy/daily_sudoku.html'; // website/build.py
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final store = await Store.open();
   runApp(SudokuApp(store: store));
   // Consent and ads start after the first frame so the app opens instantly.
-  AdService.instance.init(AdConfig.fromEnvironment());
+  AdService.instance.init(AdConfig.fromEnvironment(rewarded: true));
 }
 
 class SudokuApp extends StatelessWidget {

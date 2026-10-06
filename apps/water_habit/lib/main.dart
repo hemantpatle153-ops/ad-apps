@@ -8,7 +8,7 @@ import 'store.dart';
 import 'water_view.dart';
 
 const appPackageName = 'in.onlysoftware.water_habit';
-const privacyPolicyUrl = 'https://example.com/privacy'; // TODO: your hosted policy
+const privacyPolicyUrl = 'https://dice-dhamaal.web.app/privacy/water_habit.html'; // website/build.py
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
