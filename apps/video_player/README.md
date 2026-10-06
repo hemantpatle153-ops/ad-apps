@@ -14,9 +14,9 @@ phone, plays almost any format (libmpv through `media_kit`), and works offline.
 - Screen lock, fit / stretch / crop / 16:9 / 4:3, rotation lock, speed 0.25x to 4x
 - Subtitles: embedded tracks, a matching .srt next to the video (Android 10 and
   older; Android 11+ only lets apps read media files, so pick the file there),
-  pick a file, text size, colour and background box. Find captions online
-  (OpenSubtitles: by the exact file first, then by name, in chosen
-  languages), remembered per video. Sync by tapping "Next line now" /
+  pick a file (remembered per video), text size, colour and background box.
+  Auto sync listens to the video and lines a subtitle file up with the
+  speech (also fixes frame-rate mix-ups). Or sync by tapping "Next line now" /
   "Last line now" when a line is spoken, or with the delay buttons
 - Audio track choice, play audio in the background with notification controls
 - Picture-in-picture (button, or automatically when leaving the app)
@@ -51,16 +51,6 @@ One phone opens a video and taps More, then Watch with friends, and picks:
 Both have chat and emoji reactions over the video. Live-streaming a phone
 file to friends over the internet is not built: it would use the host's
 upload data and, on many mobile networks, a paid TURN relay.
-
-## Caption search key
-
-Caption search uses OpenSubtitles.com with one app key, passed at build time
-with `--dart-define=OPENSUBTITLES_API_KEY=...` (CI reads the repository secret
-of that name); no key is ever committed. OpenSubtitles asks apps not to make
-users create their own keys. Instead, users may sign in with a free
-OpenSubtitles account (Settings > Caption account) so downloads count against
-their own daily limit; only the sign-in token is stored, never the password.
-Builds without the key hide nothing but explain that search isn't set up.
 
 ## Ads
 
