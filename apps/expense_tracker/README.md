@@ -41,10 +41,7 @@ account's list of ledgers). Email backup needs the Email/Password sign-in
 provider turned on in Firebase Authentication. The rules
 are in `firebase/database.rules.json` and tested by `firebase/tests`.
 
-The app currently signs in with the Video Player's Firebase app id. To give
-it its own, register it once and pass the id at build time:
-
-```
-firebase apps:create ANDROID "Expense Tracker" --package-name in.onlysoftware.expense_tracker --project dice-dhamaal
-flutter build apk --dart-define=FIREBASE_APP_ID=1:448997235311:android:...
-```
+The app is registered in that project as `in.onlysoftware.expense_tracker`
+(app id `1:448997235311:android:45bce4ebd3466a856e8b9a`, the default in
+`lib/ledger/backend.dart`; a build can override it with
+`--dart-define=FIREBASE_APP_ID=...`).

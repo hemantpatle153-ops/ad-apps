@@ -81,7 +81,7 @@ abstract final class FirebaseSetup {
   static const apiKey = String.fromEnvironment('FIREBASE_API_KEY',
       defaultValue: 'AIzaSyCRyrPruZ67YefPw1brA4cv0G6AeT9A7gk');
   static const appId = String.fromEnvironment('FIREBASE_APP_ID',
-      defaultValue: '1:448997235311:android:1b54beb30bb19ea96e8b9a');
+      defaultValue: '1:448997235311:android:45bce4ebd3466a856e8b9a');
   static const projectId = String.fromEnvironment('FIREBASE_PROJECT_ID',
       defaultValue: 'dice-dhamaal');
   static const senderId = String.fromEnvironment('FIREBASE_SENDER_ID',
