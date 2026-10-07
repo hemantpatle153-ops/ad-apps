@@ -9,7 +9,9 @@ import 'sudoku_engine.dart';
 
 const packageName = 'in.onlysoftware.daily_sudoku';
 
-const privacyPolicyUrl = 'https://dice-dhamaal.web.app/privacy/daily_sudoku.html'; // website/build.py
+// Rahul's published Google Doc (same text as website/build.py's page).
+const privacyPolicyUrl =
+    'https://docs.google.com/document/d/e/2PACX-1vTaZv3owS5iiOH0PkLw7wnCHDw5u2rNyOyLbHogItpRQyKczECgA0o1FEJ3oDmwQxfkOijJHOj4tgtC/pub';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
