@@ -20,10 +20,8 @@ ThemeData _theme(Brightness b) {
     primary: _accent,
     onPrimary: Colors.white,
     surface: dark ? const Color(0xFF0F0F15) : const Color(0xFFFAF8F6),
-    surfaceContainerHighest:
-        dark ? const Color(0xFF262633) : const Color(0xFFEDE7E2),
-    surfaceContainerHigh:
-        dark ? const Color(0xFF1E1E28) : const Color(0xFFF2EDE9),
+    surfaceContainerHighest: dark ? const Color(0xFF262633) : const Color(0xFFEDE7E2),
+    surfaceContainerHigh: dark ? const Color(0xFF1E1E28) : const Color(0xFFF2EDE9),
     surfaceContainer: dark ? const Color(0xFF181821) : const Color(0xFFF5F1EE),
   );
   return ThemeData(
@@ -40,9 +38,7 @@ ThemeData _theme(Brightness b) {
       backgroundColor: scheme.surfaceContainer,
       indicatorColor: _accent.withValues(alpha: 0.18),
       iconTheme: WidgetStateProperty.resolveWith((s) => IconThemeData(
-          color: s.contains(WidgetState.selected)
-              ? _accent
-              : scheme.onSurfaceVariant)),
+          color: s.contains(WidgetState.selected) ? _accent : scheme.onSurfaceVariant)),
     ),
     snackBarTheme: const SnackBarThemeData(behavior: SnackBarBehavior.floating),
   );
