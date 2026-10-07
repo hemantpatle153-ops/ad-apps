@@ -10,16 +10,13 @@ import 'jobs.dart';
 import 'ocr.dart';
 import 'scan/capture.dart';
 import 'scan/crop_screen.dart';
-import 'scan/geometry.dart';
 import 'scanner.dart';
 import 'ui_helpers.dart';
 
 /// A page photo plus the look the user picked for it.
 class ScanPage {
   ScanPage(this.path)
-      : filter = (pageSources[path]?.quad ?? Quad.full) == Quad.full
-            ? PageFilter.original
-            : PageFilter.magic;
+      : filter = pageSources[path]?.enhance ?? false ? PageFilter.magic : PageFilter.original;
   String path;
   PageFilter filter;
   int turns = 0;
