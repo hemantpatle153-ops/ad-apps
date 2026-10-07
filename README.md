@@ -12,9 +12,10 @@ apps/water_habit    app 5: water goal and daily habits with streaks and local re
 apps/snakes_ladders app 6: Dice Dhamaal, two games in one: Ludo (vs computer, pass & play, online rooms with voice chat) and Snakes & Ladders
 apps/multi_speaker  app 7: one song on many speakers in sync (phones on the same Wi-Fi/hotspot, each on its own speaker)
 apps/video_player   app 8: video player: folders, gestures, subtitles, background audio, PiP, private folder
+apps/vacancy_bell   app 9: Vacancy Bell, Sarkari job alerts in Hindi/English: post tabs, filters, eligibility check, last-date reminders, new-post alerts (no ads in v1)
 ```
 
-Package names are `in.onlysoftware.<folder name>`. Every app works offline; the only network use is ads (Multi Speaker also talks to other phones on the local Wi-Fi).
+Package names are `in.onlysoftware.<folder name>`. Every app works offline; the only network use is ads (Multi Speaker also talks to other phones on the local Wi-Fi). Vacancy Bell is the exception: it downloads a public job list (and keeps the last copy for offline use) and ships without ads; see `apps/vacancy_bell/README.md`.
 The release commands below work the same in every app folder (replace `qr_scanner` with the app).
 
 ## Run on your phone

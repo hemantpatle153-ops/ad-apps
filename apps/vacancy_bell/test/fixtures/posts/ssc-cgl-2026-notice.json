@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "id": "ssc-cgl-2026-notice",
+  "type": "job",
+  "title": {"en": "SSC CGL 2026 Recruitment", "hi": "एसएससी सीजीएल 2026 भर्ती"},
+  "org": {"en": "Staff Selection Commission", "hi": "कर्मचारी चयन आयोग"},
+  "source": "ssc",
+  "category": "ssc",
+  "postedAt": "2026-10-07T05:12:00Z",
+  "updatedAt": "2026-10-07T09:12:00Z",
+  "lastDate": "2026-11-05",
+  "totalPosts": 14582,
+  "qualifications": ["graduate"],
+  "states": ["all"],
+  "ageMin": 18,
+  "ageMax": 32,
+  "salary": {"en": "₹25,500 – ₹1,51,100 (Level 4-8)", "hi": "₹25,500 – ₹1,51,100 (लेवल 4-8)"},
+  "tags": ["central-govt"],
+  "verified": true,
+  "shortInfo": {
+    "en": "Staff Selection Commission has announced the Combined Graduate Level Examination 2026 for Group B and C posts in central ministries and departments. Graduates can apply online at ssc.gov.in.",
+    "hi": "कर्मचारी चयन आयोग ने केंद्रीय मंत्रालयों और विभागों में ग्रुप बी और सी पदों के लिए संयुक्त स्नातक स्तरीय परीक्षा 2026 की घोषणा की है। स्नातक ssc.gov.in पर ऑनलाइन आवेदन कर सकते हैं।"
+  },
+  "importantDates": [
+    {"label": {"en": "Application start", "hi": "आवेदन शुरू"}, "date": "2026-10-07", "text": "07 Oct 2026"},
+    {"label": {"en": "Last date to apply", "hi": "आवेदन की अंतिम तिथि"}, "date": "2026-11-05", "text": "05 Nov 2026 (11 PM)"},
+    {"label": {"en": "Fee payment last date", "hi": "शुल्क भुगतान की अंतिम तिथि"}, "date": "2026-11-06", "text": "06 Nov 2026"},
+    {"label": {"en": "Tier 1 exam", "hi": "टियर 1 परीक्षा"}, "date": "2027-01-12", "text": {"en": "January 2027 (tentative)", "hi": "जनवरी 2027 (संभावित)"}},
+    {"label": {"en": "Admit card", "hi": "एडमिट कार्ड"}, "date": null, "text": {"en": "Before the exam", "hi": "परीक्षा से पहले"}},
+    {"label": {"en": "Broken entry without date or text"}}
+  ],
+  "fees": [
+    {"category": {"en": "General / OBC / EWS", "hi": "सामान्य / ओबीसी / ईडब्ल्यूएस"}, "amount": 100, "text": "₹100"},
+    {"category": {"en": "SC / ST / PwBD / Women / Ex-servicemen", "hi": "एससी / एसटी / दिव्यांग / महिला / पूर्व सैनिक"}, "amount": 0, "text": {"en": "No fee", "hi": "कोई शुल्क नहीं"}},
+    {"category": {"en": "Correction window", "hi": "सुधार विंडो"}, "amount": "200"}
+  ],
+  "age": {
+    "min": 18,
+    "max": 32,
+    "asOn": "2026-08-01",
+    "relaxation": {
+      "en": "OBC 3 years, SC/ST 5 years, PwBD 10 years (OBC PwBD 13, SC/ST PwBD 15), Ex-servicemen as per rules.",
+      "hi": "ओबीसी 3 वर्ष, एससी/एसटी 5 वर्ष, दिव्यांग 10 वर्ष (ओबीसी दिव्यांग 13, एससी/एसटी दिव्यांग 15), पूर्व सैनिक नियमानुसार।"
+    }
+  },
+  "vacancies": [
+    {"post": {"en": "Assistant Section Officer", "hi": "सहायक अनुभाग अधिकारी"}, "total": 4200, "breakdown": "UR 1700, OBC 1134, EWS 420, SC 630, ST 316"},
+    {"post": {"en": "Inspector (Income Tax)", "hi": "निरीक्षक (आयकर)"}, "total": 2382, "breakdown": "UR 964, OBC 643, EWS 238, SC 357, ST 180"},
+    {"post": {"en": "Junior Statistical Officer", "hi": "कनिष्ठ सांख्यिकी अधिकारी"}, "total": 8000, "breakdown": null},
+    {"post": null, "total": 5}
+  ],
+  "eligibility": {
+    "en": "Bachelor's degree from a recognised university. Junior Statistical Officer: degree with Mathematics at 12th level, or Statistics in graduation.",
+    "hi": "किसी मान्यता प्राप्त विश्वविद्यालय से स्नातक डिग्री। कनिष्ठ सांख्यिकी अधिकारी: 12वीं में गणित के साथ डिग्री, या स्नातक में सांख्यिकी।"
+  },
+  "selection": [
+    {"en": "Tier 1: Computer based exam", "hi": "टियर 1: कंप्यूटर आधारित परीक्षा"},
+    {"en": "Tier 2: Computer based exam", "hi": "टियर 2: कंप्यूटर आधारित परीक्षा"},
+    {"en": "Document verification", "hi": "दस्तावेज़ सत्यापन"},
+    42
+  ],
+  "howToApply": {
+    "en": "Register once on ssc.gov.in, fill the CGL 2026 form, upload photo and signature, pay the fee and keep a printout.",
+    "hi": "ssc.gov.in पर एक बार पंजीकरण करें, सीजीएल 2026 फॉर्म भरें, फोटो और हस्ताक्षर अपलोड करें, शुल्क जमा करें और प्रिंटआउट रखें।"
+  },
+  "links": [
+    {"label": {"en": "Apply online", "hi": "ऑनलाइन आवेदन"}, "url": "https://ssc.gov.in/login"},
+    {"label": {"en": "Official notice", "hi": "आधिकारिक नोटिस"}, "url": "https://ssc.gov.in/api/attachment/uploads/masterData/NoticeBoards/cgl2026.pdf"},
+    {"label": {"en": "Bad link"}, "url": "javascript:alert(1)"},
+    {"label": {"en": "Relative link"}, "url": "/notice.pdf"}
+  ],
+  "officialNoticeUrl": "https://ssc.gov.in/api/attachment/uploads/masterData/NoticeBoards/cgl2026.pdf",
+  "sourcePageUrl": "https://ssc.gov.in/home/notice-board",
+  "check": {"model": "deepseek-flash", "rounds": 2, "factsChecked": 31, "factsDropped": 1}
+}
