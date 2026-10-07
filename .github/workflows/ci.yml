@@ -116,3 +116,7 @@ jobs:
             sleep $((try * 15))
           done
           exit 1
+      # Google Play rejects apps whose 64-bit native libraries are not 16 KB
+      # page aligned. Runs last so the APK above is still saved.
+      - name: Check 16 KB page size (Play requirement)
+        run: ../../tool/check_16kb.sh build/app/outputs/flutter-apk/app-release.apk

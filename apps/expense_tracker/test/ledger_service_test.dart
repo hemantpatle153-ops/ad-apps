@@ -635,6 +635,26 @@ void main() {
       expect(await pa.read(id), isNotNull);
     });
 
+    test('delete account removes the login and its ledger list', () async {
+      final w = await World.create();
+      final (pa, pb, id, _) = await w.pair();
+      await add(pa, id, 500, iGave: true);
+      await pa.service.backUp('rahul@example.com', 'secret1');
+      await expectLater(pa.service.deleteAccount('wrong1'),
+          throwsA(LedgerException.wrongLogin));
+      expect(pa.service.email, 'rahul@example.com');
+      await pa.service.deleteAccount('secret1');
+      expect(pa.service.email, isNull);
+      expect(pa.store.all(), isEmpty);
+      expect(w.db.read('ledgerUsers/uid-Rahul'), isNull);
+      await expectLater(pa.service.signInEmail('rahul@example.com', 'secret1'),
+          throwsA(LedgerException.wrongLogin));
+      // The friend still has the shared ledger.
+      expect((await pb.log(id)).entries, hasLength(1));
+      // The email is free again.
+      await pa.service.backUp('rahul@example.com', 'secret2');
+    });
+
     test('deleted ledgers drop out of the account list', () async {
       final w = await World.create();
       final (pa, pb, id, _) = await w.pair();

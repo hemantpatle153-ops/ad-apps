@@ -212,7 +212,10 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(c, true),
-            child: const Text('Second chance'),
+            // AdMob asks that users agree to a rewarded ad before it plays.
+            child: Text(AdService.instance.rewardedReady
+                ? 'Watch an ad for a second chance'
+                : 'Second chance'),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(c, false),

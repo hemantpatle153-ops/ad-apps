@@ -153,6 +153,18 @@ class MemoryLedgerBackend implements LedgerBackend {
     return uid = db.newAnonUid();
   }
 
+  @override
+  Future<String> deleteAccount(String password) async {
+    _check();
+    final e = _email;
+    if (e == null) return uid;
+    if (db.accounts[e]?.$1 != password) throw LedgerException.wrongLogin;
+    db.accounts.remove(e);
+    db.apply({LedgerWrites.userPath(uid): null});
+    _email = null;
+    return uid = db.newAnonUid();
+  }
+
   void _check() {
     if (db.offline) throw LedgerException.offline;
   }

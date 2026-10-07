@@ -1,3 +1,4 @@
+import java.util.Base64
 import java.util.Properties
 
 plugins {
@@ -64,6 +65,24 @@ android {
             else
                 signingConfigs.getByName("debug")
         }
+    }
+}
+
+// A Play upload must be signed with the upload key and show real ads. Stop an
+// app bundle build that would silently use debug keys or Google's test ads.
+gradle.taskGraph.whenReady {
+    if (allTasks.none { it.name == "bundleRelease" }) return@whenReady
+    val defines = (project.findProperty("dart-defines") as String?).orEmpty()
+        .split(",").filter { it.isNotEmpty() }
+        .map { String(Base64.getDecoder().decode(it)).substringBefore("=") }
+    val missing = mutableListOf<String>()
+    if (keyProperties.isEmpty()) missing += "android/key.properties (upload key)"
+    if (project.findProperty("admobAppId") == null) missing += "-PadmobAppId"
+    listOf("ADMOB_BANNER_ID", "ADMOB_INTERSTITIAL_ID").filterNot { it in defines }
+        .forEach { missing += "--dart-define=$it" }
+    if (missing.isNotEmpty()) {
+        throw GradleException(
+            "Play release bundle needs: ${missing.joinToString()}. See README.md (Release build).")
     }
 }
 

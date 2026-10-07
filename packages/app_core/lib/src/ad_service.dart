@@ -70,6 +70,7 @@ class AdService {
   }
 
   void _loadRewarded() {
+    if (_config.rewardedId.isEmpty) return;
     RewardedAd.load(
       adUnitId: _config.rewardedId,
       request: const AdRequest(),

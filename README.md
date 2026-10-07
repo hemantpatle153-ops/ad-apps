@@ -30,33 +30,29 @@ flutter test
 
 Debug builds show Google's **test ads**. Tapping them is safe. Never tap real ads in your own app.
 
-## Release build
+## Release build (Google Play)
 
-1. Create an upload keystore once and keep it safe (losing it means you can't update the app):
-   `keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload`
-2. Create `apps/qr_scanner/android/key.properties` (git-ignored):
-   ```
-   storeFile=/home/you/upload-keystore.jks
-   storePassword=...
-   keyAlias=upload
-   keyPassword=...
-   ```
-3. In AdMob, add the app and create a banner, an interstitial and a rewarded ad unit. Then build:
-   ```
-   flutter build appbundle \
-     -PadmobAppId=ca-app-pub-XXXX~YYYY \
-     --dart-define=ADMOB_BANNER_ID=ca-app-pub-XXXX/1111 \
-     --dart-define=ADMOB_INTERSTITIAL_ID=ca-app-pub-XXXX/2222 \
-     --dart-define=ADMOB_REWARDED_ID=ca-app-pub-XXXX/3333
-   ```
-4. Upload `build/app/outputs/bundle/release/app-release.aab` to a closed test track in Play Console.
+Play bundles are built on the laptop with one script. It needs two things that never go in git, in `Downloads\APPS\signing`:
+
+- `<app>-upload.jks` and `<app>.key.properties` (storePassword, keyAlias, keyPassword): the upload key of each app. Back these up; a lost upload key needs a reset request to Google. If one is missing, the script prints the `keytool` command to create it.
+- `admob.json`: the real AdMob IDs (copy `tool/admob.example.json`). Only Daily Sudoku needs a rewarded ID.
+
+```
+powershell -ExecutionPolicy Bypass -File tool\build_release.ps1               # all 8 apps
+powershell -ExecutionPolicy Bypass -File tool\build_release.ps1 qr_scanner    # one app
+```
+
+Bundles land in `Downloads\APPS\play_release`. A bundle build (`bundleRelease`) refuses to run without the upload key, `-PadmobAppId` and the ad unit `--dart-define`s, so a Play upload can never carry debug keys or Google's test ads. APK builds (`flutter build apk`, CI) still fall back to debug keys and test ads.
+
+Before each new upload, raise `version:` in the app's `pubspec.yaml` (the number after `+` must go up every time).
 
 ## Before publishing
 
-- The package name is `in.onlysoftware.qr_scanner` (`android/app/build.gradle.kts` and `lib/src/app.dart`). Change it now if you want a different one; it can't change after the first upload.
-- Put your hosted privacy policy URL in `lib/src/app.dart`.
-- Replace the launcher icon (e.g. with the `flutter_launcher_icons` package).
-- Play Console Data safety: declare "Device or other IDs" collected for advertising (AdMob). Scan history, documents, expenses and habits stay on the device.
+- Privacy policies: `website/build.py` writes one page per app into `website/public/privacy/`; the apps link to `https://dice-dhamaal.web.app/privacy/<app>.html` (Firebase Hosting, free). Publish after any change with `python website/build.py` then `firebase deploy --only hosting` from `website/`.
+- Store listing text, Data safety answers, permission declarations and content rating notes for each app: `docs/play/`.
+- Store graphics: `apps/<app>/store/play_icon_512.png` and `feature_graphic.png` (`python tool/generate_icons.py --only feature`). Screenshots: take 2 to 8 on a phone.
+- `tool/check_16kb.sh <apk>` checks Play's 16 KB page size rule; CI runs it on every test APK.
+- Package names can't change after the first upload. Dice Dhamaal ships as `in.onlysoftware.dice_dhamaal` (folder `apps/snakes_ladders`, once its PR is merged).
 - Target audience: 13 and older.
 
 ## Ad rules this code follows

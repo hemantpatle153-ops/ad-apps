@@ -840,6 +840,18 @@ class _AccountSheetState extends State<_AccountSheet> {
     });
   }
 
+  Future<void> _deleteAccount() async {
+    final password = await showDialog<String>(
+      context: context,
+      builder: (ctx) => const _DeleteAccountDialog(),
+    );
+    if (password == null || !mounted) return;
+    await _go(() async {
+      await widget.service.deleteAccount(password);
+      return 'Account deleted';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -871,6 +883,13 @@ class _AccountSheetState extends State<_AccountSheet> {
                     onPressed: _busy ? null : _signOut,
                     icon: const Icon(Icons.logout),
                     label: const Text('Sign out'),
+                  ),
+                  TextButton(
+                    key: const Key('delete-account'),
+                    onPressed: _busy ? null : _deleteAccount,
+                    style: TextButton.styleFrom(
+                        foregroundColor: theme.colorScheme.error),
+                    child: const Text('Delete account'),
                   ),
                 ]
               : [
@@ -960,6 +979,69 @@ class _AccountSheetState extends State<_AccountSheet> {
                 ],
         ),
       ),
+    );
+  }
+}
+
+/// Asks for the password before deleting the email account; pops it, or
+/// null when cancelled.
+class _DeleteAccountDialog extends StatefulWidget {
+  const _DeleteAccountDialog();
+
+  @override
+  State<_DeleteAccountDialog> createState() => _DeleteAccountDialogState();
+}
+
+class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
+  final _password = TextEditingController();
+
+  @override
+  void dispose() {
+    _password.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Delete account?'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text('This deletes your email login and the list of ledgers '
+              'saved to it. Shared ledgers stay with your friends, and this '
+              'phone stops showing them. You can join one again with its '
+              'code.'),
+          const SizedBox(height: 16),
+          TextField(
+            key: const Key('delete-password'),
+            controller: _password,
+            obscureText: true,
+            autofocus: true,
+            decoration: const InputDecoration(
+              labelText: 'Password',
+              border: OutlineInputBorder(),
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel')),
+        FilledButton(
+          key: const Key('confirm-delete-account'),
+          style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error),
+          onPressed: () {
+            if (_password.text.isNotEmpty) {
+              Navigator.pop(context, _password.text);
+            }
+          },
+          child: const Text('Delete'),
+        ),
+      ],
     );
   }
 }

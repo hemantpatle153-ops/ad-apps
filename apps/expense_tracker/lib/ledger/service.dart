@@ -87,6 +87,14 @@ class LedgerService {
     await store.clear();
   }
 
+  /// Deletes the email account and its saved list of ledgers. Shared
+  /// ledgers stay with the friends in them; this phone's list is cleared
+  /// (join again with a code to see one).
+  Future<void> deleteAccount(String password) async {
+    await backend.deleteAccount(password);
+    await store.clear();
+  }
+
   /// Starts a new log between me and [friendName], with a fresh code.
   Future<LocalLog> create(String myName, String friendName) async {
     final me = cleanName(myName), friend = cleanName(friendName);

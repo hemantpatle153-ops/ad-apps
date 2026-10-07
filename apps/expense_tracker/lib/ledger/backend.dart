@@ -28,6 +28,10 @@ abstract class LedgerBackend {
   /// Signs out and starts a fresh anonymous user; returns its id.
   Future<String> signOut();
 
+  /// Checks [password], deletes the email account and its list of ledgers,
+  /// then starts a fresh anonymous user; returns its id.
+  Future<String> deleteAccount(String password);
+
   /// One multi-path update. Values may contain [serverTime].
   Future<void> update(Map<String, Object?> writes);
 
@@ -207,6 +211,38 @@ class FirebaseLedgerBackend implements LedgerBackend {
   @override
   Future<String> signOut() async {
     await _start();
+    await _auth.signOut();
+    return signIn();
+  }
+
+  @override
+  Future<String> deleteAccount(String password) async {
+    await _start();
+    final user = _auth.currentUser;
+    final email = user?.email;
+    if (user == null || email == null) return signIn();
+    try {
+      // Firebase deletes an account only right after a fresh sign-in.
+      await user
+          .reauthenticateWithCredential(
+              EmailAuthProvider.credential(email: email, password: password))
+          .timeout(_timeout);
+    } catch (e) {
+      throw _authError(e);
+    }
+    try {
+      await _database
+          .ref(LedgerWrites.userPath(user.uid))
+          .remove()
+          .timeout(_timeout);
+    } catch (e) {
+      throw _map(e);
+    }
+    try {
+      await user.delete().timeout(_timeout);
+    } catch (e) {
+      throw _authError(e);
+    }
     await _auth.signOut();
     return signIn();
   }

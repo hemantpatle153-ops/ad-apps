@@ -412,6 +412,28 @@ void main() {
     expect(pa.store.all(), isEmpty);
   });
 
+  testWidgets('delete account asks for the password', (t) async {
+    final w = await World.create();
+    final (pa, _, _, _) = await w.pair();
+    await pa.service.backUp('r@example.com', 'secret1');
+    await openAccount(t, pa);
+    await t.tap(find.byKey(const Key('delete-account')));
+    await t.pumpAndSettle();
+    expect(find.text('Delete account?'), findsOneWidget);
+    await t.enterText(find.byKey(const Key('delete-password')), 'wrong1');
+    await t.tap(find.byKey(const Key('confirm-delete-account')));
+    await t.pumpAndSettle();
+    expect(find.text('Email or password is incorrect.'), findsOneWidget);
+    expect(pa.service.email, 'r@example.com');
+    await t.tap(find.byKey(const Key('delete-account')));
+    await t.pumpAndSettle();
+    await t.enterText(find.byKey(const Key('delete-password')), 'secret1');
+    await t.tap(find.byKey(const Key('confirm-delete-account')));
+    await t.pumpAndSettle();
+    expect(pa.service.email, isNull);
+    expect(pa.store.all(), isEmpty);
+  });
+
   testWidgets('empty tab offers restore from account', (t) async {
     final s = await rupees();
     final w = await World.create();

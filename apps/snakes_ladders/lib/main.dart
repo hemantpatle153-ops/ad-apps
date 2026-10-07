@@ -9,7 +9,7 @@ import 'ui/home_screen.dart';
 const packageName = 'in.onlysoftware.snakes_ladders';
 
 const privacyPolicyUrl =
-    'https://example.com/privacy'; // TODO: your hosted policy
+    'https://dice-dhamaal.web.app/privacy/dice_dhamaal.html'; // website/build.py
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
