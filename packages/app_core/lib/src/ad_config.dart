@@ -3,8 +3,12 @@
 /// Defaults are Google's public test IDs, which are safe to tap during
 /// development. Release builds pass real IDs with --dart-define, e.g.
 ///   flutter build appbundle --dart-define=ADMOB_BANNER_ID=ca-app-pub-xxx/yyy
+///
+/// --dart-define=ADS=false builds the app with no ads at all: no consent
+/// form, no SDK start-up and no ad requests.
 class AdConfig {
   const AdConfig({
+    this.enabled = true,
     required this.bannerId,
     required this.interstitialId,
     required this.rewardedId,
@@ -31,6 +35,9 @@ class AdConfig {
               )
             : '',
       );
+
+  /// False when the build has ads switched off.
+  final bool enabled;
 
   final String bannerId;
   final String interstitialId;
