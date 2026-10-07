@@ -2,7 +2,7 @@
 
 - Folder: `apps/video_player` - Package: `in.onlysoftware.video_player`
 - Type: App - Free - Contains ads - Ages 13+
-- Privacy policy: https://dice-dhamaal.web.app/privacy/video_player.html
+- Privacy policy: https://docs.google.com/document/d/e/2PACX-1vTfrEbXLRvkphpIBmzE9dJ_gLWgh24QUcM0FZjossBmiuPtX29Vhs8ryciONNOotey4viCLpV3zf7Em/pub
 - Uses Firebase project **dice-dhamaal** (Anonymous Auth + Realtime Database, path `watch/{code}`)
 
 What the code really does: lists the phone's videos by folder (READ_MEDIA_VIDEO via photo_manager; supports "selected videos only" access), Recent tab, search, grid/list, hide folders; player (media_kit) with swipe gestures for brightness, volume and seeking, double-tap skip, speed, resume, audio track choice and audio delay, equalizer and night mode, picture options (e.g. mirror), subtitles (.srt/.ass/.vtt, delay, auto sync, style), sleep timer, bookmarks, chapters, play queue, background audio (foreground service) and picture-in-picture; "Play from a link" (http/https, HLS); "Open with" from file managers; share, properties, delete; **private folder** locked with a PIN (videos moved into app storage). **Watch together**: (1) *Nearby*: the host phone streams the video to friends on the same Wi-Fi (local HTTP, join by QR or nearby list); (2) *Online*: 6-letter room code via Firebase - only the video title or link, play/pause/seek state, member names, chat messages and emoji reactions go through Firebase; each friend plays their own copy of the file or the same link; rooms are deleted when the starter leaves or after 12 hours.
