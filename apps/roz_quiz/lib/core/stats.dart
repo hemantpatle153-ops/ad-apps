@@ -219,7 +219,7 @@ class Progress {
   final int xp;
 }
 
-enum Badge {
+enum Achievement {
   firstQuiz,
   streak3,
   streak7,
@@ -255,9 +255,9 @@ enum Badge {
     };
   }
 
-  static Set<Badge> earnedBy(Progress p) =>
-      {for (final b in Badge.values) if (b.earned(p)) b};
+  static Set<Achievement> earnedBy(Progress p) =>
+      {for (final b in Achievement.values) if (b.earned(p)) b};
 
-  static Badge? parse(Object? v) =>
-      Badge.values.where((b) => b.name == v).firstOrNull;
+  static Achievement? parse(Object? v) =>
+      Achievement.values.where((b) => b.name == v).firstOrNull;
 }

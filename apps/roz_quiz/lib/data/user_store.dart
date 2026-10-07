@@ -175,7 +175,7 @@ class UserStore {
   final Map<String, DailyRecord> days = {};
   late StatsBook stats;
   int xp = 0;
-  final Set<Badge> badges = {};
+  final Set<Achievement> badges = {};
   final Map<String, SavedQuestion> bookmarks = {};
   final Map<String, SavedQuestion> mistakes = {};
   final Set<String> seen = {};
@@ -221,7 +221,7 @@ class UserStore {
     final b = _json(_kBadges);
     if (b is List) {
       for (final name in b) {
-        final badge = Badge.parse(name);
+        final badge = Achievement.parse(name);
         if (badge != null) badges.add(badge);
       }
     }

@@ -237,6 +237,7 @@ enum T {
   about,
   sourcesDisclaimer,
   rateApp,
+  adPrivacy,
   version,
   targetExams,
   targetExamsNone,
@@ -594,6 +595,7 @@ const Map<T, (String, String)> kStrings = {
   T.about: ('About Roz Quiz', 'रोज़ क्विज़ के बारे में'),
   T.sourcesDisclaimer: ('Sources & disclaimer', 'स्रोत और अस्वीकरण'),
   T.rateApp: ('Rate the app', 'ऐप को रेट करें'),
+  T.adPrivacy: ('Ad privacy choices', 'विज्ञापन गोपनीयता विकल्प'),
   T.version: ('Version {v}', 'संस्करण {v}'),
   T.targetExams: ('Target exams', 'लक्षित परीक्षाएँ'),
   T.targetExamsNone: ('Not set', 'चुनी नहीं गईं'),
@@ -753,21 +755,21 @@ class S {
   String negative(NegativeMarking n) =>
       n == NegativeMarking.none ? t(T.noNegative) : n.label;
 
-  (String, String) badge(Badge b) => switch (b) {
-        Badge.firstQuiz => (t(T.badgeFirstQuiz), t(T.badgeFirstQuizDesc)),
-        Badge.streak3 => (t(T.badgeStreak3), t(T.badgeStreak3Desc)),
-        Badge.streak7 => (t(T.badgeStreak7), t(T.badgeStreak7Desc)),
-        Badge.streak30 => (t(T.badgeStreak30), t(T.badgeStreak30Desc)),
-        Badge.perfectDaily => (t(T.badgePerfectDaily), t(T.badgePerfectDailyDesc)),
-        Badge.answered100 => (t(T.badgeAnswered100), t(T.badgeAnswered100Desc)),
-        Badge.answered500 => (t(T.badgeAnswered500), t(T.badgeAnswered500Desc)),
-        Badge.answered1000 => (t(T.badgeAnswered1000), t(T.badgeAnswered1000Desc)),
-        Badge.firstMock => (t(T.badgeFirstMock), t(T.badgeFirstMockDesc)),
-        Badge.allRounder => (t(T.badgeAllRounder), t(T.badgeAllRounderDesc)),
-        Badge.caReader => (t(T.badgeCaReader), t(T.badgeCaReaderDesc)),
-        Badge.sharpShooter => (t(T.badgeSharpShooter), t(T.badgeSharpShooterDesc)),
-        Badge.level5 => (t(T.badgeLevel5), t(T.badgeLevel5Desc)),
-        Badge.level10 => (t(T.badgeLevel10), t(T.badgeLevel10Desc)),
+  (String, String) badge(Achievement b) => switch (b) {
+        Achievement.firstQuiz => (t(T.badgeFirstQuiz), t(T.badgeFirstQuizDesc)),
+        Achievement.streak3 => (t(T.badgeStreak3), t(T.badgeStreak3Desc)),
+        Achievement.streak7 => (t(T.badgeStreak7), t(T.badgeStreak7Desc)),
+        Achievement.streak30 => (t(T.badgeStreak30), t(T.badgeStreak30Desc)),
+        Achievement.perfectDaily => (t(T.badgePerfectDaily), t(T.badgePerfectDailyDesc)),
+        Achievement.answered100 => (t(T.badgeAnswered100), t(T.badgeAnswered100Desc)),
+        Achievement.answered500 => (t(T.badgeAnswered500), t(T.badgeAnswered500Desc)),
+        Achievement.answered1000 => (t(T.badgeAnswered1000), t(T.badgeAnswered1000Desc)),
+        Achievement.firstMock => (t(T.badgeFirstMock), t(T.badgeFirstMockDesc)),
+        Achievement.allRounder => (t(T.badgeAllRounder), t(T.badgeAllRounderDesc)),
+        Achievement.caReader => (t(T.badgeCaReader), t(T.badgeCaReaderDesc)),
+        Achievement.sharpShooter => (t(T.badgeSharpShooter), t(T.badgeSharpShooterDesc)),
+        Achievement.level5 => (t(T.badgeLevel5), t(T.badgeLevel5Desc)),
+        Achievement.level10 => (t(T.badgeLevel10), t(T.badgeLevel10Desc)),
       };
 
   /// "just now", "5 min ago", "3 h ago", "2 days ago".

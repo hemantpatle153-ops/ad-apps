@@ -28,7 +28,7 @@ class FinishOutcome {
   final int xpGained;
   final int levelBefore;
   final int levelAfter;
-  final List<Badge> newBadges;
+  final List<Achievement> newBadges;
   final StreakInfo streak;
 
   /// True when this was today's Daily Quiz, played for the first time.
@@ -200,9 +200,9 @@ class AppController extends ChangeNotifier {
         store.mistakes.remove(q.id);
       }
     }
-    final earned = Badge.earnedBy(
+    final earned = Achievement.earnedBy(
         Progress(stats: store.stats, bestStreak: st.best, xp: store.xp));
-    final fresh = [for (final b in Badge.values) if (earned.contains(b) && !store.badges.contains(b)) b];
+    final fresh = [for (final b in Achievement.values) if (earned.contains(b) && !store.badges.contains(b)) b];
     store.badges.addAll(fresh);
     await Future.wait([
       store.saveDays(),
@@ -252,7 +252,7 @@ class AppController extends ChangeNotifier {
 
   void markCaRead(Day day) {
     if (store.stats.caDaysRead.add(day.key)) {
-      final earned = Badge.earnedBy(Progress(
+      final earned = Achievement.earnedBy(Progress(
           stats: store.stats, bestStreak: streak.best, xp: store.xp));
       store.badges.addAll(earned);
       store.saveStats();
