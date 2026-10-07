@@ -64,6 +64,21 @@ class _CurrentAffairsTabState extends State<CurrentAffairsTab> {
     if (_pages.hasClients) _pages.jumpToPage(0);
   }
 
+  bool _turning = false;
+
+  /// Moves one card up or down (used when a long note is dragged past its
+  /// end, where the PageView itself doesn't get the drag).
+  Future<void> _turn(int delta) async {
+    if (_turning || !_pages.hasClients) return;
+    final cards = (_data?.value?.notes.length ?? 0) + 1;
+    final target = _page + delta;
+    if (target < 0 || target >= cards) return;
+    _turning = true;
+    await _pages.animateToPage(target,
+        duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+    _turning = false;
+  }
+
   List<Day> _days() {
     final app = context.app;
     final today = app.today;
@@ -133,7 +148,8 @@ class _CurrentAffairsTabState extends State<CurrentAffairsTab> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(s.t(T.offlineBanner),
-                style: context.text.bodySmall?.copyWith(color: context.colors.tertiary)),
+                style: context.text.bodySmall
+                    ?.copyWith(color: context.colors.tertiary)),
           ),
         Expanded(
           child: PageView.builder(
@@ -147,19 +163,29 @@ class _CurrentAffairsTabState extends State<CurrentAffairsTab> {
             itemBuilder: (context, i) => Padding(
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
               child: i < ca.notes.length
-                  ? _NoteCard(note: ca.notes[i], index: i, total: ca.notes.length)
+                  ? _NoteCard(
+                      note: ca.notes[i],
+                      index: i,
+                      total: ca.notes.length,
+                      onTurn: _turn,
+                    )
                   : _QuizCard(day: ca),
             ),
           ),
         ),
         if (_page < cards - 1)
           Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Icon(Icons.keyboard_arrow_up, color: context.colors.onSurfaceVariant),
-              Text(s.t(T.caSwipeHint),
-                  style: context.text.labelMedium
-                      ?.copyWith(color: context.colors.onSurfaceVariant)),
+              Icon(Icons.keyboard_arrow_up,
+                  color: context.colors.onSurfaceVariant),
+              Flexible(
+                child: Text(s.t(T.caSwipeHint),
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    style: context.text.labelMedium
+                        ?.copyWith(color: context.colors.onSurfaceVariant)),
+              ),
             ]),
           ),
       ],
@@ -168,10 +194,19 @@ class _CurrentAffairsTabState extends State<CurrentAffairsTab> {
 }
 
 class _NoteCard extends StatelessWidget {
-  const _NoteCard({required this.note, required this.index, required this.total});
+  const _NoteCard({
+    required this.note,
+    required this.index,
+    required this.total,
+    required this.onTurn,
+  });
   final CaNote note;
   final int index;
   final int total;
+
+  /// Called with +1 / -1 when a long note is dragged past its end, so a
+  /// swipe on the text still turns the page.
+  final void Function(int delta) onTurn;
 
   @override
   Widget build(BuildContext context) {
@@ -194,20 +229,29 @@ class _NoteCard extends StatelessWidget {
             ]),
             const SizedBox(height: 14),
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Semantics(
-                      header: true,
-                      child: Text(note.title.of(app.lang),
-                          style: context.text.headlineSmall
-                              ?.copyWith(fontWeight: FontWeight.w800, height: 1.25)),
-                    ),
-                    const SizedBox(height: 14),
-                    Text(note.body.of(app.lang),
-                        style: context.text.bodyLarge?.copyWith(height: 1.55, fontSize: 17)),
-                  ],
+              child: NotificationListener<OverscrollNotification>(
+                onNotification: (n) {
+                  if (n.dragDetails != null && n.overscroll.abs() > 4) {
+                    onTurn(n.overscroll > 0 ? 1 : -1);
+                  }
+                  return false;
+                },
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Semantics(
+                        header: true,
+                        child: Text(note.title.of(app.lang),
+                            style: context.text.headlineSmall?.copyWith(
+                                fontWeight: FontWeight.w800, height: 1.25)),
+                      ),
+                      const SizedBox(height: 14),
+                      Text(note.body.of(app.lang),
+                          style: context.text.bodyLarge
+                              ?.copyWith(height: 1.55, fontSize: 17)),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -253,7 +297,8 @@ class _QuizCard extends StatelessWidget {
               const SizedBox(height: 12),
               Text(s.t(T.caAllRead),
                   textAlign: TextAlign.center,
-                  style: context.text.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+                  style: context.text.titleLarge
+                      ?.copyWith(fontWeight: FontWeight.w800)),
               const SizedBox(height: 20),
               if (day.questions.isEmpty)
                 Text(s.t(T.caNoQuiz))
