@@ -60,9 +60,14 @@ class HomeScreen extends StatelessWidget {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
                 children: [
-                  const Align(
-                    alignment: Alignment.centerRight,
-                    child: AppMenu(),
+                  Row(
+                    children: [
+                      // Opened from the game picker: show the way back.
+                      if (Navigator.of(context).canPop())
+                        const BackButton(color: Colors.white),
+                      const Spacer(),
+                      const AppMenu(),
+                    ],
                   ),
                   _Title(theme: theme),
                   const SizedBox(height: 16),
