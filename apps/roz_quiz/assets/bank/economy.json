@@ -307,7 +307,7 @@
    "answer": 0,
    "explanation": {
     "en": "Repo rate is the rate at which the RBI lends to commercial banks for short periods against government securities. Reverse repo is the opposite.",
-    "hi": "रेपो दर वह दर है जिस पर RBI प्रतिभूतियों के बदले बैंकों को अल्पकालिक ऋण देता है। रिवर्स रेपो इसका उलटा है।"
+    "hi": "रेपो दर वह दर है जिस पर RBI सरकारी प्रतिभूतियों के बदले बैंकों को अल्पकालिक ऋण देता है। रिवर्स रेपो इसका उलटा है।"
    },
    "subject": "economy",
    "exams": [
@@ -458,8 +458,8 @@
      "hi": "नॉर्मन बोरलॉग"
     },
     {
-     "en": "C. Subramaniam",
-     "hi": "सी. सुब्रमण्यम"
+     "en": "Amartya Sen",
+     "hi": "अमर्त्य सेन"
     }
    ],
    "answer": 1,
@@ -584,7 +584,7 @@
    "answer": 0,
    "explanation": {
     "en": "PMJDY, launched in August 2014, aims at financial inclusion through bank accounts: access to a basic bank account and related financial services for every household.",
-    "hi": "अगस्त 2014 में शुरू हुई PMJDY का उद्देश्य हर परिवार को बुनियादी बैंक खाता और संबंधित वित्तीय सेवाएँ देना है।"
+    "hi": "अगस्त 2014 में शुरू हुई PMJDY का उद्देश्य बैंक खातों के माध्यम से वित्तीय समावेशन है: हर परिवार को बुनियादी बैंक खाता और संबंधित वित्तीय सेवाएँ देना।"
    },
    "subject": "economy",
    "exams": [
