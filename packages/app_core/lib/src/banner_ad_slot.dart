@@ -32,7 +32,8 @@ class _BannerAdSlotState extends State<BannerAdSlot> {
   }
 
   void _onReady() {
-    if (_requested || !AdService.instance.ready.value || !mounted) return;
+    final ads = AdService.instance;
+    if (_requested || !ads.enabled || !ads.ready.value || !mounted) return;
     _requested = true;
     _load(MediaQuery.sizeOf(context).width.truncate());
   }
@@ -66,7 +67,9 @@ class _BannerAdSlotState extends State<BannerAdSlot> {
   @override
   Widget build(BuildContext context) {
     final ad = _ad;
-    if (!_loaded || ad == null) return const SizedBox.shrink();
+    if (!AdService.instance.enabled || !_loaded || ad == null) {
+      return const SizedBox.shrink();
+    }
     return SafeArea(
       top: false,
       child: SizedBox(

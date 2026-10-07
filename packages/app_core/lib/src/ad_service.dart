@@ -93,7 +93,7 @@ class AdService {
   Future<void> maybeShowInterstitial() async {
     final ad = _interstitial;
     final last = _lastInterstitialShown;
-    if (ad == null) return;
+    if (!enabled || ad == null) return;
     if (last != null &&
         DateTime.now().difference(last) < _config.interstitialCooldown) {
       return;
@@ -113,13 +113,13 @@ class AdService {
     await ad.show();
   }
 
-  bool get rewardedReady => _rewarded != null;
+  bool get rewardedReady => enabled && _rewarded != null;
 
   /// Shows a rewarded ad. Completes with true only if the user earned the
   /// reward, so callers unlock the feature only on true.
   Future<bool> showRewarded() {
     final ad = _rewarded;
-    if (ad == null) return Future.value(false);
+    if (!enabled || ad == null) return Future.value(false);
     _rewarded = null;
     final result = Completer<bool>();
     var earned = false;
