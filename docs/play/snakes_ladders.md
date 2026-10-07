@@ -1,5 +1,7 @@
 # Dice Dhamaal (Ludo + Snakes & Ladders) - Play Console sheet
 
+> **First release has ads off** (`--dart-define=ADS=off`): ignore every AdMob row and ad answer below; see [README](README.md). They apply once ads are turned on.
+
 - Folder: `apps/snakes_ladders`, **branch `ludo-game`** - Package: `in.onlysoftware.dice_dhamaal`
 - Type: **Game** (Board) - Free - Contains ads - Ages 13+
 - Privacy policy: https://dice-dhamaal.web.app/privacy/dice_dhamaal.html
@@ -45,7 +47,7 @@ MADE FOR FUN
 - Offline games work without internet. Online rooms need internet.
 
 FAIR AND FREE
-There is no real money, betting, coins or prizes in this game. The app shows ads from Google AdMob; EU and UK users are asked for consent first.
+There is no real money, betting, coins or prizes in this game. No ads.
 
 PRIVACY
 No account or sign-up. For online rooms the app uses a random anonymous ID and the name you type. Room data is deleted automatically. Voice is never recorded.

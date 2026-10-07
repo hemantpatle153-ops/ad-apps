@@ -14,6 +14,16 @@ PUBLIC = Path(__file__).resolve().parent / "public"
 DEVELOPER = "Only Software"
 UPDATED = "6 October 2026"
 
+# The first Play release is built with ads off (--dart-define=ADS=off).
+# Set True and republish every policy before a version with ads ships.
+SHOW_ADS = False
+
+NO_ADS = (
+    "This version of the app shows no ads and collects nothing for "
+    "advertising. If ads are added in a later version, this "
+    "policy will be updated before that version is released."
+)
+
 ADS = (
     "The app shows ads from Google AdMob. To show and measure ads, the Google "
     "Mobile Ads SDK collects your device's advertising ID, IP address, basic "
@@ -35,6 +45,11 @@ FIREBASE = (
     "in Firebase</a>."
 )
 
+AD_CONTROLS = (
+    " For data held by Google for ads, use the controls above or "
+    '<a href="https://myadcenter.google.com/">My Ad Center</a>.'
+)
+
 ON_DEVICE = (
     "Everything else you create in the app stays on your phone. We do not run "
     "our own servers and we never receive, sell or share it. Uninstalling the "
@@ -45,6 +60,10 @@ APPS = {
     "qr_scanner": ("QR Scanner", [
         "The camera is used only while the scan screen is open, to read codes. "
         "Images are processed on your phone and are not saved or sent anywhere.",
+        "Scanning uses Google ML Kit, which runs on your phone. Images and "
+        "their content never leave the phone, but ML Kit may send Google "
+        "basic usage and performance information and a random install ID. "
+        "See https://developers.google.com/ml-kit/terms.",
         "Your scan history and the codes you create are stored only on your "
         "phone. You can delete them in the app.",
         "When you choose to open a link or call a number from a scanned code, "
@@ -60,6 +79,10 @@ APPS = {
         "Files you open from your phone are read only to do what you asked "
         "(for example merge or compress a PDF). When you share a file, Android's "
         "share menu sends it to the app you pick.",
+        "Text recognition (OCR) uses Google ML Kit, which runs on your phone. Images and "
+        "their content never leave the phone, but ML Kit may send Google "
+        "basic usage and performance information and a random install ID. "
+        "See https://developers.google.com/ml-kit/terms.",
     ]),
     "expense_tracker": ("Expense Tracker", [
         "Your expenses, budgets and categories are stored only on your phone. "
@@ -159,15 +182,13 @@ not sell personal data.</p>
 </ul>
 <p>{ON_DEVICE}</p>
 <h2>Ads</h2>
-<p>{ADS}</p>
+<p>{ADS if SHOW_ADS else NO_ADS}</p>
 <h2>Children</h2>
 <p>The app is not made for children under 13 and we do not knowingly collect
 data from them.</p>
 <h2>Security and deletion</h2>
 <p>Anything the app sends over the internet is encrypted in transit. Data on
-your phone is deleted when you uninstall the app or clear its data. For data
-held by Google for ads, use the controls above or
-<a href="https://myadcenter.google.com/">My Ad Center</a>.</p>
+your phone is deleted when you uninstall the app or clear its data.{AD_CONTROLS if SHOW_ADS else ""}</p>
 <h2>Changes and contact</h2>
 <p>If this policy changes, the new version is posted on this page with a new
 date. Questions: write to the developer email shown on the app's Google Play

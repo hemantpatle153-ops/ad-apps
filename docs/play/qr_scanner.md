@@ -1,5 +1,7 @@
 # QR & Barcode Scanner - Play Console sheet
 
+> **First release has ads off** (`--dart-define=ADS=off`): ignore every AdMob row and ad answer below; see [README](README.md). They apply once ads are turned on.
+
 - Folder: `apps/qr_scanner` - Package: `in.onlysoftware.qr_scanner`
 - Type: App - Free - Contains ads - Ages 13+
 - Privacy policy: https://dice-dhamaal.web.app/privacy/qr_scanner.html
@@ -41,7 +43,7 @@ HISTORY ON YOUR PHONE
 Your last 300 scans are kept on this phone so you can open them again. Swipe a scan away to delete it, or clear the whole history in Settings. The history is never uploaded.
 
 PRIVACY
-Codes are read on your phone. The app has no account and no cloud storage. It shows ads from Google AdMob; in the EU and UK you are asked for consent first and can change your choice later in Settings.
+Codes are read on your phone. The app has no account and no cloud storage. No ads.
 
 Light and dark theme follow your phone.
 ```

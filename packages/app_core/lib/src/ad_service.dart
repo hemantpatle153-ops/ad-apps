@@ -24,8 +24,12 @@ class AdService {
   RewardedAd? _rewarded;
   DateTime? _lastInterstitialShown;
 
+  /// False when the app was built with `--dart-define=ADS=off`.
+  bool get enabled => _config.enabled;
+
   Future<void> init(AdConfig config) async {
     _config = config;
+    if (!config.enabled) return;
     await _gatherConsent();
     if (await ConsentInformation.instance.canRequestAds()) {
       await MobileAds.instance.initialize();
@@ -52,8 +56,9 @@ class AdService {
 
   /// Whether settings should offer a "Privacy options" entry.
   Future<bool> privacyOptionsRequired() async =>
+      enabled &&
       await ConsentInformation.instance.getPrivacyOptionsRequirementStatus() ==
-      PrivacyOptionsRequirementStatus.required;
+          PrivacyOptionsRequirementStatus.required;
 
   /// Lets the user change their consent choice later.
   void showPrivacyOptions() => ConsentForm.showPrivacyOptionsForm((_) {});
@@ -88,7 +93,7 @@ class AdService {
   Future<void> maybeShowInterstitial() async {
     final ad = _interstitial;
     final last = _lastInterstitialShown;
-    if (ad == null) return;
+    if (!enabled || ad == null) return;
     if (last != null &&
         DateTime.now().difference(last) < _config.interstitialCooldown) {
       return;
@@ -108,13 +113,13 @@ class AdService {
     await ad.show();
   }
 
-  bool get rewardedReady => _rewarded != null;
+  bool get rewardedReady => enabled && _rewarded != null;
 
   /// Shows a rewarded ad. Completes with true only if the user earned the
   /// reward, so callers unlock the feature only on true.
   Future<bool> showRewarded() {
     final ad = _rewarded;
-    if (ad == null) return Future.value(false);
+    if (!enabled || ad == null) return Future.value(false);
     _rewarded = null;
     final result = Completer<bool>();
     var earned = false;

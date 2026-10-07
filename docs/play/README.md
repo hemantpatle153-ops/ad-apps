@@ -1,6 +1,12 @@
 # Google Play release checklist (all 8 apps)
 
-Developer name on Play: **Only Software**. Every app: free, has ads (AdMob + Google consent form), no login, made for ages 13+.
+Developer name on Play: **Only Software**. Every app: free, no login, made for ages 13+.
+
+> **First release: ads are OFF.** Build with `tool\build_release.ps1` and no `admob.json` entry (it adds `--dart-define=ADS=off`). In Play Console answer:
+> - **Ads:** "No, my app does not contain ads".
+> - **Advertising ID:** "No" (ads-off release builds remove the AD_ID permission).
+> - **Data safety:** skip every row whose source says **AdMob** in the app sheets (Device or other IDs, approximate location, app interactions, crash logs/diagnostics). Sudoku, Water Reminder and Multi Speaker then have nothing left and answer "No data collected". QR Scanner and Doc Scanner keep the Google ML Kit rows (diagnostics and install ID); Expense Tracker, Video Player and Dice Dhamaal keep their Firebase rows.
+> - Skip the AdMob steps (consent message, app-ads.txt) until ads are turned on. Then set `SHOW_ADS = True` in `website/build.py`, update the privacy policies and change these answers.
 
 Each app has its own sheet with the store text, Data safety answers, permission declarations, content rating hints and policy risks:
 
@@ -15,7 +21,7 @@ Each app has its own sheet with the store text, Data safety answers, permission 
 | 7 | Video Player: Watch Together | `in.onlysoftware.video_player` | [video_player.md](video_player.md) | https://docs.google.com/document/d/e/2PACX-1vTfrEbXLRvkphpIBmzE9dJ_gLWgh24QUcM0FZjossBmiuPtX29Vhs8ryciONNOotey4viCLpV3zf7Em/pub |
 | 8 | Dice Dhamaal: Ludo & Snakes | `in.onlysoftware.dice_dhamaal` (folder `apps/snakes_ladders`, branch `ludo-game`) | [snakes_ladders.md](snakes_ladders.md) | https://dice-dhamaal.web.app/privacy/dice_dhamaal.html |
 
-The privacy pages come from `website/build.py`. Deploy them (`firebase deploy --only hosting`) and open each link in a browser **before** you fill the Play forms. Play rejects an app whose policy link does not open.
+Privacy policies are published as Google Docs (File > Share > Publish to web). The paste-ready text comes from `website/build.py`. Open each link in a browser **before** you fill the Play forms: Play rejects an app whose policy link does not open.
 
 ---
 
