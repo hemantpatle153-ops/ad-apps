@@ -9,7 +9,7 @@ apps/daily_sudoku   app 2: daily puzzle with streak, 4 levels, notes, hints (rew
 apps/doc_scanner    app 3: camera document scanner (auto edges, crop, filters) to multi-page PDF
 apps/expense_tracker app 4: daily expenses, monthly budget, category insights, CSV export
 apps/water_habit    app 5: water goal and daily habits with streaks and local reminders
-apps/snakes_ladders app 6: Snakes & Ladders game, vs computer or 2-4 player pass-and-play, themes, sounds
+apps/snakes_ladders app 6: Dice Dhamaal, two games in one: Ludo (vs computer, pass & play, online rooms with voice chat) and Snakes & Ladders
 apps/multi_speaker  app 7: one song on many speakers in sync (phones on the same Wi-Fi/hotspot, each on its own speaker)
 apps/video_player   app 8: video player: folders, gestures, subtitles, background audio, PiP, private folder
 ```
@@ -57,7 +57,8 @@ Before each new upload, raise `version:` in the app's `pubspec.yaml` (the number
 
 ## Ad rules this code follows
 
-- Interstitials only at natural breaks, at most once every 2 minutes (`AdConfig.interstitialCooldown`): leaving a scan result (QR), finishing a puzzle (Sudoku), saving a PDF (Doc Scanner), every third saved expense (Expense Tracker), reaching the water goal or adding a habit (Water), finishing a game (Snakes & Ladders).
+- Dice Dhamaal asks for the microphone only when a player joins an online voice room, and only then.
+- Interstitials only at natural breaks, at most once every 2 minutes (`AdConfig.interstitialCooldown`): leaving a scan result (QR), finishing a puzzle (Sudoku), saving a PDF (Doc Scanner), every third saved expense (Expense Tracker), reaching the water goal or adding a habit (Water), finishing a game (Dice Dhamaal).
 - Rewarded ads only when the user asks for something extra: a 4th+ Sudoku hint or a second chance after 3 mistakes.
 - One adaptive banner above the bottom navigation, never overlapping buttons.
 - No ads on app open. Google's consent form shows to EU/UK users before any ad request, with "Ad privacy choices" in Settings.
