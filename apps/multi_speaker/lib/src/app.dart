@@ -7,7 +7,7 @@ import 'ui/home_screen.dart';
 const packageName = 'in.onlysoftware.multi_speaker';
 
 const privacyPolicyUrl =
-    'https://example.com/privacy'; // TODO: your hosted policy
+    'https://dice-dhamaal.web.app/privacy/multi_speaker.html'; // website/build.py
 
 class MultiSpeakerApp extends StatelessWidget {
   const MultiSpeakerApp({super.key, required this.settings});

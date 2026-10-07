@@ -397,8 +397,10 @@ void main() {
       await _until(() => g.members.length == 2);
       expect(g.members, ['Host', 'Ravi']);
       await _until(() => g.clock.hasEstimate);
-      // Same machine, same steady clock: the offset is within the round trip.
-      expect(g.clock.offsetUs.abs(), lessThanOrEqualTo(g.clock.bestRttUs! + 2000));
+      // Same machine, same steady clock, so the true offset is 0. The
+      // estimate is the median of the three fastest samples, whose round
+      // trips can be well above bestRttUs on a busy CI runner; allow 100 ms.
+      expect(g.clock.offsetUs.abs(), lessThan(100 * 1000));
       expect((g.hostNowUs() - DateTime.now().microsecondsSinceEpoch).abs(),
           lessThan(60 * 1000000));
       await g.close();
