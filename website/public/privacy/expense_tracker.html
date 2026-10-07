@@ -15,11 +15,13 @@
 <h1>Expense Tracker privacy policy</h1>
 <p class="muted">Only Software &middot; last updated 6 October 2026</p>
 <p>Expense Tracker is a free Android app by Only Software. This page explains what
-data the app uses and why. We do not ask you to create an account and we do
+data the app uses and why. No account is required and we do
 not sell personal data.</p>
 <h2>What the app does with your data</h2>
 <ul>
 <li>Your expenses, budgets and categories are stored only on your phone. CSV export creates a file only when you ask for it.</li>
+<li>Shared ledgers (the Friends tab) are stored online so both friends see the same list: the two names you type, each entry's amount, date, tag and note, who added or changed it and when, and the ledger's join code. Only phones that joined with the code can read a ledger. When both friends settle up, the ledger becomes read-only and is deleted automatically 14 days later. A friend can also leave a ledger, and an empty ledger can be deleted at any time. Ledgers use Google Firebase (Authentication and Realtime Database), which gives the app a random ID; data is sent encrypted (HTTPS). See <a href="https://firebase.google.com/support/privacy">Privacy and Security in Firebase</a>.</li>
+<li>Backup is optional. If you turn it on, Firebase Authentication stores your email address and password (hashed) together with the list of ledgers you are in, so a new phone can get them back. You can delete the account any time in the app (Friends tab &gt; cloud icon &gt; Delete account), which removes the email login and that list.</li>
 </ul>
 <p>Everything else you create in the app stays on your phone. We do not run our own servers and we never receive, sell or share it. Uninstalling the app or clearing its data in Android Settings deletes it.</p>
 <h2>Ads</h2>

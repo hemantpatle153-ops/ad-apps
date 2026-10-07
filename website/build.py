@@ -64,6 +64,22 @@ APPS = {
     "expense_tracker": ("Expense Tracker", [
         "Your expenses, budgets and categories are stored only on your phone. "
         "CSV export creates a file only when you ask for it.",
+        "Shared ledgers (the Friends tab) are stored online so both friends "
+        "see the same list: the two names you type, each entry's amount, "
+        "date, tag and note, who added or changed it and when, and the "
+        "ledger's join code. Only phones that joined with the code can read "
+        "a ledger. When both friends settle up, the ledger becomes read-only "
+        "and is deleted automatically 14 days later. A friend can also leave "
+        "a ledger, and an empty ledger can be deleted at any time. Ledgers "
+        "use Google Firebase (Authentication and Realtime Database), which "
+        "gives the app a random ID; data is sent encrypted (HTTPS). See "
+        '<a href="https://firebase.google.com/support/privacy">Privacy and '
+        "Security in Firebase</a>.",
+        "Backup is optional. If you turn it on, Firebase Authentication "
+        "stores your email address and password (hashed) together with the "
+        "list of ledgers you are in, so a new phone can get them back. You can "
+        "delete the account any time in the app (Friends tab &gt; cloud icon "
+        "&gt; Delete account), which removes the email login and that list.",
     ]),
     "water_habit": ("Water Reminder", [
         "Your water log, habits, streaks and reminder times are stored only on "
@@ -135,7 +151,7 @@ def policy(name: str, facts: list[str]) -> str:
     return f"""<h1>{escape(name)} privacy policy</h1>
 <p class="muted">{DEVELOPER} &middot; last updated {UPDATED}</p>
 <p>{escape(name)} is a free Android app by {DEVELOPER}. This page explains what
-data the app uses and why. We do not ask you to create an account and we do
+data the app uses and why. No account is required and we do
 not sell personal data.</p>
 <h2>What the app does with your data</h2>
 <ul>
