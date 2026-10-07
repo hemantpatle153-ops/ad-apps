@@ -2,7 +2,7 @@
 
 - Folder: `apps/doc_scanner` - Package: `in.onlysoftware.doc_scanner`
 - Type: App - Free - Contains ads - Ages 13+
-- Privacy policy: https://dice-dhamaal.web.app/privacy/doc_scanner.html
+- Privacy policy: https://docs.google.com/document/d/e/2PACX-1vQaYSYxwZeVevoKY2cfLigO9DPjKcb232tvy8CQMjiniBUIM6QY1NdJv3-ykqZ49Wwg2r-XVCWKgPM7/pub
 
 What the code really does: in-app camera scanner with automatic edge finding and auto capture (up to 50 pages, 100 in "Book" mode), crop, rotate, 7 filters (Original, Magic color, Clean B&W, Auto color, Grayscale, Whiteboard, B&W), page size choice, save as multi-page PDF; optional on-device text recognition (Google ML Kit, Latin script only) to make PDFs searchable; ID card (both sides on one page); business card to contact file (.vcf, shared via Android share); import photos (system photo picker) and PDFs; "Open with" / "Share to" from other apps; search names and text inside documents; viewer with print/share/save to a folder the user picks. PDF tools: merge, split, organize pages, rotate, compress, repair, OCR PDF, PDF to JPG, JPG to PDF, PDF to Word (.docx), Word to PDF (text only), extract text, sign, add text, watermark, page numbers, crop, redact (pages become images so hidden text is really removed), protect with password (AES-256), unlock, compare two documents. All processing on the phone; no upload.
 
