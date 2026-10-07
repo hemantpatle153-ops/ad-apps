@@ -14,19 +14,19 @@
      "hi": "शेर"
     },
     {
-     "en": "Tiger",
-     "hi": "बाघ"
+     "en": "Leopard",
+     "hi": "तेंदुआ"
     },
     {
      "en": "Elephant",
      "hi": "हाथी"
     },
     {
-     "en": "Leopard",
-     "hi": "तेंदुआ"
+     "en": "Tiger",
+     "hi": "बाघ"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "The tiger (Panthera tigris) is India's national animal. Project Tiger was launched in 1973 to protect it.",
     "hi": "बाघ (पैंथेरा टाइग्रिस) भारत का राष्ट्रीय पशु है। इसकी रक्षा के लिए 1973 में प्रोजेक्ट टाइगर शुरू किया गया।"
@@ -54,19 +54,19 @@
      "hi": "तोता"
     },
     {
-     "en": "Indian peafowl (peacock)",
-     "hi": "मोर"
+     "en": "Eagle",
+     "hi": "चील"
     },
     {
      "en": "Sparrow",
      "hi": "गौरैया"
     },
     {
-     "en": "Eagle",
-     "hi": "चील"
+     "en": "Indian peafowl (peacock)",
+     "hi": "मोर"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "The Indian peafowl (peacock) was declared the national bird of India in 1963.",
     "hi": "मोर को 1963 में भारत का राष्ट्रीय पक्षी घोषित किया गया।"
@@ -93,19 +93,19 @@
      "hi": "गुलाब"
     },
     {
-     "en": "Lotus",
-     "hi": "कमल"
+     "en": "Marigold",
+     "hi": "गेंदा"
     },
     {
      "en": "Sunflower",
      "hi": "सूरजमुखी"
     },
     {
-     "en": "Marigold",
-     "hi": "गेंदा"
+     "en": "Lotus",
+     "hi": "कमल"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "The lotus (Nelumbo nucifera) is the national flower of India.",
     "hi": "कमल (नेलुम्बो न्यूसीफेरा) भारत का राष्ट्रीय पुष्प है।"
@@ -132,19 +132,19 @@
      "hi": "रवींद्रनाथ टैगोर"
     },
     {
-     "en": "Bankim Chandra Chatterjee",
-     "hi": "बंकिम चंद्र चट्टोपाध्याय"
+     "en": "Muhammad Iqbal",
+     "hi": "मुहम्मद इक़बाल"
     },
     {
      "en": "Sarojini Naidu",
      "hi": "सरोजिनी नायडू"
     },
     {
-     "en": "Muhammad Iqbal",
-     "hi": "मुहम्मद इक़बाल"
+     "en": "Bankim Chandra Chatterjee",
+     "hi": "बंकिम चंद्र चट्टोपाध्याय"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "'Vande Mataram' was written by Bankim Chandra Chatterjee and appears in his novel Anandamath (1882).",
     "hi": "'वंदे मातरम्' बंकिम चंद्र चट्टोपाध्याय ने लिखा, जो उनके उपन्यास 'आनंदमठ' (1882) में है।"
@@ -172,19 +172,19 @@
      "hi": "बंकिम चंद्र चट्टोपाध्याय"
     },
     {
-     "en": "Rabindranath Tagore",
-     "hi": "रवींद्रनाथ टैगोर"
+     "en": "Mahatma Gandhi",
+     "hi": "महात्मा गांधी"
     },
     {
      "en": "Subramania Bharati",
      "hi": "सुब्रमण्य भारती"
     },
     {
-     "en": "Mahatma Gandhi",
-     "hi": "महात्मा गांधी"
+     "en": "Rabindranath Tagore",
+     "hi": "रवींद्रनाथ टैगोर"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "'Jana Gana Mana' was written by Rabindranath Tagore. The Constituent Assembly adopted it as the national anthem on 24 January 1950.",
     "hi": "'जन गण मन' रवींद्रनाथ टैगोर ने लिखा। संविधान सभा ने इसे 24 जनवरी 1950 को राष्ट्रगान के रूप में अपनाया।"
@@ -212,19 +212,19 @@
      "hi": "साँची"
     },
     {
-     "en": "Sarnath",
-     "hi": "सारनाथ"
+     "en": "Kushinagar",
+     "hi": "कुशीनगर"
     },
     {
      "en": "Bodh Gaya",
      "hi": "बोधगया"
     },
     {
-     "en": "Kushinagar",
-     "hi": "कुशीनगर"
+     "en": "Sarnath",
+     "hi": "सारनाथ"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "The emblem is adapted from the Lion Capital of Ashoka at Sarnath and was adopted on 26 January 1950.",
     "hi": "यह प्रतीक सारनाथ स्थित अशोक के सिंह-शीर्ष से लिया गया है और 26 जनवरी 1950 को अपनाया गया।"
@@ -490,19 +490,19 @@
      "hi": "पीपल"
     },
     {
-     "en": "Banyan",
-     "hi": "बरगद"
+     "en": "Mango",
+     "hi": "आम"
     },
     {
      "en": "Neem",
      "hi": "नीम"
     },
     {
-     "en": "Mango",
-     "hi": "आम"
+     "en": "Banyan",
+     "hi": "बरगद"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "The banyan tree (Ficus benghalensis) is the national tree of India.",
     "hi": "बरगद (फ़ाइकस बेंगालेंसिस) भारत का राष्ट्रीय वृक्ष है।"
@@ -529,19 +529,19 @@
      "hi": "केला"
     },
     {
-     "en": "Mango",
-     "hi": "आम"
+     "en": "Apple",
+     "hi": "सेब"
     },
     {
      "en": "Jackfruit",
      "hi": "कटहल"
     },
     {
-     "en": "Apple",
-     "hi": "सेब"
+     "en": "Mango",
+     "hi": "आम"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "The mango (Mangifera indica) is the national fruit of India.",
     "hi": "आम (मैंगीफ़ेरा इंडिका) भारत का राष्ट्रीय फल है।"
@@ -572,15 +572,15 @@
      "hi": "होमी जे. भाभा"
     },
     {
-     "en": "A. P. J. Abdul Kalam",
-     "hi": "ए. पी. जे. अब्दुल कलाम"
-    },
-    {
      "en": "Satish Dhawan",
      "hi": "सतीश धवन"
+    },
+    {
+     "en": "A. P. J. Abdul Kalam",
+     "hi": "ए. पी. जे. अब्दुल कलाम"
     }
    ],
-   "answer": 2,
+   "answer": 3,
    "explanation": {
     "en": "Dr. A. P. J. Abdul Kalam led India's missile programme and later became the 11th President of India.",
     "hi": "डॉ. ए. पी. जे. अब्दुल कलाम ने भारत के मिसाइल कार्यक्रम का नेतृत्व किया और बाद में भारत के 11वें राष्ट्रपति बने।"
@@ -647,19 +647,19 @@
      "hi": "जवाहरलाल नेहरू"
     },
     {
-     "en": "Sardar Vallabhbhai Patel",
-     "hi": "सरदार वल्लभभाई पटेल"
+     "en": "Lal Bahadur Shastri",
+     "hi": "लाल बहादुर शास्त्री"
     },
     {
      "en": "Bal Gangadhar Tilak",
      "hi": "बाल गंगाधर तिलक"
     },
     {
-     "en": "Lal Bahadur Shastri",
-     "hi": "लाल बहादुर शास्त्री"
+     "en": "Sardar Vallabhbhai Patel",
+     "hi": "सरदार वल्लभभाई पटेल"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "Sardar Vallabhbhai Patel, who led the integration of the princely states, is called the 'Iron Man of India'.",
     "hi": "रियासतों के एकीकरण का नेतृत्व करने वाले सरदार वल्लभभाई पटेल को 'भारत का लौह पुरुष' कहा जाता है।"
@@ -687,19 +687,19 @@
      "hi": "मुंबई"
     },
     {
-     "en": "Bengaluru",
-     "hi": "बेंगलुरु"
+     "en": "Thiruvananthapuram",
+     "hi": "तिरुवनंतपुरम"
     },
     {
      "en": "Sriharikota",
      "hi": "श्रीहरिकोटा"
     },
     {
-     "en": "Thiruvananthapuram",
-     "hi": "तिरुवनंतपुरम"
+     "en": "Bengaluru",
+     "hi": "बेंगलुरु"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "The Indian Space Research Organisation is headquartered in Bengaluru. Sriharikota is its main launch site.",
     "hi": "भारतीय अंतरिक्ष अनुसंधान संगठन का मुख्यालय बेंगलुरु में है। श्रीहरिकोटा इसका मुख्य प्रक्षेपण स्थल है।"
@@ -741,8 +741,8 @@
    ],
    "answer": 1,
    "explanation": {
-    "en": "The Olympic symbol has five interlocking rings.",
-    "hi": "ओलंपिक प्रतीक में पाँच आपस में जुड़े छल्ले होते हैं।"
+    "en": "The Olympic symbol has 5 interlocking rings.",
+    "hi": "ओलंपिक प्रतीक में 5 आपस में जुड़े छल्ले होते हैं।"
    },
    "subject": "gk",
    "exams": [
@@ -766,19 +766,19 @@
      "hi": "सी. वी. रमन"
     },
     {
-     "en": "Rabindranath Tagore",
-     "hi": "रवींद्रनाथ टैगोर"
+     "en": "Har Gobind Khorana",
+     "hi": "हरगोविंद खुराना"
     },
     {
      "en": "Mother Teresa",
      "hi": "मदर टेरेसा"
     },
     {
-     "en": "Har Gobind Khorana",
-     "hi": "हरगोविंद खुराना"
+     "en": "Rabindranath Tagore",
+     "hi": "रवींद्रनाथ टैगोर"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "Rabindranath Tagore won the Nobel Prize in Literature in 1913 for Gitanjali.",
     "hi": "रवींद्रनाथ टैगोर को 'गीतांजलि' के लिए 1913 में साहित्य का नोबेल पुरस्कार मिला।"
@@ -885,19 +885,19 @@
      "hi": "कैरम"
     },
     {
-     "en": "Chess",
-     "hi": "शतरंज"
+     "en": "Badminton",
+     "hi": "बैडमिंटन"
     },
     {
      "en": "Tennis",
      "hi": "टेनिस"
     },
     {
-     "en": "Badminton",
-     "hi": "बैडमिंटन"
+     "en": "Chess",
+     "hi": "शतरंज"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "Checkmate ends a game of chess: the king is under attack and cannot escape.",
     "hi": "शतरंज में चेकमेट से खेल खत्म होता है: राजा पर हमला हो और वह बच न सके।"
@@ -964,19 +964,19 @@
      "hi": "पद्म विभूषण"
     },
     {
-     "en": "Bharat Ratna",
-     "hi": "भारत रत्न"
+     "en": "Param Vir Chakra",
+     "hi": "परमवीर चक्र"
     },
     {
      "en": "Padma Bhushan",
      "hi": "पद्म भूषण"
     },
     {
-     "en": "Param Vir Chakra",
-     "hi": "परमवीर चक्र"
+     "en": "Bharat Ratna",
+     "hi": "भारत रत्न"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "The Bharat Ratna is India's highest civilian award. The Param Vir Chakra is the highest wartime gallantry award.",
     "hi": "भारत रत्न भारत का सर्वोच्च नागरिक सम्मान है। परमवीर चक्र युद्धकाल का सर्वोच्च वीरता पुरस्कार है।"

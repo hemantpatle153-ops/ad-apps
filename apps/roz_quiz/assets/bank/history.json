@@ -174,19 +174,19 @@
      "hi": "दादाभाई नौरोजी"
     },
     {
-     "en": "W. C. Bonnerjee",
-     "hi": "डब्ल्यू. सी. बनर्जी"
+     "en": "Surendranath Banerjee",
+     "hi": "सुरेंद्रनाथ बनर्जी"
     },
     {
      "en": "A. O. Hume",
      "hi": "ए. ओ. ह्यूम"
     },
     {
-     "en": "Surendranath Banerjee",
-     "hi": "सुरेंद्रनाथ बनर्जी"
+     "en": "W. C. Bonnerjee",
+     "hi": "डब्ल्यू. सी. बनर्जी"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "W. C. Bonnerjee presided over the first session of the Congress in Bombay in December 1885. A. O. Hume was a founder.",
     "hi": "डब्ल्यू. सी. बनर्जी ने दिसंबर 1885 में बंबई में कांग्रेस के पहले अधिवेशन की अध्यक्षता की। ए. ओ. ह्यूम इसके संस्थापक थे।"
@@ -218,15 +218,15 @@
      "hi": "बिंदुसार"
     },
     {
-     "en": "Chandragupta Maurya",
-     "hi": "चंद्रगुप्त मौर्य"
-    },
-    {
      "en": "Bimbisara",
      "hi": "बिंबिसार"
+    },
+    {
+     "en": "Chandragupta Maurya",
+     "hi": "चंद्रगुप्त मौर्य"
     }
    ],
-   "answer": 2,
+   "answer": 3,
    "explanation": {
     "en": "Chandragupta Maurya founded the Maurya Empire around 322 BCE with the help of Chanakya.",
     "hi": "चंद्रगुप्त मौर्य ने लगभग 322 ईसा पूर्व चाणक्य की सहायता से मौर्य साम्राज्य की स्थापना की।"
@@ -253,19 +253,19 @@
      "hi": "इल्तुतमिश"
     },
     {
-     "en": "Qutb-ud-din Aibak",
-     "hi": "कुतुबुद्दीन ऐबक"
+     "en": "Balban",
+     "hi": "बलबन"
     },
     {
      "en": "Alauddin Khalji",
      "hi": "अलाउद्दीन खिलजी"
     },
     {
-     "en": "Balban",
-     "hi": "बलबन"
+     "en": "Qutb-ud-din Aibak",
+     "hi": "कुतुबुद्दीन ऐबक"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "Qutb-ud-din Aibak started the Qutub Minar; his successor Iltutmish added more storeys.",
     "hi": "कुतुबुद्दीन ऐबक ने कुतुब मीनार का निर्माण शुरू करवाया; उसके उत्तराधिकारी इल्तुतमिश ने इसकी और मंज़िलें बनवाईं।"
@@ -296,15 +296,15 @@
      "hi": "जहाँगीर"
     },
     {
-     "en": "Shah Jahan",
-     "hi": "शाहजहाँ"
-    },
-    {
      "en": "Humayun",
      "hi": "हुमायूँ"
+    },
+    {
+     "en": "Shah Jahan",
+     "hi": "शाहजहाँ"
     }
    ],
-   "answer": 2,
+   "answer": 3,
    "explanation": {
     "en": "Mughal emperor Shah Jahan built the Taj Mahal in Agra in memory of his wife Mumtaz Mahal.",
     "hi": "मुग़ल बादशाह शाहजहाँ ने अपनी पत्नी मुमताज़ महल की याद में आगरा में ताजमहल बनवाया।"
@@ -371,19 +371,19 @@
      "hi": "लॉर्ड वेलेज़ली"
     },
     {
-     "en": "Lord Dalhousie",
-     "hi": "लॉर्ड डलहौज़ी"
+     "en": "Lord Canning",
+     "hi": "लॉर्ड कैनिंग"
     },
     {
      "en": "Lord Cornwallis",
      "hi": "लॉर्ड कॉर्नवालिस"
     },
     {
-     "en": "Lord Canning",
-     "hi": "लॉर्ड कैनिंग"
+     "en": "Lord Dalhousie",
+     "hi": "लॉर्ड डलहौज़ी"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "Governor-General Lord Dalhousie used the Doctrine of Lapse to annex states such as Satara and Jhansi.",
     "hi": "गवर्नर-जनरल लॉर्ड डलहौज़ी ने व्यपगत के सिद्धांत से सतारा और झाँसी जैसी रियासतों का विलय किया।"
@@ -451,19 +451,19 @@
      "hi": "गुरु गोबिंद सिंह"
     },
     {
-     "en": "Guru Nanak Dev",
-     "hi": "गुरु नानक देव"
+     "en": "Guru Tegh Bahadur",
+     "hi": "गुरु तेग बहादुर"
     },
     {
      "en": "Guru Arjan Dev",
      "hi": "गुरु अर्जन देव"
     },
     {
-     "en": "Guru Tegh Bahadur",
-     "hi": "गुरु तेग बहादुर"
+     "en": "Guru Nanak Dev",
+     "hi": "गुरु नानक देव"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "Guru Nanak Dev (1469-1539) was the founder and first Guru of Sikhism.",
     "hi": "गुरु नानक देव (1469-1539) सिख धर्म के संस्थापक और पहले गुरु थे।"
@@ -494,15 +494,15 @@
      "hi": "लुंबिनी"
     },
     {
-     "en": "Bodh Gaya",
-     "hi": "बोधगया"
-    },
-    {
      "en": "Kushinagar",
      "hi": "कुशीनगर"
+    },
+    {
+     "en": "Bodh Gaya",
+     "hi": "बोधगया"
     }
    ],
-   "answer": 2,
+   "answer": 3,
    "explanation": {
     "en": "Buddha attained enlightenment under the Bodhi tree at Bodh Gaya. He was born at Lumbini, gave his first sermon at Sarnath and died at Kushinagar.",
     "hi": "बुद्ध को बोधगया में बोधि वृक्ष के नीचे ज्ञान मिला। उनका जन्म लुंबिनी में हुआ, पहला उपदेश सारनाथ में दिया और महापरिनिर्वाण कुशीनगर में हुआ।"
@@ -570,19 +570,19 @@
      "hi": "लखनऊ, 1916"
     },
     {
-     "en": "Lahore, 1929",
-     "hi": "लाहौर, 1929"
+     "en": "Haripura, 1938",
+     "hi": "हरिपुरा, 1938"
     },
     {
      "en": "Karachi, 1931",
      "hi": "कराची, 1931"
     },
     {
-     "en": "Haripura, 1938",
-     "hi": "हरिपुरा, 1938"
+     "en": "Lahore, 1929",
+     "hi": "लाहौर, 1929"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "The Lahore session of December 1929, presided over by Jawaharlal Nehru, adopted Purna Swaraj (complete independence) as the goal.",
     "hi": "दिसंबर 1929 के लाहौर अधिवेशन ने, जिसकी अध्यक्षता जवाहरलाल नेहरू ने की, पूर्ण स्वराज को लक्ष्य के रूप में अपनाया।"
@@ -689,19 +689,19 @@
      "hi": "कालिदास"
     },
     {
-     "en": "Kautilya",
-     "hi": "कौटिल्य"
+     "en": "Megasthenes",
+     "hi": "मेगस्थनीज़"
     },
     {
      "en": "Banabhatta",
      "hi": "बाणभट्ट"
     },
     {
-     "en": "Megasthenes",
-     "hi": "मेगस्थनीज़"
+     "en": "Kautilya",
+     "hi": "कौटिल्य"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "The Arthashastra, a treatise on statecraft and economics, is attributed to Kautilya (Chanakya).",
     "hi": "राजनीति और अर्थव्यवस्था पर ग्रंथ 'अर्थशास्त्र' कौटिल्य (चाणक्य) की रचना माना जाता है।"
@@ -729,19 +729,19 @@
      "hi": "बाबर"
     },
     {
-     "en": "Akbar",
-     "hi": "अकबर"
+     "en": "Aurangzeb",
+     "hi": "औरंगज़ेब"
     },
     {
      "en": "Jahangir",
      "hi": "जहाँगीर"
     },
     {
-     "en": "Aurangzeb",
-     "hi": "औरंगज़ेब"
+     "en": "Akbar",
+     "hi": "अकबर"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "Akbar started Din-i-Ilahi in 1582, drawing ideas from several religions.",
     "hi": "अकबर ने 1582 में कई धर्मों के विचारों को मिलाकर दीन-ए-इलाही शुरू किया।"
@@ -807,19 +807,19 @@
      "hi": "दिल्ली"
     },
     {
-     "en": "Meerut",
-     "hi": "मेरठ"
+     "en": "Lucknow",
+     "hi": "लखनऊ"
     },
     {
      "en": "Kanpur",
      "hi": "कानपुर"
     },
     {
-     "en": "Lucknow",
-     "hi": "लखनऊ"
+     "en": "Meerut",
+     "hi": "मेरठ"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "Sepoys at Meerut rose on 10 May 1857 and marched to Delhi, starting the revolt.",
     "hi": "10 मई 1857 को मेरठ के सिपाहियों ने विद्रोह किया और दिल्ली की ओर कूच किया, जिससे विद्रोह शुरू हुआ।"
@@ -927,19 +927,19 @@
      "hi": "खेड़ा"
     },
     {
-     "en": "Champaran",
-     "hi": "चंपारण"
+     "en": "Bardoli",
+     "hi": "बारडोली"
     },
     {
      "en": "Ahmedabad",
      "hi": "अहमदाबाद"
     },
     {
-     "en": "Bardoli",
-     "hi": "बारडोली"
+     "en": "Champaran",
+     "hi": "चंपारण"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "In 1917 Gandhi led the Champaran Satyagraha in Bihar for indigo farmers.",
     "hi": "1917 में गांधी ने बिहार के चंपारण में नील किसानों के लिए सत्याग्रह का नेतृत्व किया।"

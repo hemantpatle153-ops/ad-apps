@@ -1,0 +1,402 @@
+{
+ "schema": 1,
+ "date": "2026-10-07",
+ "title": {
+  "en": "Daily Quiz · 7 Oct",
+  "hi": "आज की क्विज़ · 7 अक्टू"
+ },
+ "questions": [
+  {
+   "id": "q-polity-000101",
+   "q": {
+    "en": "Who is the Supreme Commander of the Indian Armed Forces?",
+    "hi": "भारतीय सशस्त्र बलों का सर्वोच्च कमांडर कौन होता है?"
+   },
+   "options": [
+    {
+     "en": "The Prime Minister",
+     "hi": "प्रधानमंत्री"
+    },
+    {
+     "en": "The President",
+     "hi": "राष्ट्रपति"
+    },
+    {
+     "en": "The Defence Minister",
+     "hi": "रक्षा मंत्री"
+    },
+    {
+     "en": "The Chief of Defence Staff",
+     "hi": "चीफ़ ऑफ़ डिफ़ेंस स्टाफ़"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Article 53(2) vests the supreme command of the Defence Forces in the President.",
+    "hi": "अनुच्छेद 53(2) के अनुसार रक्षा बलों की सर्वोच्च कमान राष्ट्रपति के पास है।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "defence"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": "SSC CGL 2019",
+   "verified": true
+  },
+  {
+   "id": "q-history-000102",
+   "q": {
+    "en": "Who founded the Arya Samaj?",
+    "hi": "आर्य समाज की स्थापना किसने की?"
+   },
+   "options": [
+    {
+     "en": "Raja Ram Mohan Roy",
+     "hi": "राजा राममोहन राय"
+    },
+    {
+     "en": "Swami Dayanand Saraswati",
+     "hi": "स्वामी दयानंद सरस्वती"
+    },
+    {
+     "en": "Swami Vivekananda",
+     "hi": "स्वामी विवेकानंद"
+    },
+    {
+     "en": "Keshab Chandra Sen",
+     "hi": "केशवचंद्र सेन"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Swami Dayanand Saraswati founded the Arya Samaj in 1875 in Bombay.",
+    "hi": "स्वामी दयानंद सरस्वती ने 1875 में बंबई में आर्य समाज की स्थापना की।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "q-geography-000103",
+   "q": {
+    "en": "Which is the largest island of India?",
+    "hi": "भारत का सबसे बड़ा द्वीप कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Majuli",
+     "hi": "माजुली"
+    },
+    {
+     "en": "Middle Andaman",
+     "hi": "मध्य अंडमान"
+    },
+    {
+     "en": "Great Nicobar",
+     "hi": "ग्रेट निकोबार"
+    },
+    {
+     "en": "Lakshadweep",
+     "hi": "लक्षद्वीप"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Middle Andaman is the largest island of India by area; Majuli is the largest river island.",
+    "hi": "क्षेत्रफल में मध्य अंडमान भारत का सबसे बड़ा द्वीप है; माजुली सबसे बड़ा नदी द्वीप है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc"
+   ],
+   "difficulty": "hard",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "q-science-000104",
+   "q": {
+    "en": "What is the chemical name of baking soda?",
+    "hi": "बेकिंग सोडा का रासायनिक नाम क्या है?"
+   },
+   "options": [
+    {
+     "en": "Sodium carbonate",
+     "hi": "सोडियम कार्बोनेट"
+    },
+    {
+     "en": "Sodium bicarbonate",
+     "hi": "सोडियम बाइकार्बोनेट"
+    },
+    {
+     "en": "Calcium carbonate",
+     "hi": "कैल्शियम कार्बोनेट"
+    },
+    {
+     "en": "Sodium chloride",
+     "hi": "सोडियम क्लोराइड"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Baking soda is sodium hydrogen carbonate (sodium bicarbonate), NaHCO3.",
+    "hi": "बेकिंग सोडा सोडियम हाइड्रोजन कार्बोनेट (सोडियम बाइकार्बोनेट), NaHCO3 है।"
+   },
+   "subject": "science",
+   "exams": [
+    "railway",
+    "ssc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "q-economy-000105",
+   "q": {
+    "en": "Which organisation publishes the Consumer Price Index (Combined) for India?",
+    "hi": "भारत के लिए उपभोक्ता मूल्य सूचकांक (संयुक्त) कौन प्रकाशित करता है?"
+   },
+   "options": [
+    {
+     "en": "RBI",
+     "hi": "RBI"
+    },
+    {
+     "en": "NSO (MoSPI)",
+     "hi": "NSO (MoSPI)"
+    },
+    {
+     "en": "NITI Aayog",
+     "hi": "नीति आयोग"
+    },
+    {
+     "en": "SEBI",
+     "hi": "SEBI"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The National Statistics Office under MoSPI releases CPI (Combined) every month.",
+    "hi": "सांख्यिकी और कार्यक्रम कार्यान्वयन मंत्रालय के अंतर्गत राष्ट्रीय सांख्यिकी कार्यालय हर महीने CPI (संयुक्त) जारी करता है।"
+   },
+   "subject": "economy",
+   "exams": [
+    "banking"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "q-gk-000106",
+   "q": {
+    "en": "Which city is known as the 'Pink City' of India?",
+    "hi": "भारत का 'गुलाबी शहर' किसे कहा जाता है?"
+   },
+   "options": [
+    {
+     "en": "Jodhpur",
+     "hi": "जोधपुर"
+    },
+    {
+     "en": "Udaipur",
+     "hi": "उदयपुर"
+    },
+    {
+     "en": "Jaipur",
+     "hi": "जयपुर"
+    },
+    {
+     "en": "Bikaner",
+     "hi": "बीकानेर"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Jaipur is called the Pink City for the colour of buildings in its old city.",
+    "hi": "पुराने शहर की इमारतों के रंग के कारण जयपुर को गुलाबी शहर कहा जाता है।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "q-computer-000107",
+   "q": {
+    "en": "What does 'RAM' stand for?",
+    "hi": "'RAM' का पूरा नाम क्या है?"
+   },
+   "options": [
+    {
+     "en": "Random Access Memory",
+     "hi": "Random Access Memory"
+    },
+    {
+     "en": "Read Access Memory",
+     "hi": "Read Access Memory"
+    },
+    {
+     "en": "Rapid Action Memory",
+     "hi": "Rapid Action Memory"
+    },
+    {
+     "en": "Run All Memory",
+     "hi": "Run All Memory"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "RAM stands for Random Access Memory.",
+    "hi": "RAM का पूरा नाम Random Access Memory है।"
+   },
+   "subject": "computer",
+   "exams": [
+    "banking",
+    "ssc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "q-maths-000108",
+   "q": {
+    "en": "What is 25% of 80?",
+    "hi": "80 का 25% कितना है?"
+   },
+   "options": [
+    {
+     "en": "15",
+     "hi": "15"
+    },
+    {
+     "en": "20",
+     "hi": "20"
+    },
+    {
+     "en": "25",
+     "hi": "25"
+    },
+    {
+     "en": "30",
+     "hi": "30"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "25% of 80 = 80 / 4 = 20.",
+    "hi": "80 का 25% = 80 / 4 = 20।"
+   },
+   "subject": "maths",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "q-reasoning-000109",
+   "q": {
+    "en": "Find the next number: 5, 10, 20, 40, ?",
+    "hi": "अगली संख्या ज्ञात करें: 5, 10, 20, 40, ?"
+   },
+   "options": [
+    {
+     "en": "60",
+     "hi": "60"
+    },
+    {
+     "en": "70",
+     "hi": "70"
+    },
+    {
+     "en": "80",
+     "hi": "80"
+    },
+    {
+     "en": "90",
+     "hi": "90"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Each term doubles: 40 × 2 = 80.",
+    "hi": "हर पद दोगुना होता है: 40 × 2 = 80।"
+   },
+   "subject": "reasoning",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "q-english-000110",
+   "q": {
+    "en": "Choose the antonym of 'Brave'.",
+    "hi": "'Brave' का विलोम शब्द चुनें।"
+   },
+   "options": [
+    {
+     "en": "Bold",
+     "hi": "Bold"
+    },
+    {
+     "en": "Cowardly",
+     "hi": "Cowardly"
+    },
+    {
+     "en": "Strong",
+     "hi": "Strong"
+    },
+    {
+     "en": "Fearless",
+     "hi": "Fearless"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "'Brave' means showing courage; 'cowardly' is its opposite.",
+    "hi": "'Brave' का अर्थ साहसी है; 'cowardly' (कायर) इसका विलोम है।"
+   },
+   "subject": "english",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  }
+ ],
+ "futureKey": {
+  "x": 1
+ }
+}

@@ -68,7 +68,7 @@
    ],
    "answer": 0,
    "explanation": {
-    "en": "The Constituent Assembly adopted the Constitution on 26 November 1949; it came into force on 26 January 1950.",
+    "en": "The Constitution was adopted by the Constituent Assembly on 26 November 1949 and came into force on 26 January 1950.",
     "hi": "संविधान सभा ने 26 नवंबर 1949 को संविधान अपनाया; यह 26 जनवरी 1950 को लागू हुआ।"
    },
    "subject": "polity",
@@ -94,19 +94,19 @@
      "hi": "डॉ. राजेंद्र प्रसाद"
     },
     {
-     "en": "Dr. B. R. Ambedkar",
-     "hi": "डॉ. बी. आर. आंबेडकर"
+     "en": "K. M. Munshi",
+     "hi": "के. एम. मुंशी"
     },
     {
      "en": "Jawaharlal Nehru",
      "hi": "जवाहरलाल नेहरू"
     },
     {
-     "en": "K. M. Munshi",
-     "hi": "के. एम. मुंशी"
+     "en": "Dr. B. R. Ambedkar",
+     "hi": "डॉ. बी. आर. आंबेडकर"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "Dr. B. R. Ambedkar chaired the Drafting Committee and is called the chief architect of the Constitution.",
     "hi": "डॉ. बी. आर. आंबेडकर प्रारूप समिति के अध्यक्ष थे और उन्हें संविधान का मुख्य शिल्पकार कहा जाता है।"
@@ -174,19 +174,19 @@
      "hi": "भाग II"
     },
     {
-     "en": "Part III",
-     "hi": "भाग III"
+     "en": "Part IV-A",
+     "hi": "भाग IV-A"
     },
     {
      "en": "Part IV",
      "hi": "भाग IV"
     },
     {
-     "en": "Part IV-A",
-     "hi": "भाग IV-A"
+     "en": "Part III",
+     "hi": "भाग III"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "Part III (Articles 12 to 35) contains the Fundamental Rights.",
     "hi": "भाग III (अनुच्छेद 12 से 35) में मौलिक अधिकार हैं।"
@@ -215,19 +215,19 @@
      "hi": "भाग III"
     },
     {
-     "en": "Part IV",
-     "hi": "भाग IV"
+     "en": "Part VI",
+     "hi": "भाग VI"
     },
     {
      "en": "Part V",
      "hi": "भाग V"
     },
     {
-     "en": "Part VI",
-     "hi": "भाग VI"
+     "en": "Part IV",
+     "hi": "भाग IV"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "Part IV (Articles 36 to 51) contains the Directive Principles of State Policy.",
     "hi": "भाग IV (अनुच्छेद 36 से 51) में राज्य के नीति निदेशक तत्व हैं।"
@@ -295,19 +295,19 @@
      "hi": "अनुच्छेद 14"
     },
     {
-     "en": "Article 17",
-     "hi": "अनुच्छेद 17"
+     "en": "Article 32",
+     "hi": "अनुच्छेद 32"
     },
     {
      "en": "Article 21",
      "hi": "अनुच्छेद 21"
     },
     {
-     "en": "Article 32",
-     "hi": "अनुच्छेद 32"
+     "en": "Article 17",
+     "hi": "अनुच्छेद 17"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "Article 17 abolishes untouchability and forbids its practice in any form.",
     "hi": "अनुच्छेद 17 अस्पृश्यता का अंत करता है और किसी भी रूप में इसके आचरण को निषिद्ध करता है।"
@@ -494,19 +494,19 @@
      "hi": "प्रधानमंत्री"
     },
     {
-     "en": "The President",
-     "hi": "राष्ट्रपति"
+     "en": "The Law Minister",
+     "hi": "विधि मंत्री"
     },
     {
      "en": "The Parliament",
      "hi": "संसद"
     },
     {
-     "en": "The Law Minister",
-     "hi": "विधि मंत्री"
+     "en": "The President",
+     "hi": "राष्ट्रपति"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "Under Article 124, the President appoints the Chief Justice and other judges of the Supreme Court.",
     "hi": "अनुच्छेद 124 के तहत राष्ट्रपति मुख्य न्यायाधीश और सर्वोच्च न्यायालय के अन्य न्यायाधीशों की नियुक्ति करते हैं।"
@@ -654,19 +654,19 @@
      "hi": "राष्ट्रपति"
     },
     {
-     "en": "The Vice-President",
-     "hi": "उपराष्ट्रपति"
+     "en": "The Speaker",
+     "hi": "लोकसभा अध्यक्ष"
     },
     {
      "en": "The Prime Minister",
      "hi": "प्रधानमंत्री"
     },
     {
-     "en": "The Speaker",
-     "hi": "लोकसभा अध्यक्ष"
+     "en": "The Vice-President",
+     "hi": "उपराष्ट्रपति"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
     "en": "Under Article 64, the Vice-President of India is the ex-officio Chairman of the Rajya Sabha.",
     "hi": "अनुच्छेद 64 के अनुसार भारत के उपराष्ट्रपति राज्यसभा के पदेन सभापति होते हैं।"
@@ -814,21 +814,21 @@
      "hi": "अमेरिका"
     },
     {
-     "en": "Ireland",
-     "hi": "आयरलैंड"
+     "en": "Australia",
+     "hi": "ऑस्ट्रेलिया"
     },
     {
      "en": "Canada",
      "hi": "कनाडा"
     },
     {
-     "en": "Australia",
-     "hi": "ऑस्ट्रेलिया"
+     "en": "Ireland",
+     "hi": "आयरलैंड"
     }
    ],
-   "answer": 1,
+   "answer": 3,
    "explanation": {
-    "en": "The idea of Directive Principles was taken from the Irish Constitution.",
+    "en": "The idea of Directive Principles was taken from the constitution of Ireland.",
     "hi": "नीति निदेशक तत्वों का विचार आयरलैंड के संविधान से लिया गया।"
    },
    "subject": "polity",

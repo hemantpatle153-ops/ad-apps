@@ -306,7 +306,7 @@
    ],
    "answer": 0,
    "explanation": {
-    "en": "Repo rate is the rate at which the RBI lends short-term money to banks against securities. Reverse repo is the opposite.",
+    "en": "Repo rate is the rate at which the RBI lends to commercial banks for short periods against government securities. Reverse repo is the opposite.",
     "hi": "रेपो दर वह दर है जिस पर RBI प्रतिभूतियों के बदले बैंकों को अल्पकालिक ऋण देता है। रिवर्स रेपो इसका उलटा है।"
    },
    "subject": "economy",
@@ -583,7 +583,7 @@
    ],
    "answer": 0,
    "explanation": {
-    "en": "PMJDY, launched in August 2014, aims to give every household access to a basic bank account and related financial services.",
+    "en": "PMJDY, launched in August 2014, aims at financial inclusion through bank accounts: access to a basic bank account and related financial services for every household.",
     "hi": "अगस्त 2014 में शुरू हुई PMJDY का उद्देश्य हर परिवार को बुनियादी बैंक खाता और संबंधित वित्तीय सेवाएँ देना है।"
    },
    "subject": "economy",
@@ -622,7 +622,7 @@
    ],
    "answer": 0,
    "explanation": {
-    "en": "GDP is the total value of final goods and services produced within a country in a period.",
+    "en": "GDP (Gross Domestic Product) is the total value of final goods and services produced within a country in a period.",
     "hi": "GDP किसी अवधि में देश के भीतर उत्पादित अंतिम वस्तुओं और सेवाओं का कुल मूल्य है।"
    },
    "subject": "economy",
@@ -701,7 +701,7 @@
    ],
    "answer": 0,
    "explanation": {
-    "en": "The Blue Revolution refers to the growth of fisheries and aquaculture.",
+    "en": "The Blue Revolution refers to raising fish production through fisheries and aquaculture.",
     "hi": "नीली क्रांति मत्स्य पालन और जलीय कृषि के विकास से जुड़ी है।"
    },
    "subject": "economy",

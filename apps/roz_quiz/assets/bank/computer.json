@@ -702,7 +702,7 @@
    ],
    "answer": 0,
    "explanation": {
-    "en": "A firewall monitors and filters network traffic to block unauthorised access.",
+    "en": "A firewall provides network security: it monitors and filters network traffic to block unauthorised access.",
     "hi": "फ़ायरवॉल अनधिकृत पहुँच रोकने के लिए नेटवर्क ट्रैफ़िक की निगरानी और छँटाई करता है।"
    },
    "subject": "computer",
