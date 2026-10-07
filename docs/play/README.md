@@ -12,14 +12,14 @@ Each app has its own sheet with the store text, Data safety answers, permission 
 
 | # | App (store name) | Package | Sheet | Privacy policy URL |
 |---|---|---|---|---|
-| 1 | QR & Barcode Scanner | `in.onlysoftware.qr_scanner` | [qr_scanner.md](qr_scanner.md) | https://dice-dhamaal.web.app/privacy/qr_scanner.html |
-| 2 | Daily Sudoku | `in.onlysoftware.daily_sudoku` | [daily_sudoku.md](daily_sudoku.md) | https://dice-dhamaal.web.app/privacy/daily_sudoku.html |
-| 3 | Doc Scanner: PDF & OCR | `in.onlysoftware.doc_scanner` | [doc_scanner.md](doc_scanner.md) | https://dice-dhamaal.web.app/privacy/doc_scanner.html |
-| 4 | Expense Tracker: Daily Budget | `in.onlysoftware.expense_tracker` | [expense_tracker.md](expense_tracker.md) | https://dice-dhamaal.web.app/privacy/expense_tracker.html |
-| 5 | Water Reminder & Habit Tracker | `in.onlysoftware.water_habit` | [water_habit.md](water_habit.md) | https://dice-dhamaal.web.app/privacy/water_habit.html |
-| 6 | Multi Speaker: Sync Music | `in.onlysoftware.multi_speaker` | [multi_speaker.md](multi_speaker.md) | https://dice-dhamaal.web.app/privacy/multi_speaker.html |
+| 1 | QR & Barcode Scanner | `in.onlysoftware.qr_scanner` | [qr_scanner.md](qr_scanner.md) | https://docs.google.com/document/d/e/2PACX-1vQGUBqDjMOdmypiIrwgkwVXqCxpWgUuzt2sZvb6d8q1wgYsZyEMOV9MjD-9EARk3qEnIRMDwrn79iMi/pub |
+| 2 | Daily Sudoku | `in.onlysoftware.daily_sudoku` | [daily_sudoku.md](daily_sudoku.md) | https://docs.google.com/document/d/e/2PACX-1vTaZv3owS5iiOH0PkLw7wnCHDw5u2rNyOyLbHogItpRQyKczECgA0o1FEJ3oDmwQxfkOijJHOj4tgtC/pub |
+| 3 | Doc Scanner: PDF & OCR | `in.onlysoftware.doc_scanner` | [doc_scanner.md](doc_scanner.md) | https://docs.google.com/document/d/e/2PACX-1vQaYSYxwZeVevoKY2cfLigO9DPjKcb232tvy8CQMjiniBUIM6QY1NdJv3-ykqZ49Wwg2r-XVCWKgPM7/pub |
+| 4 | Expense Tracker: Daily Budget | `in.onlysoftware.expense_tracker` | [expense_tracker.md](expense_tracker.md) | https://docs.google.com/document/d/e/2PACX-1vQXwGrOP9F7V1qmMN92HMQWutuxQgVDk9MdL_BHyWGdho-yT73mGLOOe6zwfKBXchQSHnhttfaNUusx/pub |
+| 5 | Water Reminder & Habit Tracker | `in.onlysoftware.water_habit` | [water_habit.md](water_habit.md) | https://docs.google.com/document/d/e/2PACX-1vSA3p-UvHEj2L2nIDLYeWIFo39PWUj8HU8qngDsyVkl4Eu_VXmlRnF8oBbCmL7SJ98_ziBsZA_iXNnN/pub |
+| 6 | Multi Speaker: Sync Music | `in.onlysoftware.multi_speaker` | [multi_speaker.md](multi_speaker.md) | https://docs.google.com/document/d/e/2PACX-1vSi17o1FyCYVX3gwcvbunE0n8v9esj19ygb3rfzQ1GpxmQbJuM8RjlDq1MsE0DPxOqLetCIywvJMDSV/pub |
 | 7 | Video Player: Watch Together | `in.onlysoftware.video_player` | [video_player.md](video_player.md) | https://docs.google.com/document/d/e/2PACX-1vTfrEbXLRvkphpIBmzE9dJ_gLWgh24QUcM0FZjossBmiuPtX29Vhs8ryciONNOotey4viCLpV3zf7Em/pub |
-| 8 | Dice Dhamaal: Ludo & Snakes | `in.onlysoftware.dice_dhamaal` (folder `apps/snakes_ladders`, branch `ludo-game`) | [snakes_ladders.md](snakes_ladders.md) | https://dice-dhamaal.web.app/privacy/dice_dhamaal.html |
+| 8 | Dice Dhamaal: Ludo & Snakes | `in.onlysoftware.dice_dhamaal` (folder `apps/snakes_ladders`, branch `ludo-game`) | [snakes_ladders.md](snakes_ladders.md) | https://docs.google.com/document/d/e/2PACX-1vQE-aej_G9yCbReQfwol18vl1f83JN7v0q0iBw57oKkyFcdtLW57KZQqK3bIZiYqCTfMKvsGajCGrNu/pub |
 
 Privacy policies are published as Google Docs (File > Share > Publish to web). The paste-ready text comes from `website/build.py`. Open each link in a browser **before** you fill the Play forms: Play rejects an app whose policy link does not open.
 

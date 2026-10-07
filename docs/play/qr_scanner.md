@@ -4,7 +4,7 @@
 
 - Folder: `apps/qr_scanner` - Package: `in.onlysoftware.qr_scanner`
 - Type: App - Free - Contains ads - Ages 13+
-- Privacy policy: https://dice-dhamaal.web.app/privacy/qr_scanner.html
+- Privacy policy: https://docs.google.com/document/d/e/2PACX-1vQGUBqDjMOdmypiIrwgkwVXqCxpWgUuzt2sZvb6d8q1wgYsZyEMOV9MjD-9EARk3qEnIRMDwrn79iMi/pub
 
 What the code really does: camera scan of QR codes and barcodes (flashlight, switch camera), result screen that knows links, UPI payment links, Wi-Fi codes, phone numbers, email and product numbers; copy and share; "Search product" opens a Google search in the browser; a QR maker for text/links/numbers; scan history (last 300) saved only on the phone, swipe to delete or clear all. No scanning from gallery images. Wi-Fi codes are only shown as text, the app does not join the network.
 

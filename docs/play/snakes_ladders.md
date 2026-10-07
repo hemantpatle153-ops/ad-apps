@@ -4,7 +4,7 @@
 
 - Folder: `apps/snakes_ladders`, **branch `ludo-game`** - Package: `in.onlysoftware.dice_dhamaal`
 - Type: **Game** (Board) - Free - Contains ads - Ages 13+
-- Privacy policy: https://dice-dhamaal.web.app/privacy/dice_dhamaal.html
+- Privacy policy: https://docs.google.com/document/d/e/2PACX-1vQE-aej_G9yCbReQfwol18vl1f83JN7v0q0iBw57oKkyFcdtLW57KZQqK3bIZiYqCTfMKvsGajCGrNu/pub
 - Uses Firebase project **dice-dhamaal** (Anonymous Auth + Realtime Database, path `rooms/{code}`) and WebRTC voice
 
 Build and upload from `ludo-game`. The `main` branch still has the old offline-only "Snakes & Ladders" with package `in.onlysoftware.snakes_ladders` (`apps/snakes_ladders/android/app/build.gradle.kts:27` on main). The first upload fixes the package name forever.
@@ -113,7 +113,7 @@ No foreground service, no camera, no storage, no location permission.
 |---|---|---|---|
 | 1 | **Fixed in PR #8 (d67a93d).** **Voice chat has no way to mute or block another player and no report option.** Only "mute my mic" and speaker/earpiece exist. Play's UGC policy (user-to-user communication) expects users to be able to block and report others. Anyone who gets the code (codes are often posted in groups) can join and talk. | `apps/snakes_ladders/lib/ludo/ui/game_screen.dart:630-645` (only self mute), `lib/ludo/online/voice.dart:185-195` | Add per-player **Mute** (set that peer's remote audio track `enabled=false`) on the player avatar, and a **Report** action (email with room code). Add a line in the lobby: "Only play with people you know." |
 | 2 | **Fixed in PR #8 (d67a93d).** **Microphone turns on automatically when an online game starts** - no "Join voice" choice. The privacy policy says voice chat "is optional and uses the microphone only while it is on". | `apps/snakes_ladders/lib/ludo/ui/game_screen.dart:127` (`s.voice.start()`), policy text `website/build.py:100` | Start with the mic **muted** (or ask "Turn on voice chat?") and let the user unmute. Then the policy text is true. The lobby note at `lib/ludo/ui/online_screen.dart:241-242` already warns, which helps. |
-| 3 | **Privacy policy URL is still the placeholder on this branch.** (The `main` working copy now points to the real page, but you build Dice Dhamaal from `ludo-game`.) | `apps/snakes_ladders/lib/main.dart:18-19` (branch `ludo-game`) | Set it to `https://dice-dhamaal.web.app/privacy/dice_dhamaal.html` on the `ludo-game` branch before building. |
+| 3 | ~~Privacy policy URL is still the placeholder.~~ Fixed: the app links to the published Google Doc. | `apps/snakes_ladders/lib/main.dart` | Nothing. |
 | 4 | **Fixed in PR #8 (d67a93d):** BLUETOOTH_CONNECT was removed, so no "Nearby devices" prompt. | | |
 | 5 | Player names are free text (14 chars) shown to others, no filter. | `apps/snakes_ladders/lib/ludo/ui/online_screen.dart:142` | Low risk; covered by the Report action in risk 1. |
 | 6 | Voice uses only STUN (no TURN relay), so voice fails on some mobile networks. Not a policy issue, but don't promise "voice always works". | `apps/snakes_ladders/lib/ludo/online/voice.dart:20-31` | Listing text above does not promise it. |

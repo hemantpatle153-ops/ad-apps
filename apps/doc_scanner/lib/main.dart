@@ -16,7 +16,9 @@ import 'screens/viewer_screen.dart';
 import 'ui_helpers.dart';
 
 const appPackageName = 'in.onlysoftware.doc_scanner';
-const privacyPolicyUrl = 'https://dice-dhamaal.web.app/privacy/doc_scanner.html'; // website/build.py
+// Rahul's published Google Doc (same text as website/build.py's page).
+const privacyPolicyUrl =
+    'https://docs.google.com/document/d/e/2PACX-1vQaYSYxwZeVevoKY2cfLigO9DPjKcb232tvy8CQMjiniBUIM6QY1NdJv3-ykqZ49Wwg2r-XVCWKgPM7/pub';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

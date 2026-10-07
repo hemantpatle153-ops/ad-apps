@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'screens/home_shell.dart';
 
 const appPackageName = 'in.onlysoftware.qr_scanner';
-const privacyPolicyUrl = 'https://dice-dhamaal.web.app/privacy/qr_scanner.html'; // website/build.py
+// Rahul's published Google Doc (same text as website/build.py's page).
+const privacyPolicyUrl =
+    'https://docs.google.com/document/d/e/2PACX-1vQGUBqDjMOdmypiIrwgkwVXqCxpWgUuzt2sZvb6d8q1wgYsZyEMOV9MjD-9EARk3qEnIRMDwrn79iMi/pub';
 
 class QrScannerApp extends StatelessWidget {
   const QrScannerApp({super.key});

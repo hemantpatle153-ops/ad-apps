@@ -15,8 +15,9 @@ const appName = 'Dice Dhamaal';
 
 const packageName = 'in.onlysoftware.dice_dhamaal';
 
+// Rahul's published Google Doc (same text as website/build.py's page).
 const privacyPolicyUrl =
-    'https://dice-dhamaal.web.app/privacy/dice_dhamaal.html'; // website/build.py
+    'https://docs.google.com/document/d/e/2PACX-1vQE-aej_G9yCbReQfwol18vl1f83JN7v0q0iBw57oKkyFcdtLW57KZQqK3bIZiYqCTfMKvsGajCGrNu/pub';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

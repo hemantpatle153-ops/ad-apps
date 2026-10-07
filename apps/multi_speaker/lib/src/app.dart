@@ -6,8 +6,9 @@ import 'ui/home_screen.dart';
 
 const packageName = 'in.onlysoftware.multi_speaker';
 
+// Rahul's published Google Doc (same text as website/build.py's page).
 const privacyPolicyUrl =
-    'https://dice-dhamaal.web.app/privacy/multi_speaker.html'; // website/build.py
+    'https://docs.google.com/document/d/e/2PACX-1vSi17o1FyCYVX3gwcvbunE0n8v9esj19ygb3rfzQ1GpxmQbJuM8RjlDq1MsE0DPxOqLetCIywvJMDSV/pub';
 
 class MultiSpeakerApp extends StatelessWidget {
   const MultiSpeakerApp({super.key, required this.settings});
