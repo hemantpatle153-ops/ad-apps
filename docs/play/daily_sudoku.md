@@ -2,7 +2,7 @@
 
 - Folder: `apps/daily_sudoku` - Package: `in.onlysoftware.daily_sudoku`
 - Type: **Game** (Puzzle) - Free - Contains ads - Ages 13+
-- Privacy policy: https://dice-dhamaal.web.app/privacy/daily_sudoku.html
+- Privacy policy: https://docs.google.com/document/d/e/2PACX-1vTaZv3owS5iiOH0PkLw7wnCHDw5u2rNyOyLbHogItpRQyKczECgA0o1FEJ3oDmwQxfkOijJHOj4tgtC/pub
 
 What the code really does: a daily puzzle (the same puzzle for a given date, made on the phone), a daily streak, new games in 4 levels (Easy, Medium, Hard, Expert) with one unique solution, notes (pencil marks), undo, timer, 3 mistakes allowed, 3 free hints per puzzle and then an optional rewarded video for one more hint, "second chance" after the 3rd mistake, best time per level and puzzles-solved count, auto-save and Continue. Everything is stored on the phone; works offline (ads need internet).
 

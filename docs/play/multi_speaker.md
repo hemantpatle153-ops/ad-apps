@@ -2,7 +2,7 @@
 
 - Folder: `apps/multi_speaker` - Package: `in.onlysoftware.multi_speaker`
 - Type: App - Free - Contains ads - Ages 13+
-- Privacy policy: https://dice-dhamaal.web.app/privacy/multi_speaker.html
+- Privacy policy: https://docs.google.com/document/d/e/2PACX-1vSi17o1FyCYVX3gwcvbunE0n8v9esj19ygb3rfzQ1GpxmQbJuM8RjlDq1MsE0DPxOqLetCIywvJMDSV/pub
 
 What the code really does: one phone **hosts a party** and the other phones **join** on the same Wi-Fi or the host's hotspot (scan the host's QR code with the camera, pick a party found nearby, or type the address). **Songs mode**: the host picks audio files from the phone; the host serves them to the guests over the local network (HTTP + WebSocket), and all phones play in sync (clock sync). **Live mode** (Android 10+): the host captures the sound other apps are playing (Android playback capture via MediaProjection, foreground service) and streams it live to the guests. Each phone plays on its own speaker (built-in, wired or Bluetooth); per-phone delay settings fix Bluetooth lag; the host can remove a speaker. Background playback with a media notification. A help page explains other ways to use many Bluetooth speakers (Dual audio, speaker party modes). No internet is used for the music; only ads use the internet.
 
