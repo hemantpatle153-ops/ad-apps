@@ -73,3 +73,7 @@ jobs:
       # page aligned. Runs last so the APK above is still saved.
       - name: Check 16 KB page size (Play requirement)
         run: ../../tool/check_16kb.sh build/app/outputs/flutter-apk/app-release.apk
+      # Ads are off, so Play Console says "No" to advertising ID: the APK
+      # must not ask for AD_ID or the ad services permissions.
+      - name: Check no ad permissions
+        run: ../../tool/check_ad_permissions.sh build/app/outputs/flutter-apk/app-release.apk
