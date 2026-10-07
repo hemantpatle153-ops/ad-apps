@@ -286,6 +286,7 @@ class OnlineParty extends WatchParty {
         final at = (v['at'] as num?)?.toInt() ?? 0;
         if (at != 0 && at < _joinedAtMs - 2000) {
           // Said before this phone joined: list it, don't pop it on screen.
+          if (isMuted(m.from)) return;
           messages.add(m);
           notifyListeners();
         } else {
@@ -375,6 +376,24 @@ class OnlineParty extends WatchParty {
 
   @override
   void sendReaction(String emoji) => _post(emoji, emoji: true);
+
+  @override
+  bool get canReport => true;
+
+  /// Saved write-only under `reports/` (shared with Dice Dhamaal's rules);
+  /// only the project owner can read them in the Firebase console.
+  @override
+  Future<void> report(String name, String text) async {
+    final reason = 'video_player: $text';
+    await _db.ref('reports').push().set({
+      'code': code,
+      'seat': 0,
+      'name': name.length > 40 ? name.substring(0, 40) : name,
+      'reason': reason.length > 200 ? reason.substring(0, 200) : reason,
+      'by': _uid,
+      'at': ServerValue.timestamp,
+    });
+  }
 
   @override
   Future<void> close() async {
