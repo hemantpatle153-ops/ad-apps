@@ -1,5 +1,7 @@
 # Daily Sudoku - Play Console sheet
 
+> **First release has ads off** (`--dart-define=ADS=off`): ignore every AdMob row and ad answer below; see [README](README.md). They apply once ads are turned on.
+
 - Folder: `apps/daily_sudoku` - Package: `in.onlysoftware.daily_sudoku`
 - Type: **Game** (Puzzle) - Free - Contains ads - Ages 13+
 - Privacy policy: https://dice-dhamaal.web.app/privacy/daily_sudoku.html

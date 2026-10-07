@@ -1,5 +1,7 @@
 # Video Player - Play Console sheet
 
+> **First release has ads off** (`--dart-define=ADS=off`): ignore every AdMob row and ad answer below; see [README](README.md). They apply once ads are turned on.
+
 - Folder: `apps/video_player` - Package: `in.onlysoftware.video_player`
 - Type: App - Free - Contains ads - Ages 13+
 - Privacy policy: https://docs.google.com/document/d/e/2PACX-1vTfrEbXLRvkphpIBmzE9dJ_gLWgh24QUcM0FZjossBmiuPtX29Vhs8ryciONNOotey4viCLpV3zf7Em/pub

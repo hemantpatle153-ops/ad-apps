@@ -1,5 +1,7 @@
 # Dice Dhamaal (Ludo + Snakes & Ladders) - Play Console sheet
 
+> **First release has ads off** (`--dart-define=ADS=off`): ignore every AdMob row and ad answer below; see [README](README.md). They apply once ads are turned on.
+
 - Folder: `apps/snakes_ladders`, **branch `ludo-game`** - Package: `in.onlysoftware.dice_dhamaal`
 - Type: **Game** (Board) - Free - Contains ads - Ages 13+
 - Privacy policy: https://dice-dhamaal.web.app/privacy/dice_dhamaal.html

@@ -1,5 +1,7 @@
 # Multi Speaker - Play Console sheet
 
+> **First release has ads off** (`--dart-define=ADS=off`): ignore every AdMob row and ad answer below; see [README](README.md). They apply once ads are turned on.
+
 - Folder: `apps/multi_speaker` - Package: `in.onlysoftware.multi_speaker`
 - Type: App - Free - Contains ads - Ages 13+
 - Privacy policy: https://dice-dhamaal.web.app/privacy/multi_speaker.html

@@ -24,8 +24,12 @@ class AdService {
   RewardedAd? _rewarded;
   DateTime? _lastInterstitialShown;
 
+  /// False when the app was built with `--dart-define=ADS=off`.
+  bool get enabled => _config.enabled;
+
   Future<void> init(AdConfig config) async {
     _config = config;
+    if (!config.enabled) return;
     await _gatherConsent();
     if (await ConsentInformation.instance.canRequestAds()) {
       await MobileAds.instance.initialize();
@@ -52,8 +56,9 @@ class AdService {
 
   /// Whether settings should offer a "Privacy options" entry.
   Future<bool> privacyOptionsRequired() async =>
+      enabled &&
       await ConsentInformation.instance.getPrivacyOptionsRequirementStatus() ==
-      PrivacyOptionsRequirementStatus.required;
+          PrivacyOptionsRequirementStatus.required;
 
   /// Lets the user change their consent choice later.
   void showPrivacyOptions() => ConsentForm.showPrivacyOptionsForm((_) {});

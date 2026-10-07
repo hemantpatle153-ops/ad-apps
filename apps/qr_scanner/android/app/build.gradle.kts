@@ -13,6 +13,16 @@ val keyProperties = Properties().apply {
     if (f.exists()) f.inputStream().use { load(it) }
 }
 
+// --dart-define values that `flutter build` passes on (base64, comma separated).
+val dartDefines: Map<String, String> = (project.findProperty("dart-defines") as String?).orEmpty()
+    .split(",").filter { it.isNotEmpty() }
+    .map { String(Base64.getDecoder().decode(it)) }
+    .associate { it.substringBefore("=") to it.substringAfter("=", "") }
+
+// --dart-define=ADS=off ships the app without ads: no AdMob IDs are needed and
+// release builds drop the advertising ID permission (src/noads).
+val adsOff = dartDefines["ADS"] == "off"
+
 android {
     namespace = "in.onlysoftware.qr_scanner"
     compileSdk = flutter.compileSdkVersion
@@ -54,6 +64,10 @@ android {
         }
     }
 
+    if (adsOff) {
+        sourceSets.getByName("release").manifest.srcFile("src/noads/AndroidManifest.xml")
+    }
+
     buildTypes {
         release {
             // Falls back to debug keys until key.properties exists, so
@@ -66,21 +80,22 @@ android {
     }
 }
 
-// A Play upload must be signed with the upload key and show real ads. Stop an
-// app bundle build that would silently use debug keys or Google's test ads.
+// A Play upload must be signed with the upload key, and either show real ads
+// or be built with ads off. Stop an app bundle build that would silently use
+// debug keys or Google's test ads.
 gradle.taskGraph.whenReady {
     if (allTasks.none { it.name == "bundleRelease" }) return@whenReady
-    val defines = (project.findProperty("dart-defines") as String?).orEmpty()
-        .split(",").filter { it.isNotEmpty() }
-        .map { String(Base64.getDecoder().decode(it)).substringBefore("=") }
     val missing = mutableListOf<String>()
     if (keyProperties.isEmpty()) missing += "android/key.properties (upload key)"
-    if (project.findProperty("admobAppId") == null) missing += "-PadmobAppId"
-    listOf("ADMOB_BANNER_ID", "ADMOB_INTERSTITIAL_ID").filterNot { it in defines }
-        .forEach { missing += "--dart-define=$it" }
+    if (!adsOff) {
+        if (project.findProperty("admobAppId") == null) missing += "-PadmobAppId"
+        listOf("ADMOB_BANNER_ID", "ADMOB_INTERSTITIAL_ID").filterNot { it in dartDefines }
+            .forEach { missing += "--dart-define=$it" }
+    }
     if (missing.isNotEmpty()) {
         throw GradleException(
-            "Play release bundle needs: ${missing.joinToString()}. See README.md (Release build).")
+            "Play release bundle needs: ${missing.joinToString()} " +
+                "(or --dart-define=ADS=off for no ads). See README.md (Release build).")
     }
 }
 

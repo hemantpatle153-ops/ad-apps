@@ -35,14 +35,16 @@ Debug builds show Google's **test ads**. Tapping them is safe. Never tap real ad
 Play bundles are built on the laptop with one script. It needs two things that never go in git, in `Downloads\APPS\signing`:
 
 - `<app>-upload.jks` and `<app>.key.properties` (storePassword, keyAlias, keyPassword): the upload key of each app. Back these up; a lost upload key needs a reset request to Google. If one is missing, the script prints the `keytool` command to create it.
-- `admob.json`: the real AdMob IDs (copy `tool/admob.example.json`). Only Daily Sudoku needs a rewarded ID.
+- `admob.json` (optional): the real AdMob IDs (copy `tool/admob.example.json`). Only Daily Sudoku needs a rewarded ID. **An app with no entry is built with ads off** (`--dart-define=ADS=off`), which is the plan for the first Play release.
 
 ```
 powershell -ExecutionPolicy Bypass -File tool\build_release.ps1               # all 8 apps
 powershell -ExecutionPolicy Bypass -File tool\build_release.ps1 qr_scanner    # one app
 ```
 
-Bundles land in `Downloads\APPS\play_release`. A bundle build (`bundleRelease`) refuses to run without the upload key, `-PadmobAppId` and the ad unit `--dart-define`s, so a Play upload can never carry debug keys or Google's test ads. APK builds (`flutter build apk`, CI) still fall back to debug keys and test ads.
+Bundles land in `Downloads\APPS\play_release`. A bundle build (`bundleRelease`) refuses to run without the upload key, and without either the AdMob IDs (`-PadmobAppId` and the ad unit `--dart-define`s) or `--dart-define=ADS=off`, so a Play upload can never carry debug keys or Google's test ads.
+
+With `ADS=off` the AdMob SDK is never started: no consent form, no ad requests, no "Ad privacy choices" entry, Sudoku hints are free, and release builds drop the advertising ID permission. The test APKs from `apk.yml` are built the same way; `flutter run` and the CI `apk` job still show Google's test ads. When ads are turned on later, update the privacy policies and the Play forms (see `docs/play/README.md`).
 
 Before each new upload, raise `version:` in the app's `pubspec.yaml` (the number after `+` must go up every time).
 

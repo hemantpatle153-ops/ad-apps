@@ -123,7 +123,8 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
 
   Future<void> _hint() async {
     if (g.completed) return;
-    if (g.hintsUsed < freeHints) {
+    // Without ads there is no way to earn a hint, so they are all free.
+    if (g.hintsUsed < freeHints || !AdService.instance.enabled) {
       g.hintsUsed++;
       _revealOne();
       return;
