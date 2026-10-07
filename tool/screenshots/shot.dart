@@ -49,7 +49,12 @@ Future<void> shot(WidgetTester tester, String name) async {
   // before the test ends.
   debugDisableShadows = false;
   try {
-    tester.binding.renderView.markNeedsPaint();
+    // Repaint every layer, or cached layers keep the debug shadow outlines.
+    void visit(RenderObject o) {
+      o.markNeedsPaint();
+      o.visitChildren(visit);
+    }
+    visit(tester.binding.renderView);
     await tester.pump(const Duration(milliseconds: 400));
     await expectLater(
       find.byType(MaterialApp).first,
