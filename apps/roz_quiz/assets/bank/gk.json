@@ -1,0 +1,996 @@
+{
+ "schema": 1,
+ "subject": "gk",
+ "questions": [
+  {
+   "id": "rq-gk-001",
+   "q": {
+    "en": "What is the national animal of India?",
+    "hi": "भारत का राष्ट्रीय पशु कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Lion",
+     "hi": "शेर"
+    },
+    {
+     "en": "Tiger",
+     "hi": "बाघ"
+    },
+    {
+     "en": "Elephant",
+     "hi": "हाथी"
+    },
+    {
+     "en": "Leopard",
+     "hi": "तेंदुआ"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The tiger (Panthera tigris) is India's national animal. Project Tiger was launched in 1973 to protect it.",
+    "hi": "बाघ (पैंथेरा टाइग्रिस) भारत का राष्ट्रीय पशु है। इसकी रक्षा के लिए 1973 में प्रोजेक्ट टाइगर शुरू किया गया।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-002",
+   "q": {
+    "en": "Which bird is the national bird of India?",
+    "hi": "भारत का राष्ट्रीय पक्षी कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Parrot",
+     "hi": "तोता"
+    },
+    {
+     "en": "Indian peafowl (peacock)",
+     "hi": "मोर"
+    },
+    {
+     "en": "Sparrow",
+     "hi": "गौरैया"
+    },
+    {
+     "en": "Eagle",
+     "hi": "चील"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The Indian peafowl (peacock) was declared the national bird of India in 1963.",
+    "hi": "मोर को 1963 में भारत का राष्ट्रीय पक्षी घोषित किया गया।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-003",
+   "q": {
+    "en": "What is the national flower of India?",
+    "hi": "भारत का राष्ट्रीय पुष्प कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Rose",
+     "hi": "गुलाब"
+    },
+    {
+     "en": "Lotus",
+     "hi": "कमल"
+    },
+    {
+     "en": "Sunflower",
+     "hi": "सूरजमुखी"
+    },
+    {
+     "en": "Marigold",
+     "hi": "गेंदा"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The lotus (Nelumbo nucifera) is the national flower of India.",
+    "hi": "कमल (नेलुम्बो न्यूसीफेरा) भारत का राष्ट्रीय पुष्प है।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-004",
+   "q": {
+    "en": "Who wrote India's national song 'Vande Mataram'?",
+    "hi": "भारत का राष्ट्रीय गीत 'वंदे मातरम्' किसने लिखा?"
+   },
+   "options": [
+    {
+     "en": "Rabindranath Tagore",
+     "hi": "रवींद्रनाथ टैगोर"
+    },
+    {
+     "en": "Bankim Chandra Chatterjee",
+     "hi": "बंकिम चंद्र चट्टोपाध्याय"
+    },
+    {
+     "en": "Sarojini Naidu",
+     "hi": "सरोजिनी नायडू"
+    },
+    {
+     "en": "Muhammad Iqbal",
+     "hi": "मुहम्मद इक़बाल"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "'Vande Mataram' was written by Bankim Chandra Chatterjee and appears in his novel Anandamath (1882).",
+    "hi": "'वंदे मातरम्' बंकिम चंद्र चट्टोपाध्याय ने लिखा, जो उनके उपन्यास 'आनंदमठ' (1882) में है।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-005",
+   "q": {
+    "en": "Who composed India's national anthem 'Jana Gana Mana'?",
+    "hi": "भारत का राष्ट्रगान 'जन गण मन' किसने रचा?"
+   },
+   "options": [
+    {
+     "en": "Bankim Chandra Chatterjee",
+     "hi": "बंकिम चंद्र चट्टोपाध्याय"
+    },
+    {
+     "en": "Rabindranath Tagore",
+     "hi": "रवींद्रनाथ टैगोर"
+    },
+    {
+     "en": "Subramania Bharati",
+     "hi": "सुब्रमण्य भारती"
+    },
+    {
+     "en": "Mahatma Gandhi",
+     "hi": "महात्मा गांधी"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "'Jana Gana Mana' was written by Rabindranath Tagore. The Constituent Assembly adopted it as the national anthem on 24 January 1950.",
+    "hi": "'जन गण मन' रवींद्रनाथ टैगोर ने लिखा। संविधान सभा ने इसे 24 जनवरी 1950 को राष्ट्रगान के रूप में अपनाया।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-006",
+   "q": {
+    "en": "The national emblem of India is adapted from the Lion Capital of Ashoka found at:",
+    "hi": "भारत का राष्ट्रीय प्रतीक अशोक के सिंह-शीर्ष से लिया गया है, जो कहाँ मिला था?"
+   },
+   "options": [
+    {
+     "en": "Sanchi",
+     "hi": "साँची"
+    },
+    {
+     "en": "Sarnath",
+     "hi": "सारनाथ"
+    },
+    {
+     "en": "Bodh Gaya",
+     "hi": "बोधगया"
+    },
+    {
+     "en": "Kushinagar",
+     "hi": "कुशीनगर"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The emblem is adapted from the Lion Capital of Ashoka at Sarnath and was adopted on 26 January 1950.",
+    "hi": "यह प्रतीक सारनाथ स्थित अशोक के सिंह-शीर्ष से लिया गया है और 26 जनवरी 1950 को अपनाया गया।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-007",
+   "q": {
+    "en": "How many spokes does the Ashoka Chakra on the national flag have?",
+    "hi": "राष्ट्रीय ध्वज के अशोक चक्र में कितनी तीलियाँ हैं?"
+   },
+   "options": [
+    {
+     "en": "22",
+     "hi": "22"
+    },
+    {
+     "en": "24",
+     "hi": "24"
+    },
+    {
+     "en": "26",
+     "hi": "26"
+    },
+    {
+     "en": "32",
+     "hi": "32"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The Ashoka Chakra in the centre of the tricolour has 24 spokes.",
+    "hi": "तिरंगे के बीच में बने अशोक चक्र में 24 तीलियाँ होती हैं।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-008",
+   "q": {
+    "en": "Who designed the Indian rupee symbol (₹)?",
+    "hi": "भारतीय रुपये का प्रतीक (₹) किसने डिज़ाइन किया?"
+   },
+   "options": [
+    {
+     "en": "D. Udaya Kumar",
+     "hi": "डी. उदय कुमार"
+    },
+    {
+     "en": "Pingali Venkayya",
+     "hi": "पिंगली वेंकय्या"
+    },
+    {
+     "en": "Satish Gujral",
+     "hi": "सतीश गुजराल"
+    },
+    {
+     "en": "Raghuram Rajan",
+     "hi": "रघुराम राजन"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "The ₹ symbol was designed by D. Udaya Kumar and adopted by the Government of India in 2010.",
+    "hi": "₹ प्रतीक डी. उदय कुमार ने डिज़ाइन किया था, जिसे भारत सरकार ने 2010 में अपनाया।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-009",
+   "q": {
+    "en": "The Indian national flag is based on a design by:",
+    "hi": "भारतीय राष्ट्रीय ध्वज किसके डिज़ाइन पर आधारित है?"
+   },
+   "options": [
+    {
+     "en": "Pingali Venkayya",
+     "hi": "पिंगली वेंकय्या"
+    },
+    {
+     "en": "Bhikaiji Cama",
+     "hi": "भीकाजी कामा"
+    },
+    {
+     "en": "Sister Nivedita",
+     "hi": "सिस्टर निवेदिता"
+    },
+    {
+     "en": "Rabindranath Tagore",
+     "hi": "रवींद्रनाथ टैगोर"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "The tricolour is based on a flag designed by Pingali Venkayya.",
+    "hi": "तिरंगा पिंगली वेंकय्या द्वारा डिज़ाइन किए गए ध्वज पर आधारित है।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-010",
+   "q": {
+    "en": "India's National Sports Day is celebrated on the birthday of which hockey legend?",
+    "hi": "भारत का राष्ट्रीय खेल दिवस किस हॉकी दिग्गज के जन्मदिन पर मनाया जाता है?"
+   },
+   "options": [
+    {
+     "en": "Dhyan Chand",
+     "hi": "ध्यानचंद"
+    },
+    {
+     "en": "Balbir Singh Sr.",
+     "hi": "बलबीर सिंह सीनियर"
+    },
+    {
+     "en": "Dhanraj Pillay",
+     "hi": "धनराज पिल्लै"
+    },
+    {
+     "en": "Leslie Claudius",
+     "hi": "लेस्ली क्लॉडियस"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "National Sports Day is celebrated on 29 August, the birthday of Major Dhyan Chand.",
+    "hi": "राष्ट्रीय खेल दिवस 29 अगस्त को मेजर ध्यानचंद के जन्मदिन पर मनाया जाता है।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-011",
+   "q": {
+    "en": "Teachers' Day in India (5 September) marks the birthday of:",
+    "hi": "भारत में शिक्षक दिवस (5 सितंबर) किसके जन्मदिन पर मनाया जाता है?"
+   },
+   "options": [
+    {
+     "en": "Dr. Sarvepalli Radhakrishnan",
+     "hi": "डॉ. सर्वपल्ली राधाकृष्णन"
+    },
+    {
+     "en": "Dr. Zakir Husain",
+     "hi": "डॉ. ज़ाकिर हुसैन"
+    },
+    {
+     "en": "Savitribai Phule",
+     "hi": "सावित्रीबाई फुले"
+    },
+    {
+     "en": "Dr. A. P. J. Abdul Kalam",
+     "hi": "डॉ. ए. पी. जे. अब्दुल कलाम"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Teachers' Day is celebrated on 5 September, the birthday of Dr. Sarvepalli Radhakrishnan, India's second President.",
+    "hi": "शिक्षक दिवस 5 सितंबर को भारत के दूसरे राष्ट्रपति डॉ. सर्वपल्ली राधाकृष्णन के जन्मदिन पर मनाया जाता है।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "teaching",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-012",
+   "q": {
+    "en": "What is the national aquatic animal of India?",
+    "hi": "भारत का राष्ट्रीय जलीय जीव कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Gangetic river dolphin",
+     "hi": "गंगा नदी डॉल्फ़िन"
+    },
+    {
+     "en": "Gharial",
+     "hi": "घड़ियाल"
+    },
+    {
+     "en": "Olive ridley turtle",
+     "hi": "ओलिव रिडले कछुआ"
+    },
+    {
+     "en": "Whale shark",
+     "hi": "व्हेल शार्क"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "The Gangetic river dolphin was declared the national aquatic animal of India in 2009.",
+    "hi": "गंगा नदी डॉल्फ़िन को 2009 में भारत का राष्ट्रीय जलीय जीव घोषित किया गया।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "upsc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-013",
+   "q": {
+    "en": "What is the national tree of India?",
+    "hi": "भारत का राष्ट्रीय वृक्ष कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Peepal",
+     "hi": "पीपल"
+    },
+    {
+     "en": "Banyan",
+     "hi": "बरगद"
+    },
+    {
+     "en": "Neem",
+     "hi": "नीम"
+    },
+    {
+     "en": "Mango",
+     "hi": "आम"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The banyan tree (Ficus benghalensis) is the national tree of India.",
+    "hi": "बरगद (फ़ाइकस बेंगालेंसिस) भारत का राष्ट्रीय वृक्ष है।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-014",
+   "q": {
+    "en": "What is the national fruit of India?",
+    "hi": "भारत का राष्ट्रीय फल कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Banana",
+     "hi": "केला"
+    },
+    {
+     "en": "Mango",
+     "hi": "आम"
+    },
+    {
+     "en": "Jackfruit",
+     "hi": "कटहल"
+    },
+    {
+     "en": "Apple",
+     "hi": "सेब"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The mango (Mangifera indica) is the national fruit of India.",
+    "hi": "आम (मैंगीफ़ेरा इंडिका) भारत का राष्ट्रीय फल है।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-015",
+   "q": {
+    "en": "Who is popularly known as the 'Missile Man of India'?",
+    "hi": "'भारत के मिसाइल मैन' के नाम से कौन प्रसिद्ध हैं?"
+   },
+   "options": [
+    {
+     "en": "Vikram Sarabhai",
+     "hi": "विक्रम साराभाई"
+    },
+    {
+     "en": "Homi J. Bhabha",
+     "hi": "होमी जे. भाभा"
+    },
+    {
+     "en": "A. P. J. Abdul Kalam",
+     "hi": "ए. पी. जे. अब्दुल कलाम"
+    },
+    {
+     "en": "Satish Dhawan",
+     "hi": "सतीश धवन"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Dr. A. P. J. Abdul Kalam led India's missile programme and later became the 11th President of India.",
+    "hi": "डॉ. ए. पी. जे. अब्दुल कलाम ने भारत के मिसाइल कार्यक्रम का नेतृत्व किया और बाद में भारत के 11वें राष्ट्रपति बने।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-016",
+   "q": {
+    "en": "Who is known as the 'Nightingale of India'?",
+    "hi": "'भारत कोकिला' के नाम से कौन जानी जाती हैं?"
+   },
+   "options": [
+    {
+     "en": "Sarojini Naidu",
+     "hi": "सरोजिनी नायडू"
+    },
+    {
+     "en": "Lata Mangeshkar",
+     "hi": "लता मंगेशकर"
+    },
+    {
+     "en": "Annie Besant",
+     "hi": "एनी बेसेंट"
+    },
+    {
+     "en": "Vijaya Lakshmi Pandit",
+     "hi": "विजयलक्ष्मी पंडित"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Poet and freedom fighter Sarojini Naidu is called the 'Nightingale of India' (Bharat Kokila).",
+    "hi": "कवयित्री और स्वतंत्रता सेनानी सरोजिनी नायडू को 'भारत कोकिला' कहा जाता है।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-017",
+   "q": {
+    "en": "Who is known as the 'Iron Man of India'?",
+    "hi": "'भारत के लौह पुरुष' के नाम से कौन जाने जाते हैं?"
+   },
+   "options": [
+    {
+     "en": "Jawaharlal Nehru",
+     "hi": "जवाहरलाल नेहरू"
+    },
+    {
+     "en": "Sardar Vallabhbhai Patel",
+     "hi": "सरदार वल्लभभाई पटेल"
+    },
+    {
+     "en": "Bal Gangadhar Tilak",
+     "hi": "बाल गंगाधर तिलक"
+    },
+    {
+     "en": "Lal Bahadur Shastri",
+     "hi": "लाल बहादुर शास्त्री"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Sardar Vallabhbhai Patel, who led the integration of the princely states, is called the 'Iron Man of India'.",
+    "hi": "रियासतों के एकीकरण का नेतृत्व करने वाले सरदार वल्लभभाई पटेल को 'भारत का लौह पुरुष' कहा जाता है।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-018",
+   "q": {
+    "en": "Where is the headquarters of ISRO?",
+    "hi": "इसरो (ISRO) का मुख्यालय कहाँ है?"
+   },
+   "options": [
+    {
+     "en": "Mumbai",
+     "hi": "मुंबई"
+    },
+    {
+     "en": "Bengaluru",
+     "hi": "बेंगलुरु"
+    },
+    {
+     "en": "Sriharikota",
+     "hi": "श्रीहरिकोटा"
+    },
+    {
+     "en": "Thiruvananthapuram",
+     "hi": "तिरुवनंतपुरम"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The Indian Space Research Organisation is headquartered in Bengaluru. Sriharikota is its main launch site.",
+    "hi": "भारतीय अंतरिक्ष अनुसंधान संगठन का मुख्यालय बेंगलुरु में है। श्रीहरिकोटा इसका मुख्य प्रक्षेपण स्थल है।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway",
+    "upsc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-019",
+   "q": {
+    "en": "How many rings are there in the Olympic symbol?",
+    "hi": "ओलंपिक प्रतीक में कितने छल्ले होते हैं?"
+   },
+   "options": [
+    {
+     "en": "4",
+     "hi": "4"
+    },
+    {
+     "en": "5",
+     "hi": "5"
+    },
+    {
+     "en": "6",
+     "hi": "6"
+    },
+    {
+     "en": "7",
+     "hi": "7"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The Olympic symbol has five interlocking rings.",
+    "hi": "ओलंपिक प्रतीक में पाँच आपस में जुड़े छल्ले होते हैं।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-020",
+   "q": {
+    "en": "Who was the first Indian to win a Nobel Prize?",
+    "hi": "नोबेल पुरस्कार जीतने वाले पहले भारतीय कौन थे?"
+   },
+   "options": [
+    {
+     "en": "C. V. Raman",
+     "hi": "सी. वी. रमन"
+    },
+    {
+     "en": "Rabindranath Tagore",
+     "hi": "रवींद्रनाथ टैगोर"
+    },
+    {
+     "en": "Mother Teresa",
+     "hi": "मदर टेरेसा"
+    },
+    {
+     "en": "Har Gobind Khorana",
+     "hi": "हरगोविंद खुराना"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Rabindranath Tagore won the Nobel Prize in Literature in 1913 for Gitanjali.",
+    "hi": "रवींद्रनाथ टैगोर को 'गीतांजलि' के लिए 1913 में साहित्य का नोबेल पुरस्कार मिला।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-021",
+   "q": {
+    "en": "National Youth Day (12 January) marks the birth anniversary of:",
+    "hi": "राष्ट्रीय युवा दिवस (12 जनवरी) किसकी जयंती पर मनाया जाता है?"
+   },
+   "options": [
+    {
+     "en": "Swami Vivekananda",
+     "hi": "स्वामी विवेकानंद"
+    },
+    {
+     "en": "Bhagat Singh",
+     "hi": "भगत सिंह"
+    },
+    {
+     "en": "Subhas Chandra Bose",
+     "hi": "सुभाष चंद्र बोस"
+    },
+    {
+     "en": "Rabindranath Tagore",
+     "hi": "रवींद्रनाथ टैगोर"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "National Youth Day is celebrated on 12 January, the birth anniversary of Swami Vivekananda.",
+    "hi": "राष्ट्रीय युवा दिवस 12 जनवरी को स्वामी विवेकानंद की जयंती पर मनाया जाता है।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway",
+    "teaching"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-022",
+   "q": {
+    "en": "'Wings of Fire' is the autobiography of:",
+    "hi": "'विंग्स ऑफ़ फ़ायर' किसकी आत्मकथा है?"
+   },
+   "options": [
+    {
+     "en": "A. P. J. Abdul Kalam",
+     "hi": "ए. पी. जे. अब्दुल कलाम"
+    },
+    {
+     "en": "Mahatma Gandhi",
+     "hi": "महात्मा गांधी"
+    },
+    {
+     "en": "Jawaharlal Nehru",
+     "hi": "जवाहरलाल नेहरू"
+    },
+    {
+     "en": "Sachin Tendulkar",
+     "hi": "सचिन तेंदुलकर"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "'Wings of Fire' (1999) is the autobiography of Dr. A. P. J. Abdul Kalam, written with Arun Tiwari.",
+    "hi": "'विंग्स ऑफ़ फ़ायर' (1999) डॉ. ए. पी. जे. अब्दुल कलाम की आत्मकथा है, जो अरुण तिवारी के साथ लिखी गई।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-023",
+   "q": {
+    "en": "Which sport is associated with the term 'checkmate'?",
+    "hi": "'चेकमेट' शब्द किस खेल से जुड़ा है?"
+   },
+   "options": [
+    {
+     "en": "Carrom",
+     "hi": "कैरम"
+    },
+    {
+     "en": "Chess",
+     "hi": "शतरंज"
+    },
+    {
+     "en": "Tennis",
+     "hi": "टेनिस"
+    },
+    {
+     "en": "Badminton",
+     "hi": "बैडमिंटन"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Checkmate ends a game of chess: the king is under attack and cannot escape.",
+    "hi": "शतरंज में चेकमेट से खेल खत्म होता है: राजा पर हमला हो और वह बच न सके।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-024",
+   "q": {
+    "en": "Gandhi Jayanti is celebrated on:",
+    "hi": "गांधी जयंती कब मनाई जाती है?"
+   },
+   "options": [
+    {
+     "en": "2 October",
+     "hi": "2 अक्टूबर"
+    },
+    {
+     "en": "14 November",
+     "hi": "14 नवंबर"
+    },
+    {
+     "en": "30 January",
+     "hi": "30 जनवरी"
+    },
+    {
+     "en": "15 August",
+     "hi": "15 अगस्त"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Mahatma Gandhi was born on 2 October 1869; the day is also the UN's International Day of Non-Violence.",
+    "hi": "महात्मा गांधी का जन्म 2 अक्टूबर 1869 को हुआ था; यह दिन संयुक्त राष्ट्र का अंतरराष्ट्रीय अहिंसा दिवस भी है।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-gk-025",
+   "q": {
+    "en": "Which is the highest civilian award of India?",
+    "hi": "भारत का सर्वोच्च नागरिक सम्मान कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Padma Vibhushan",
+     "hi": "पद्म विभूषण"
+    },
+    {
+     "en": "Bharat Ratna",
+     "hi": "भारत रत्न"
+    },
+    {
+     "en": "Padma Bhushan",
+     "hi": "पद्म भूषण"
+    },
+    {
+     "en": "Param Vir Chakra",
+     "hi": "परमवीर चक्र"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The Bharat Ratna is India's highest civilian award. The Param Vir Chakra is the highest wartime gallantry award.",
+    "hi": "भारत रत्न भारत का सर्वोच्च नागरिक सम्मान है। परमवीर चक्र युद्धकाल का सर्वोच्च वीरता पुरस्कार है।"
+   },
+   "subject": "gk",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  }
+ ]
+}

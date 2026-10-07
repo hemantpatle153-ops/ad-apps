@@ -1,0 +1,758 @@
+{
+ "schema": 1,
+ "subject": "computer",
+ "questions": [
+  {
+   "id": "rq-computer-001",
+   "q": {
+    "en": "What does CPU stand for?",
+    "hi": "CPU का पूरा नाम क्या है?"
+   },
+   "options": [
+    {
+     "en": "Central Processing Unit",
+     "hi": "Central Processing Unit"
+    },
+    {
+     "en": "Central Program Utility",
+     "hi": "Central Program Utility"
+    },
+    {
+     "en": "Computer Personal Unit",
+     "hi": "Computer Personal Unit"
+    },
+    {
+     "en": "Control Processing Unit",
+     "hi": "Control Processing Unit"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "The CPU (Central Processing Unit) carries out a program's instructions and is called the brain of the computer.",
+    "hi": "CPU (सेंट्रल प्रोसेसिंग यूनिट) प्रोग्राम के निर्देशों को चलाता है और इसे कंप्यूटर का मस्तिष्क कहा जाता है।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-002",
+   "q": {
+    "en": "How many bits make one byte?",
+    "hi": "एक बाइट में कितने बिट होते हैं?"
+   },
+   "options": [
+    {
+     "en": "4",
+     "hi": "4"
+    },
+    {
+     "en": "8",
+     "hi": "8"
+    },
+    {
+     "en": "16",
+     "hi": "16"
+    },
+    {
+     "en": "32",
+     "hi": "32"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "One byte is 8 bits. A bit is a single binary digit, 0 or 1.",
+    "hi": "एक बाइट में 8 बिट होते हैं। बिट एक अकेला द्विआधारी अंक है, 0 या 1।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-003",
+   "q": {
+    "en": "Which memory loses its contents when the power is switched off?",
+    "hi": "बिजली बंद होने पर कौन-सी मेमोरी अपना डेटा खो देती है?"
+   },
+   "options": [
+    {
+     "en": "ROM",
+     "hi": "ROM"
+    },
+    {
+     "en": "RAM",
+     "hi": "RAM"
+    },
+    {
+     "en": "Hard disk",
+     "hi": "हार्ड डिस्क"
+    },
+    {
+     "en": "Pen drive",
+     "hi": "पेन ड्राइव"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "RAM is volatile memory: it keeps data only while powered. ROM, hard disks and pen drives keep data without power.",
+    "hi": "RAM अस्थिर (वोलेटाइल) मेमोरी है: यह केवल बिजली रहने तक डेटा रखती है। ROM, हार्ड डिस्क और पेन ड्राइव बिना बिजली के भी डेटा रखते हैं।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-004",
+   "q": {
+    "en": "Who invented the World Wide Web?",
+    "hi": "वर्ल्ड वाइड वेब (WWW) का आविष्कार किसने किया?"
+   },
+   "options": [
+    {
+     "en": "Bill Gates",
+     "hi": "बिल गेट्स"
+    },
+    {
+     "en": "Tim Berners-Lee",
+     "hi": "टिम बर्नर्स-ली"
+    },
+    {
+     "en": "Charles Babbage",
+     "hi": "चार्ल्स बैबेज"
+    },
+    {
+     "en": "Vint Cerf",
+     "hi": "विंट सर्फ़"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Tim Berners-Lee invented the World Wide Web in 1989 while working at CERN.",
+    "hi": "टिम बर्नर्स-ली ने 1989 में CERN में काम करते हुए वर्ल्ड वाइड वेब का आविष्कार किया।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-005",
+   "q": {
+    "en": "Which keyboard shortcut copies selected text in most Windows programs?",
+    "hi": "अधिकांश Windows प्रोग्रामों में चुने गए टेक्स्ट को कॉपी करने का शॉर्टकट कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Ctrl + V",
+     "hi": "Ctrl + V"
+    },
+    {
+     "en": "Ctrl + X",
+     "hi": "Ctrl + X"
+    },
+    {
+     "en": "Ctrl + C",
+     "hi": "Ctrl + C"
+    },
+    {
+     "en": "Ctrl + Z",
+     "hi": "Ctrl + Z"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Ctrl + C copies, Ctrl + X cuts, Ctrl + V pastes and Ctrl + Z undoes.",
+    "hi": "Ctrl + C कॉपी करता है, Ctrl + X कट, Ctrl + V पेस्ट और Ctrl + Z अनडू करता है।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-006",
+   "q": {
+    "en": "Which shortcut undoes the last action in most Windows programs?",
+    "hi": "अधिकांश Windows प्रोग्रामों में पिछली क्रिया को पूर्ववत (Undo) करने का शॉर्टकट कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Ctrl + Y",
+     "hi": "Ctrl + Y"
+    },
+    {
+     "en": "Ctrl + Z",
+     "hi": "Ctrl + Z"
+    },
+    {
+     "en": "Ctrl + U",
+     "hi": "Ctrl + U"
+    },
+    {
+     "en": "Ctrl + A",
+     "hi": "Ctrl + A"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Ctrl + Z is Undo. Ctrl + Y usually redoes, Ctrl + A selects all and Ctrl + U underlines.",
+    "hi": "Ctrl + Z अनडू है। Ctrl + Y सामान्यतः रीडू करता है, Ctrl + A सब चुनता है और Ctrl + U रेखांकित करता है।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-007",
+   "q": {
+    "en": "In computer memory, 1 kilobyte (KB) equals:",
+    "hi": "कंप्यूटर मेमोरी में 1 किलोबाइट (KB) बराबर होता है:"
+   },
+   "options": [
+    {
+     "en": "100 bytes",
+     "hi": "100 बाइट"
+    },
+    {
+     "en": "512 bytes",
+     "hi": "512 बाइट"
+    },
+    {
+     "en": "1024 bytes",
+     "hi": "1024 बाइट"
+    },
+    {
+     "en": "2048 bytes",
+     "hi": "2048 बाइट"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "In computer memory terms 1 KB = 2^10 = 1024 bytes.",
+    "hi": "कंप्यूटर मेमोरी के संदर्भ में 1 KB = 2^10 = 1024 बाइट।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-008",
+   "q": {
+    "en": "What does HTML stand for?",
+    "hi": "HTML का पूरा नाम क्या है?"
+   },
+   "options": [
+    {
+     "en": "HyperText Markup Language",
+     "hi": "HyperText Markup Language"
+    },
+    {
+     "en": "High Transfer Machine Language",
+     "hi": "High Transfer Machine Language"
+    },
+    {
+     "en": "HyperText Machine Link",
+     "hi": "HyperText Machine Link"
+    },
+    {
+     "en": "Home Tool Markup Language",
+     "hi": "Home Tool Markup Language"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "HTML (HyperText Markup Language) is the standard language for web pages.",
+    "hi": "HTML (हाइपरटेक्स्ट मार्कअप लैंग्वेज) वेब पेज बनाने की मानक भाषा है।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-009",
+   "q": {
+    "en": "Who is known as the 'father of the computer'?",
+    "hi": "'कंप्यूटर का जनक' किसे कहा जाता है?"
+   },
+   "options": [
+    {
+     "en": "Alan Turing",
+     "hi": "एलन ट्यूरिंग"
+    },
+    {
+     "en": "Charles Babbage",
+     "hi": "चार्ल्स बैबेज"
+    },
+    {
+     "en": "John von Neumann",
+     "hi": "जॉन वॉन न्यूमैन"
+    },
+    {
+     "en": "Blaise Pascal",
+     "hi": "ब्लेज़ पास्कल"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Charles Babbage designed the Analytical Engine in the 1830s, the first design of a general-purpose computer.",
+    "hi": "चार्ल्स बैबेज ने 1830 के दशक में एनालिटिकल इंजन डिज़ाइन किया, जो सामान्य-उद्देश्य कंप्यूटर का पहला डिज़ाइन था।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-010",
+   "q": {
+    "en": "Which of these is an input device?",
+    "hi": "इनमें से कौन-सा इनपुट डिवाइस है?"
+   },
+   "options": [
+    {
+     "en": "Monitor",
+     "hi": "मॉनिटर"
+    },
+    {
+     "en": "Printer",
+     "hi": "प्रिंटर"
+    },
+    {
+     "en": "Keyboard",
+     "hi": "कीबोर्ड"
+    },
+    {
+     "en": "Speaker",
+     "hi": "स्पीकर"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "A keyboard sends data into the computer. Monitors, printers and speakers are output devices.",
+    "hi": "कीबोर्ड कंप्यूटर में डेटा भेजता है। मॉनिटर, प्रिंटर और स्पीकर आउटपुट डिवाइस हैं।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-011",
+   "q": {
+    "en": "Which of these is an output device?",
+    "hi": "इनमें से कौन-सा आउटपुट डिवाइस है?"
+   },
+   "options": [
+    {
+     "en": "Mouse",
+     "hi": "माउस"
+    },
+    {
+     "en": "Scanner",
+     "hi": "स्कैनर"
+    },
+    {
+     "en": "Printer",
+     "hi": "प्रिंटर"
+    },
+    {
+     "en": "Keyboard",
+     "hi": "कीबोर्ड"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "A printer produces output on paper. Mouse, scanner and keyboard are input devices.",
+    "hi": "प्रिंटर कागज़ पर आउटपुट देता है। माउस, स्कैनर और कीबोर्ड इनपुट डिवाइस हैं।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-012",
+   "q": {
+    "en": "What does URL stand for?",
+    "hi": "URL का पूरा नाम क्या है?"
+   },
+   "options": [
+    {
+     "en": "Uniform Resource Locator",
+     "hi": "Uniform Resource Locator"
+    },
+    {
+     "en": "Universal Routing Link",
+     "hi": "Universal Routing Link"
+    },
+    {
+     "en": "Unified Reference Language",
+     "hi": "Unified Reference Language"
+    },
+    {
+     "en": "User Resource Location",
+     "hi": "User Resource Location"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "A URL (Uniform Resource Locator) is the address of a resource on the internet, such as a web page.",
+    "hi": "URL (यूनिफ़ॉर्म रिसोर्स लोकेटर) इंटरनेट पर किसी संसाधन, जैसे वेब पेज, का पता है।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-013",
+   "q": {
+    "en": "What is the binary form of the decimal number 5?",
+    "hi": "दशमलव संख्या 5 का द्विआधारी (बाइनरी) रूप क्या है?"
+   },
+   "options": [
+    {
+     "en": "100",
+     "hi": "100"
+    },
+    {
+     "en": "101",
+     "hi": "101"
+    },
+    {
+     "en": "110",
+     "hi": "110"
+    },
+    {
+     "en": "111",
+     "hi": "111"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "5 = 4 + 1 = 1×2² + 0×2¹ + 1×2⁰, so it is 101 in binary.",
+    "hi": "5 = 4 + 1 = 1×2² + 0×2¹ + 1×2⁰, इसलिए बाइनरी में यह 101 है।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-014",
+   "q": {
+    "en": "In e-mail, 'CC' stands for:",
+    "hi": "ई-मेल में 'CC' का पूरा नाम क्या है?"
+   },
+   "options": [
+    {
+     "en": "Carbon Copy",
+     "hi": "Carbon Copy"
+    },
+    {
+     "en": "Central Copy",
+     "hi": "Central Copy"
+    },
+    {
+     "en": "Common Contact",
+     "hi": "Common Contact"
+    },
+    {
+     "en": "Computer Copy",
+     "hi": "Computer Copy"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "CC means carbon copy: the message is also sent to these people. BCC (blind carbon copy) hides them from other recipients.",
+    "hi": "CC का अर्थ कार्बन कॉपी है: संदेश इन लोगों को भी भेजा जाता है। BCC (ब्लाइंड कार्बन कॉपी) इन्हें अन्य प्राप्तकर्ताओं से छिपाता है।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-015",
+   "q": {
+    "en": "What does LAN stand for?",
+    "hi": "LAN का पूरा नाम क्या है?"
+   },
+   "options": [
+    {
+     "en": "Local Area Network",
+     "hi": "Local Area Network"
+    },
+    {
+     "en": "Large Access Network",
+     "hi": "Large Access Network"
+    },
+    {
+     "en": "Long Area Node",
+     "hi": "Long Area Node"
+    },
+    {
+     "en": "Linked Access Node",
+     "hi": "Linked Access Node"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "A LAN (Local Area Network) connects computers in a small area such as an office or school.",
+    "hi": "LAN (लोकल एरिया नेटवर्क) किसी छोटे क्षेत्र, जैसे कार्यालय या स्कूल, के कंप्यूटरों को जोड़ता है।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-016",
+   "q": {
+    "en": "Which of these is an operating system?",
+    "hi": "इनमें से कौन-सा एक ऑपरेटिंग सिस्टम है?"
+   },
+   "options": [
+    {
+     "en": "MS Word",
+     "hi": "MS Word"
+    },
+    {
+     "en": "Linux",
+     "hi": "Linux"
+    },
+    {
+     "en": "Google Chrome",
+     "hi": "Google Chrome"
+    },
+    {
+     "en": "Python",
+     "hi": "Python"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Linux is an operating system. MS Word is a word processor, Chrome is a web browser and Python is a programming language.",
+    "hi": "Linux एक ऑपरेटिंग सिस्टम है। MS Word वर्ड प्रोसेसर, Chrome वेब ब्राउज़र और Python प्रोग्रामिंग भाषा है।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-017",
+   "q": {
+    "en": "What does PDF stand for?",
+    "hi": "PDF का पूरा नाम क्या है?"
+   },
+   "options": [
+    {
+     "en": "Portable Document Format",
+     "hi": "Portable Document Format"
+    },
+    {
+     "en": "Printed Data File",
+     "hi": "Printed Data File"
+    },
+    {
+     "en": "Public Document File",
+     "hi": "Public Document File"
+    },
+    {
+     "en": "Personal Data Format",
+     "hi": "Personal Data Format"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "PDF (Portable Document Format) was created by Adobe to show documents the same way on any device.",
+    "hi": "PDF (पोर्टेबल डॉक्यूमेंट फ़ॉर्मेट) को Adobe ने बनाया ताकि दस्तावेज़ हर डिवाइस पर एक जैसे दिखें।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-018",
+   "q": {
+    "en": "A firewall is mainly used for:",
+    "hi": "फ़ायरवॉल मुख्य रूप से किसलिए उपयोग होता है?"
+   },
+   "options": [
+    {
+     "en": "Network security",
+     "hi": "नेटवर्क सुरक्षा"
+    },
+    {
+     "en": "Cooling the CPU",
+     "hi": "CPU को ठंडा करना"
+    },
+    {
+     "en": "Speeding up the internet",
+     "hi": "इंटरनेट की गति बढ़ाना"
+    },
+    {
+     "en": "Backing up data",
+     "hi": "डेटा का बैकअप"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "A firewall monitors and filters network traffic to block unauthorised access.",
+    "hi": "फ़ायरवॉल अनधिकृत पहुँच रोकने के लिए नेटवर्क ट्रैफ़िक की निगरानी और छँटाई करता है।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-computer-019",
+   "q": {
+    "en": "In networking, what does 'IP' in IP address stand for?",
+    "hi": "नेटवर्किंग में IP एड्रेस में 'IP' का पूरा नाम क्या है?"
+   },
+   "options": [
+    {
+     "en": "Internet Protocol",
+     "hi": "Internet Protocol"
+    },
+    {
+     "en": "Internal Program",
+     "hi": "Internal Program"
+    },
+    {
+     "en": "Input Port",
+     "hi": "Input Port"
+    },
+    {
+     "en": "Internet Provider",
+     "hi": "Internet Provider"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "IP stands for Internet Protocol, the set of rules for addressing and routing data on networks.",
+    "hi": "IP का अर्थ इंटरनेट प्रोटोकॉल है, जो नेटवर्क पर डेटा के पते और मार्ग तय करने के नियम हैं।"
+   },
+   "subject": "computer",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  }
+ ]
+}
