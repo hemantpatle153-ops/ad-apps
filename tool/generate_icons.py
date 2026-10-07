@@ -183,6 +183,15 @@ def glyph_dice(d, accent):
     die(d, 48.5, 60.5, 30, -12, ((-1, -1), (1, -1), (0, 0), (-1, 1), (1, 1)), 2.6)
 
 
+def glyph_bulb(d, accent):
+    # Light bulb (the daily "aha") with a check mark, on a screw base.
+    d.ellipse(p(36, 27, 72, 63), fill=WHITE)
+    d.polygon(p(42.5, 55, 65.5, 55, 62, 68, 46, 68), fill=WHITE)
+    polyline(d, [(45.5, 46), (51.5, 52), (63, 39.5)], 4.2, CUT)
+    cap_line(d, 46.5, 73, 61.5, 73, 3.6, WHITE)
+    cap_line(d, 49, 79, 59, 79, 3.6, WHITE)
+
+
 APPS = {
     "qr_scanner": (glyph_qr, (61, 90, 254), (40, 53, 147)),
     "daily_sudoku": (glyph_sudoku, (149, 82, 230), (94, 53, 177)),
@@ -192,6 +201,7 @@ APPS = {
     "multi_speaker": (glyph_speaker, (236, 64, 160), (106, 27, 154)),
     "video_player": (glyph_play, (255, 152, 0), (230, 40, 100)),
     "snakes_ladders": (glyph_dice, (130, 200, 40), (21, 128, 61)),
+    "roz_quiz": (glyph_bulb, (14, 159, 126), (11, 110, 115)),
 }
 
 # Play Store listing name and tagline for each app's feature graphic.
@@ -204,6 +214,7 @@ STORE_TEXT = {
     "multi_speaker": ("Multi Speaker", "One song, many speakers"),
     "video_player": ("Video Player", "Play any video, watch with friends"),
     "snakes_ladders": ("Dice Dhamaal", "Ludo and Snakes & Ladders"),
+    "roz_quiz": ("Roz Quiz", "Daily GK & exam quiz"),
 }
 ACCENT = (255, 214, 102, 255)
 
