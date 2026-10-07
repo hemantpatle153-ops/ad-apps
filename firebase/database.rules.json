@@ -90,6 +90,23 @@
         ".validate": "newData.hasChildren(['code','seat','name','reason','by','at']) && newData.child('by').val() == auth.uid && newData.child('at').val() == now && newData.child('code').isString() && newData.child('code').val().length <= 10 && newData.child('seat').isNumber() && newData.child('name').isString() && newData.child('name').val().length <= 40 && newData.child('reason').isString() && newData.child('reason').val().length <= 200"
       }
     },
+    "feedReports": {
+      "$id": {
+        ".write": "auth != null && !data.exists() && newData.exists()",
+        ".validate": "newData.hasChildren(['app','item','reason','by','at']) && newData.child('by').val() == auth.uid && newData.child('at').val() == now && (newData.child('app').val() == 'vacancy_bell' || newData.child('app').val() == 'roz_quiz') && newData.child('item').isString() && newData.child('item').val().matches(/^[A-Za-z0-9_-]{1,120}$/) && newData.child('reason').isString() && newData.child('reason').val().matches(/^[a-z_]{1,30}$/)",
+        "note": {
+          ".validate": "newData.isString() && newData.val().length <= 300"
+        },
+        "app": { ".validate": true },
+        "item": { ".validate": true },
+        "reason": { ".validate": true },
+        "by": { ".validate": true },
+        "at": { ".validate": true },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
     "ledger": {
       "$id": {
         ".read": "auth != null && data.child('members/' + auth.uid).exists()",

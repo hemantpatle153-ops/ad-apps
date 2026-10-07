@@ -1,4 +1,5 @@
 // Checks database.rules.json for the Ledger paths (ledger, ledgerCodes, ledgerGc)
+// and feedReports
 // on the local emulator. From firebase/tests: npm ci && npm test
 import { initializeTestEnvironment, assertFails, assertSucceeds } from '@firebase/rules-unit-testing';
 import fs from 'fs';
@@ -115,6 +116,23 @@ await no('bad side in index', B.ref().update({ ['ledgerUsers/bob/ledgers/L2']: '
 await no('extra field in index', B.ref().update({ ['ledgerUsers/bob/other']: 1 }));
 await no('list all users', C.ref('ledgerUsers').get());
 await ok('bob clears own entry', B.ref().update({ ['ledgerUsers/bob/ledgers/L1']: null }));
+// feedReports: write-only reports of mistakes in the job feed (Vacancy Bell).
+const rep = (extra = {}) => ({ app: 'vacancy_bell', item: 'ssc-cgl-2026-notice', reason: 'wrong_date', note: 'Last date is 6 Nov', by: 'alice', at: TS, ...extra });
+await ok('report', A.ref('feedReports').push(rep()));
+await ok('report without note', A.ref('feedReports').push(rep({ note: null })));
+await ok('report with empty note', A.ref('feedReports').push(rep({ note: '' })));
+await no('anon report', anon.ref('feedReports').push(rep()));
+await no('report as someone else', A.ref('feedReports').push(rep({ by: 'bob' })));
+await no('report with fake time', A.ref('feedReports').push(rep({ at: 5 })));
+await no('report from unknown app', A.ref('feedReports').push(rep({ app: 'other_app' })));
+await no('report long note', A.ref('feedReports').push(rep({ note: 'x'.repeat(301) })));
+await no('report bad item', A.ref('feedReports').push(rep({ item: '../x' })));
+await no('report bad reason', A.ref('feedReports').push(rep({ reason: 'DROP TABLE' })));
+await no('report extra field', A.ref('feedReports').push(rep({ phone: '99999' })));
+await no('read reports', A.ref('feedReports').get());
+await env.withSecurityRulesDisabled(async (ctx) => { const v = (await ctx.database().ref('feedReports').get()).val() || {}; const k = Object.keys(v)[0]; globalThis.firstReport = k; });
+await no('overwrite a report', A.ref(`feedReports/${globalThis.firstReport}`).set(rep()));
+await no('delete a report', A.ref(`feedReports/${globalThis.firstReport}`).remove());
 console.log(`passed ${pass}, failed ${fail}`);
 await env.cleanup();
 process.exit(fail ? 1 : 0);

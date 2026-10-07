@@ -9,6 +9,9 @@ top-level path in Realtime Database, and adds its section to
 - `ledger/`, `ledgerCodes/`, `ledgerGc/`, `ledgerUsers/`: Expense Tracker's
   shared ledgers with friends (email backup needs the Email/Password
   provider). Settled ledgers are deleted 14 days after both friends confirm.
+- `feedReports/`: "Report a mistake" from Vacancy Bell (and Roz Quiz):
+  app, item id, reason, optional note (300 characters), anonymous uid and
+  server time. Write-only; read them in the Firebase console.
 
 Deploy the rules from this folder:
 
