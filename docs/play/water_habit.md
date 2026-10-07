@@ -1,8 +1,10 @@
 # Water Reminder & Habit Tracker - Play Console sheet
 
+> **First release has ads off** (`--dart-define=ADS=off`): ignore every AdMob row and ad answer below; see [README](README.md). They apply once ads are turned on.
+
 - Folder: `apps/water_habit` - Package: `in.onlysoftware.water_habit`
 - Type: App - Free - Contains ads - Ages 13+
-- Privacy policy: https://dice-dhamaal.web.app/privacy/water_habit.html
+- Privacy policy: https://docs.google.com/document/d/e/2PACX-1vSA3p-UvHEj2L2nIDLYeWIFo39PWUj8HU8qngDsyVkl4Eu_VXmlRnF8oBbCmL7SJ98_ziBsZA_iXNnN/pub
 
 What the code really does: Water tab - daily goal (1500-4000 ml), glass size (150-500 ml), one-tap add a glass or a custom amount, progress, "Goal reached!" message and a water streak. Reminders - local notifications between wake-up and bed time, every 1, 1.5, 2 or 3 hours (inexact alarms, no exact-alarm permission). Habits tab - add your own habits (for example "Read 10 pages"), tick them off each day, streaks, optional daily reminder per habit. All data on the phone. The notification permission is asked on first launch.
 
@@ -37,7 +39,7 @@ HABITS
 - Add an optional daily reminder for each habit.
 
 SIMPLE AND PRIVATE
-No account and no cloud. Your log, habits and reminder times are stored only on your phone, and reminders are scheduled on the phone too. The app shows ads from Google AdMob; EU and UK users are asked for consent first.
+No account and no cloud. Your log, habits and reminder times are stored only on your phone, and reminders are scheduled on the phone too. No ads.
 
 Note: this app is a personal tracker and reminder tool. It is not a medical device and does not give medical advice. How much water you need depends on your body, the weather and your activity; ask a doctor if you have a health condition.
 ```

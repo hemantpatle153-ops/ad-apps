@@ -45,6 +45,11 @@ jobs:
               | head -40 | while IFS= read -r line; do echo "::error::$line"; done
           fi
           exit "$status"
+      # Play builds ship with ads off: prove the switch itself works when the
+      # define is really set (the test above runs without it).
+      - name: Test with ADS=off
+        if: matrix.package == 'packages/app_core'
+        run: flutter test --dart-define=ADS=off test/ads_off_test.dart
 
   # Builds test APKs so they can be shared without a laptop build. Signed
   # with debug keys: the Play upload key stays offline. To build another
@@ -57,7 +62,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        app: [multi_speaker, video_player, expense_tracker]
+        app: [multi_speaker, video_player, expense_tracker, snakes_ladders]
     defaults:
       run:
         working-directory: apps/${{ matrix.app }}

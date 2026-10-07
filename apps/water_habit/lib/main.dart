@@ -8,7 +8,9 @@ import 'store.dart';
 import 'water_view.dart';
 
 const appPackageName = 'in.onlysoftware.water_habit';
-const privacyPolicyUrl = 'https://dice-dhamaal.web.app/privacy/water_habit.html'; // website/build.py
+// Rahul's published Google Doc (same text as website/build.py's page).
+const privacyPolicyUrl =
+    'https://docs.google.com/document/d/e/2PACX-1vSA3p-UvHEj2L2nIDLYeWIFo39PWUj8HU8qngDsyVkl4Eu_VXmlRnF8oBbCmL7SJ98_ziBsZA_iXNnN/pub';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

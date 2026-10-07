@@ -1,8 +1,10 @@
 # Expense Tracker - Play Console sheet
 
+> **First release has ads off** (`--dart-define=ADS=off`): ignore every AdMob row and ad answer below; see [README](README.md). They apply once ads are turned on.
+
 - Folder: `apps/expense_tracker` - Package: `in.onlysoftware.expense_tracker`
 - Type: App - Free - Contains ads - Ages 13+
-- Privacy policy: https://dice-dhamaal.web.app/privacy/expense_tracker.html
+- Privacy policy: https://docs.google.com/document/d/e/2PACX-1vQXwGrOP9F7V1qmMN92HMQWutuxQgVDk9MdL_BHyWGdho-yT73mGLOOe6zwfKBXchQSHnhttfaNUusx/pub
 - Uses Firebase project **dice-dhamaal** (Anonymous + Email/Password Auth, Realtime Database paths `ledger/`, `ledgerCodes/`, `ledgerGc/`, `ledgerUsers/`); app id 1:448997235311:android:45bce4ebd3466a856e8b9a
 
 What the code really does: add, edit and delete expenses (amount, one of 12 categories, optional note, date); month view grouped by day with day totals, "spent this month" and "today"; optional monthly budget with progress bar and "over budget" warning; Insights tab with a category donut chart, per-day bar chart and average per day; move between months; choose a currency symbol (10 options); export all expenses as a CSV file through the Android share menu. Data is in a SQLite database on the phone. **Friends tab (shared ledgers):** two friends share one ledger by an 8-character code; entries (amount, who paid, date, tag, note) sync through Firebase; settle up needs both sides to confirm, then the ledger is read-only and deleted 14 days later. Optional email/password backup restores ledgers on a new phone, and the account can be deleted in the app. Personal expenses never leave the phone. No bank link, no SMS reading, no income tracking, no payments.
@@ -52,7 +54,7 @@ SHARED LEDGERS WITH FRIENDS
 Keep track of money you lend and borrow. Start a ledger, share its code with a friend, and both phones show the same list and the same balance: who owes whom and how much. Add a date, tag and note to each entry. Settle up when both of you confirm. Settled ledgers stay readable for 14 days, then they are removed. Back up with your email to get your ledgers back on a new phone (optional).
 
 PRIVATE
-Your personal expenses are stored only on your phone. No sign-up needed, no bank login, no SMS reading. The app shows ads from Google AdMob; EU and UK users are asked for consent first.
+Your personal expenses are stored only on your phone. No sign-up needed, no bank login, no SMS reading. No ads.
 
 This app is a personal record-keeping tool. It does not give loans, financial advice or payment services.
 ```

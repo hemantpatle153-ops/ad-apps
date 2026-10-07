@@ -1,5 +1,7 @@
 # Video Player - Play Console sheet
 
+> **First release has ads off** (`--dart-define=ADS=off`): ignore every AdMob row and ad answer below; see [README](README.md). They apply once ads are turned on.
+
 - Folder: `apps/video_player` - Package: `in.onlysoftware.video_player`
 - Type: App - Free - Contains ads - Ages 13+
 - Privacy policy: https://docs.google.com/document/d/e/2PACX-1vTfrEbXLRvkphpIBmzE9dJ_gLWgh24QUcM0FZjossBmiuPtX29Vhs8ryciONNOotey4viCLpV3zf7Em/pub
@@ -54,7 +56,7 @@ WATCH TOGETHER
 - Online: share a 6-letter code. Each friend plays their own copy of the video, or the same link, and play, pause and seek stay in sync. Send quick emoji reactions and short chat messages. Only the room details travel online, never your video file. Rooms are deleted automatically.
 
 PRIVACY
-No account needed. Your videos stay on your phone. The app shows ads from Google AdMob; EU and UK users are asked for consent first.
+No account needed. Your videos stay on your phone. No ads.
 ```
 
 **Category:** Video Players & Editors

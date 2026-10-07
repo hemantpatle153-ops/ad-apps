@@ -1,8 +1,10 @@
 # Multi Speaker - Play Console sheet
 
+> **First release has ads off** (`--dart-define=ADS=off`): ignore every AdMob row and ad answer below; see [README](README.md). They apply once ads are turned on.
+
 - Folder: `apps/multi_speaker` - Package: `in.onlysoftware.multi_speaker`
 - Type: App - Free - Contains ads - Ages 13+
-- Privacy policy: https://dice-dhamaal.web.app/privacy/multi_speaker.html
+- Privacy policy: https://docs.google.com/document/d/e/2PACX-1vSi17o1FyCYVX3gwcvbunE0n8v9esj19ygb3rfzQ1GpxmQbJuM8RjlDq1MsE0DPxOqLetCIywvJMDSV/pub
 
 What the code really does: one phone **hosts a party** and the other phones **join** on the same Wi-Fi or the host's hotspot (scan the host's QR code with the camera, pick a party found nearby, or type the address). **Songs mode**: the host picks audio files from the phone; the host serves them to the guests over the local network (HTTP + WebSocket), and all phones play in sync (clock sync). **Live mode** (Android 10+): the host captures the sound other apps are playing (Android playback capture via MediaProjection, foreground service) and streams it live to the guests. Each phone plays on its own speaker (built-in, wired or Bluetooth); per-phone delay settings fix Bluetooth lag; the host can remove a speaker. Background playback with a media notification. A help page explains other ways to use many Bluetooth speakers (Dual audio, speaker party modes). No internet is used for the music; only ads use the internet.
 
@@ -44,7 +46,7 @@ MORE THAN ONE SPEAKER ON ONE PHONE?
 A help page explains your options, such as Dual audio on some phones and the party modes built into many Bluetooth speakers.
 
 PRIVATE
-Music only travels on your own local network, directly between your phones. It never goes to our servers. The app shows ads from Google AdMob; EU and UK users are asked for consent first.
+Music only travels on your own local network, directly between your phones. It never goes to our servers. No ads.
 
 Tip: Wi-Fi quality matters. For the best sync, keep the phones close to the router or use the host phone's hotspot.
 ```

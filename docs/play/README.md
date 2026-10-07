@@ -1,21 +1,27 @@
 # Google Play release checklist (all 8 apps)
 
-Developer name on Play: **Only Software**. Every app: free, has ads (AdMob + Google consent form), no login, made for ages 13+.
+Developer name on Play: **Only Software**. Every app: free, no login, made for ages 13+.
+
+> **First release: ads are OFF.** Build with `tool\build_release.ps1` and no `admob.json` entry (it adds `--dart-define=ADS=off`). In Play Console answer:
+> - **Ads:** "No, my app does not contain ads".
+> - **Advertising ID:** "No" (ads-off release builds remove the AD_ID permission).
+> - **Data safety:** skip every row whose source says **AdMob** in the app sheets (Device or other IDs, approximate location, app interactions, crash logs/diagnostics). Sudoku, Water Reminder and Multi Speaker then have nothing left and answer "No data collected". QR Scanner and Doc Scanner keep the Google ML Kit rows (diagnostics and install ID); Expense Tracker, Video Player and Dice Dhamaal keep their Firebase rows.
+> - Skip the AdMob steps (consent message, app-ads.txt) until ads are turned on. Then set `SHOW_ADS = True` in `website/build.py`, update the privacy policies and change these answers.
 
 Each app has its own sheet with the store text, Data safety answers, permission declarations, content rating hints and policy risks:
 
 | # | App (store name) | Package | Sheet | Privacy policy URL |
 |---|---|---|---|---|
-| 1 | QR & Barcode Scanner | `in.onlysoftware.qr_scanner` | [qr_scanner.md](qr_scanner.md) | https://dice-dhamaal.web.app/privacy/qr_scanner.html |
-| 2 | Daily Sudoku | `in.onlysoftware.daily_sudoku` | [daily_sudoku.md](daily_sudoku.md) | https://dice-dhamaal.web.app/privacy/daily_sudoku.html |
-| 3 | Doc Scanner: PDF & OCR | `in.onlysoftware.doc_scanner` | [doc_scanner.md](doc_scanner.md) | https://dice-dhamaal.web.app/privacy/doc_scanner.html |
-| 4 | Expense Tracker: Daily Budget | `in.onlysoftware.expense_tracker` | [expense_tracker.md](expense_tracker.md) | https://dice-dhamaal.web.app/privacy/expense_tracker.html |
-| 5 | Water Reminder & Habit Tracker | `in.onlysoftware.water_habit` | [water_habit.md](water_habit.md) | https://dice-dhamaal.web.app/privacy/water_habit.html |
-| 6 | Multi Speaker: Sync Music | `in.onlysoftware.multi_speaker` | [multi_speaker.md](multi_speaker.md) | https://dice-dhamaal.web.app/privacy/multi_speaker.html |
+| 1 | QR & Barcode Scanner | `in.onlysoftware.qr_scanner` | [qr_scanner.md](qr_scanner.md) | https://docs.google.com/document/d/e/2PACX-1vQGUBqDjMOdmypiIrwgkwVXqCxpWgUuzt2sZvb6d8q1wgYsZyEMOV9MjD-9EARk3qEnIRMDwrn79iMi/pub |
+| 2 | Daily Sudoku | `in.onlysoftware.daily_sudoku` | [daily_sudoku.md](daily_sudoku.md) | https://docs.google.com/document/d/e/2PACX-1vTaZv3owS5iiOH0PkLw7wnCHDw5u2rNyOyLbHogItpRQyKczECgA0o1FEJ3oDmwQxfkOijJHOj4tgtC/pub |
+| 3 | Doc Scanner: PDF & OCR | `in.onlysoftware.doc_scanner` | [doc_scanner.md](doc_scanner.md) | https://docs.google.com/document/d/e/2PACX-1vQaYSYxwZeVevoKY2cfLigO9DPjKcb232tvy8CQMjiniBUIM6QY1NdJv3-ykqZ49Wwg2r-XVCWKgPM7/pub |
+| 4 | Expense Tracker: Daily Budget | `in.onlysoftware.expense_tracker` | [expense_tracker.md](expense_tracker.md) | https://docs.google.com/document/d/e/2PACX-1vQXwGrOP9F7V1qmMN92HMQWutuxQgVDk9MdL_BHyWGdho-yT73mGLOOe6zwfKBXchQSHnhttfaNUusx/pub |
+| 5 | Water Reminder & Habit Tracker | `in.onlysoftware.water_habit` | [water_habit.md](water_habit.md) | https://docs.google.com/document/d/e/2PACX-1vSA3p-UvHEj2L2nIDLYeWIFo39PWUj8HU8qngDsyVkl4Eu_VXmlRnF8oBbCmL7SJ98_ziBsZA_iXNnN/pub |
+| 6 | Multi Speaker: Sync Music | `in.onlysoftware.multi_speaker` | [multi_speaker.md](multi_speaker.md) | https://docs.google.com/document/d/e/2PACX-1vSi17o1FyCYVX3gwcvbunE0n8v9esj19ygb3rfzQ1GpxmQbJuM8RjlDq1MsE0DPxOqLetCIywvJMDSV/pub |
 | 7 | Video Player: Watch Together | `in.onlysoftware.video_player` | [video_player.md](video_player.md) | https://docs.google.com/document/d/e/2PACX-1vTfrEbXLRvkphpIBmzE9dJ_gLWgh24QUcM0FZjossBmiuPtX29Vhs8ryciONNOotey4viCLpV3zf7Em/pub |
-| 8 | Dice Dhamaal: Ludo & Snakes | `in.onlysoftware.dice_dhamaal` (folder `apps/snakes_ladders`, branch `ludo-game`) | [snakes_ladders.md](snakes_ladders.md) | https://dice-dhamaal.web.app/privacy/dice_dhamaal.html |
+| 8 | Dice Dhamaal: Ludo & Snakes | `in.onlysoftware.dice_dhamaal` (folder `apps/snakes_ladders`, branch `ludo-game`) | [snakes_ladders.md](snakes_ladders.md) | https://docs.google.com/document/d/e/2PACX-1vQE-aej_G9yCbReQfwol18vl1f83JN7v0q0iBw57oKkyFcdtLW57KZQqK3bIZiYqCTfMKvsGajCGrNu/pub |
 
-The privacy pages come from `website/build.py`. Deploy them (`firebase deploy --only hosting`) and open each link in a browser **before** you fill the Play forms. Play rejects an app whose policy link does not open.
+Privacy policies are published as Google Docs (File > Share > Publish to web). The paste-ready text comes from `website/build.py`. Open each link in a browser **before** you fill the Play forms: Play rejects an app whose policy link does not open.
 
 ---
 

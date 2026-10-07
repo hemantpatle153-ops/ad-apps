@@ -12,7 +12,9 @@ import 'insights.dart';
 import 'settings_screen.dart';
 
 const appPackageName = 'in.onlysoftware.expense_tracker';
-const privacyPolicyUrl = 'https://dice-dhamaal.web.app/privacy/expense_tracker.html'; // website/build.py
+// Rahul's published Google Doc (same text as website/build.py's page).
+const privacyPolicyUrl =
+    'https://docs.google.com/document/d/e/2PACX-1vQXwGrOP9F7V1qmMN92HMQWutuxQgVDk9MdL_BHyWGdho-yT73mGLOOe6zwfKBXchQSHnhttfaNUusx/pub';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
