@@ -21,7 +21,7 @@ val dartDefines: Map<String, String> = (project.findProperty("dart-defines") as 
 
 // --dart-define=ADS=off ships the app without ads: no AdMob IDs are needed and
 // release builds drop the advertising ID permission (src/noads).
-val adsOff = dartDefines["ADS"] == "off"
+val adsOff = dartDefines["ADS"] in setOf("off", "false")
 
 android {
     namespace = "in.onlysoftware.qr_scanner"

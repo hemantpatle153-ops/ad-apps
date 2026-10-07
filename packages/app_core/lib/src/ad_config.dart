@@ -17,10 +17,12 @@ class AdConfig {
   /// Only apps that offer a rewarded ad pass [rewarded]; the others leave
   /// [rewardedId] empty so no rewarded ad is ever requested.
   ///
-  /// `--dart-define=ADS=off` builds the app with ads switched off: the ad SDK
-  /// is never started, no consent form is shown and nothing is requested.
+  /// `--dart-define=ADS=off` (or `ADS=false`) builds the app with ads switched
+  /// off: the ad SDK is never started, no consent form is shown and nothing
+  /// is requested.
   factory AdConfig.fromEnvironment({bool rewarded = false}) => AdConfig(
-        enabled: const String.fromEnvironment('ADS', defaultValue: 'on') != 'off',
+        enabled: !const ['off', 'false']
+            .contains(const String.fromEnvironment('ADS', defaultValue: 'on')),
         bannerId: const String.fromEnvironment(
           'ADMOB_BANNER_ID',
           defaultValue: 'ca-app-pub-3940256099942544/9214589741',
