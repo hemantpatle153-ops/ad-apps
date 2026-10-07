@@ -1,0 +1,959 @@
+{
+ "schema": 1,
+ "subject": "history",
+ "questions": [
+  {
+   "id": "rq-history-001",
+   "q": {
+    "en": "The First Battle of Panipat was fought in:",
+    "hi": "पानीपत का पहला युद्ध कब लड़ा गया?"
+   },
+   "options": [
+    {
+     "en": "1526",
+     "hi": "1526"
+    },
+    {
+     "en": "1556",
+     "hi": "1556"
+    },
+    {
+     "en": "1761",
+     "hi": "1761"
+    },
+    {
+     "en": "1191",
+     "hi": "1191"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "In 1526 Babur defeated Ibrahim Lodi at Panipat and founded the Mughal Empire.",
+    "hi": "1526 में बाबर ने पानीपत में इब्राहिम लोदी को हराकर मुग़ल साम्राज्य की नींव रखी।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-002",
+   "q": {
+    "en": "The Jallianwala Bagh massacre took place in which year?",
+    "hi": "जलियाँवाला बाग हत्याकांड किस वर्ष हुआ?"
+   },
+   "options": [
+    {
+     "en": "1905",
+     "hi": "1905"
+    },
+    {
+     "en": "1919",
+     "hi": "1919"
+    },
+    {
+     "en": "1930",
+     "hi": "1930"
+    },
+    {
+     "en": "1942",
+     "hi": "1942"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "On 13 April 1919, troops under General Dyer fired on a peaceful gathering at Jallianwala Bagh in Amritsar.",
+    "hi": "13 अप्रैल 1919 को जनरल डायर के सैनिकों ने अमृतसर के जलियाँवाला बाग में शांतिपूर्ण सभा पर गोलियाँ चलाईं।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "railway",
+    "upsc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-003",
+   "q": {
+    "en": "Mahatma Gandhi began the Dandi (Salt) March in:",
+    "hi": "महात्मा गांधी ने दांडी (नमक) यात्रा कब शुरू की?"
+   },
+   "options": [
+    {
+     "en": "1920",
+     "hi": "1920"
+    },
+    {
+     "en": "1930",
+     "hi": "1930"
+    },
+    {
+     "en": "1942",
+     "hi": "1942"
+    },
+    {
+     "en": "1919",
+     "hi": "1919"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The Dandi March began from Sabarmati Ashram on 12 March 1930 to break the salt law.",
+    "hi": "नमक कानून तोड़ने के लिए दांडी यात्रा 12 मार्च 1930 को साबरमती आश्रम से शुरू हुई।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-004",
+   "q": {
+    "en": "The Quit India Movement was launched in:",
+    "hi": "भारत छोड़ो आंदोलन कब शुरू हुआ?"
+   },
+   "options": [
+    {
+     "en": "1930",
+     "hi": "1930"
+    },
+    {
+     "en": "1940",
+     "hi": "1940"
+    },
+    {
+     "en": "1942",
+     "hi": "1942"
+    },
+    {
+     "en": "1946",
+     "hi": "1946"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "The Quit India Movement was launched on 8 August 1942 at the Bombay session of the Congress.",
+    "hi": "भारत छोड़ो आंदोलन 8 अगस्त 1942 को कांग्रेस के बंबई अधिवेशन में शुरू हुआ।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-005",
+   "q": {
+    "en": "Who was the first President of the Indian National Congress?",
+    "hi": "भारतीय राष्ट्रीय कांग्रेस के पहले अध्यक्ष कौन थे?"
+   },
+   "options": [
+    {
+     "en": "Dadabhai Naoroji",
+     "hi": "दादाभाई नौरोजी"
+    },
+    {
+     "en": "Surendranath Banerjee",
+     "hi": "सुरेंद्रनाथ बनर्जी"
+    },
+    {
+     "en": "A. O. Hume",
+     "hi": "ए. ओ. ह्यूम"
+    },
+    {
+     "en": "W. C. Bonnerjee",
+     "hi": "डब्ल्यू. सी. बनर्जी"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "W. C. Bonnerjee presided over the first session of the Congress in Bombay in December 1885. A. O. Hume was a founder.",
+    "hi": "डब्ल्यू. सी. बनर्जी ने दिसंबर 1885 में बंबई में कांग्रेस के पहले अधिवेशन की अध्यक्षता की। ए. ओ. ह्यूम इसके संस्थापक थे।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-006",
+   "q": {
+    "en": "Who founded the Maurya Empire?",
+    "hi": "मौर्य साम्राज्य की स्थापना किसने की?"
+   },
+   "options": [
+    {
+     "en": "Ashoka",
+     "hi": "अशोक"
+    },
+    {
+     "en": "Bindusara",
+     "hi": "बिंदुसार"
+    },
+    {
+     "en": "Bimbisara",
+     "hi": "बिंबिसार"
+    },
+    {
+     "en": "Chandragupta Maurya",
+     "hi": "चंद्रगुप्त मौर्य"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Chandragupta Maurya founded the Maurya Empire around 322 BCE with the help of Chanakya.",
+    "hi": "चंद्रगुप्त मौर्य ने लगभग 322 ईसा पूर्व चाणक्य की सहायता से मौर्य साम्राज्य की स्थापना की।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-007",
+   "q": {
+    "en": "Construction of the Qutub Minar was started by:",
+    "hi": "कुतुब मीनार का निर्माण किसने शुरू करवाया?"
+   },
+   "options": [
+    {
+     "en": "Iltutmish",
+     "hi": "इल्तुतमिश"
+    },
+    {
+     "en": "Balban",
+     "hi": "बलबन"
+    },
+    {
+     "en": "Alauddin Khalji",
+     "hi": "अलाउद्दीन खिलजी"
+    },
+    {
+     "en": "Qutb-ud-din Aibak",
+     "hi": "कुतुबुद्दीन ऐबक"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Qutb-ud-din Aibak started the Qutub Minar; his successor Iltutmish added more storeys.",
+    "hi": "कुतुबुद्दीन ऐबक ने कुतुब मीनार का निर्माण शुरू करवाया; उसके उत्तराधिकारी इल्तुतमिश ने इसकी और मंज़िलें बनवाईं।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-008",
+   "q": {
+    "en": "The Taj Mahal was built by:",
+    "hi": "ताजमहल का निर्माण किसने करवाया?"
+   },
+   "options": [
+    {
+     "en": "Akbar",
+     "hi": "अकबर"
+    },
+    {
+     "en": "Jahangir",
+     "hi": "जहाँगीर"
+    },
+    {
+     "en": "Humayun",
+     "hi": "हुमायूँ"
+    },
+    {
+     "en": "Shah Jahan",
+     "hi": "शाहजहाँ"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Mughal emperor Shah Jahan built the Taj Mahal in Agra in memory of his wife Mumtaz Mahal.",
+    "hi": "मुग़ल बादशाह शाहजहाँ ने अपनी पत्नी मुमताज़ महल की याद में आगरा में ताजमहल बनवाया।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-009",
+   "q": {
+    "en": "The Partition of Bengal (1905) was carried out under which Viceroy?",
+    "hi": "बंगाल विभाजन (1905) किस वायसराय के समय हुआ?"
+   },
+   "options": [
+    {
+     "en": "Lord Curzon",
+     "hi": "लॉर्ड कर्ज़न"
+    },
+    {
+     "en": "Lord Minto",
+     "hi": "लॉर्ड मिंटो"
+    },
+    {
+     "en": "Lord Ripon",
+     "hi": "लॉर्ड रिपन"
+    },
+    {
+     "en": "Lord Dalhousie",
+     "hi": "लॉर्ड डलहौज़ी"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Lord Curzon partitioned Bengal in 1905, which sparked the Swadeshi Movement. It was annulled in 1911.",
+    "hi": "लॉर्ड कर्ज़न ने 1905 में बंगाल का विभाजन किया, जिससे स्वदेशी आंदोलन शुरू हुआ। 1911 में इसे रद्द कर दिया गया।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-010",
+   "q": {
+    "en": "The 'Doctrine of Lapse' is associated with:",
+    "hi": "'व्यपगत का सिद्धांत' (डॉक्ट्रिन ऑफ़ लैप्स) किससे जुड़ा है?"
+   },
+   "options": [
+    {
+     "en": "Lord Wellesley",
+     "hi": "लॉर्ड वेलेज़ली"
+    },
+    {
+     "en": "Lord Canning",
+     "hi": "लॉर्ड कैनिंग"
+    },
+    {
+     "en": "Lord Cornwallis",
+     "hi": "लॉर्ड कॉर्नवालिस"
+    },
+    {
+     "en": "Lord Dalhousie",
+     "hi": "लॉर्ड डलहौज़ी"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Governor-General Lord Dalhousie used the Doctrine of Lapse to annex states such as Satara and Jhansi.",
+    "hi": "गवर्नर-जनरल लॉर्ड डलहौज़ी ने व्यपगत के सिद्धांत से सतारा और झाँसी जैसी रियासतों का विलय किया।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-011",
+   "q": {
+    "en": "The Battle of Plassey was fought in:",
+    "hi": "प्लासी का युद्ध कब लड़ा गया?"
+   },
+   "options": [
+    {
+     "en": "1757",
+     "hi": "1757"
+    },
+    {
+     "en": "1764",
+     "hi": "1764"
+    },
+    {
+     "en": "1857",
+     "hi": "1857"
+    },
+    {
+     "en": "1707",
+     "hi": "1707"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "In 1757 the East India Company under Robert Clive defeated Siraj-ud-Daulah, the Nawab of Bengal, at Plassey.",
+    "hi": "1757 में रॉबर्ट क्लाइव के नेतृत्व में ईस्ट इंडिया कंपनी ने प्लासी में बंगाल के नवाब सिराजुद्दौला को हराया।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-012",
+   "q": {
+    "en": "Who was the first Guru of the Sikhs?",
+    "hi": "सिखों के पहले गुरु कौन थे?"
+   },
+   "options": [
+    {
+     "en": "Guru Gobind Singh",
+     "hi": "गुरु गोबिंद सिंह"
+    },
+    {
+     "en": "Guru Tegh Bahadur",
+     "hi": "गुरु तेग बहादुर"
+    },
+    {
+     "en": "Guru Arjan Dev",
+     "hi": "गुरु अर्जन देव"
+    },
+    {
+     "en": "Guru Nanak Dev",
+     "hi": "गुरु नानक देव"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Guru Nanak Dev (1469-1539) was the founder and first Guru of Sikhism.",
+    "hi": "गुरु नानक देव (1469-1539) सिख धर्म के संस्थापक और पहले गुरु थे।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-013",
+   "q": {
+    "en": "Where did Gautama Buddha attain enlightenment?",
+    "hi": "गौतम बुद्ध को ज्ञान की प्राप्ति कहाँ हुई?"
+   },
+   "options": [
+    {
+     "en": "Sarnath",
+     "hi": "सारनाथ"
+    },
+    {
+     "en": "Lumbini",
+     "hi": "लुंबिनी"
+    },
+    {
+     "en": "Kushinagar",
+     "hi": "कुशीनगर"
+    },
+    {
+     "en": "Bodh Gaya",
+     "hi": "बोधगया"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Buddha attained enlightenment under the Bodhi tree at Bodh Gaya. He was born at Lumbini, gave his first sermon at Sarnath and died at Kushinagar.",
+    "hi": "बुद्ध को बोधगया में बोधि वृक्ष के नीचे ज्ञान मिला। उनका जन्म लुंबिनी में हुआ, पहला उपदेश सारनाथ में दिया और महापरिनिर्वाण कुशीनगर में हुआ।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-014",
+   "q": {
+    "en": "The Harappan site of Harappa was first excavated in 1921 under:",
+    "hi": "हड़प्पा स्थल की खुदाई सबसे पहले 1921 में किसके नेतृत्व में हुई?"
+   },
+   "options": [
+    {
+     "en": "Daya Ram Sahni",
+     "hi": "दयाराम साहनी"
+    },
+    {
+     "en": "R. D. Banerji",
+     "hi": "आर. डी. बनर्जी"
+    },
+    {
+     "en": "Mortimer Wheeler",
+     "hi": "मॉर्टिमर व्हीलर"
+    },
+    {
+     "en": "S. R. Rao",
+     "hi": "एस. आर. राव"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Daya Ram Sahni excavated Harappa in 1921; R. D. Banerji excavated Mohenjo-daro in 1922.",
+    "hi": "दयाराम साहनी ने 1921 में हड़प्पा की खुदाई की; आर. डी. बनर्जी ने 1922 में मोहनजोदड़ो की खुदाई की।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "hard",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-015",
+   "q": {
+    "en": "The 'Purna Swaraj' resolution was passed at which session of the Congress?",
+    "hi": "'पूर्ण स्वराज' का प्रस्ताव कांग्रेस के किस अधिवेशन में पारित हुआ?"
+   },
+   "options": [
+    {
+     "en": "Lucknow, 1916",
+     "hi": "लखनऊ, 1916"
+    },
+    {
+     "en": "Haripura, 1938",
+     "hi": "हरिपुरा, 1938"
+    },
+    {
+     "en": "Karachi, 1931",
+     "hi": "कराची, 1931"
+    },
+    {
+     "en": "Lahore, 1929",
+     "hi": "लाहौर, 1929"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "The Lahore session of December 1929, presided over by Jawaharlal Nehru, adopted Purna Swaraj (complete independence) as the goal.",
+    "hi": "दिसंबर 1929 के लाहौर अधिवेशन ने, जिसकी अध्यक्षता जवाहरलाल नेहरू ने की, पूर्ण स्वराज को लक्ष्य के रूप में अपनाया।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-016",
+   "q": {
+    "en": "Who gave the slogan 'Do or Die'?",
+    "hi": "'करो या मरो' का नारा किसने दिया?"
+   },
+   "options": [
+    {
+     "en": "Subhas Chandra Bose",
+     "hi": "सुभाष चंद्र बोस"
+    },
+    {
+     "en": "Bhagat Singh",
+     "hi": "भगत सिंह"
+    },
+    {
+     "en": "Mahatma Gandhi",
+     "hi": "महात्मा गांधी"
+    },
+    {
+     "en": "Bal Gangadhar Tilak",
+     "hi": "बाल गंगाधर तिलक"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Mahatma Gandhi gave the call 'Do or Die' when the Quit India Movement was launched in 1942.",
+    "hi": "महात्मा गांधी ने 1942 में भारत छोड़ो आंदोलन की शुरुआत पर 'करो या मरो' का आह्वान किया।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-017",
+   "q": {
+    "en": "'Give me blood, and I will give you freedom' was said by:",
+    "hi": "'तुम मुझे खून दो, मैं तुम्हें आज़ादी दूँगा' किसने कहा?"
+   },
+   "options": [
+    {
+     "en": "Subhas Chandra Bose",
+     "hi": "सुभाष चंद्र बोस"
+    },
+    {
+     "en": "Chandrashekhar Azad",
+     "hi": "चंद्रशेखर आज़ाद"
+    },
+    {
+     "en": "Lala Lajpat Rai",
+     "hi": "लाला लाजपत राय"
+    },
+    {
+     "en": "Bhagat Singh",
+     "hi": "भगत सिंह"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Netaji Subhas Chandra Bose, leader of the Indian National Army (Azad Hind Fauj), gave this call.",
+    "hi": "आज़ाद हिंद फ़ौज के नेता नेताजी सुभाष चंद्र बोस ने यह आह्वान किया।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-018",
+   "q": {
+    "en": "Who wrote the 'Arthashastra'?",
+    "hi": "'अर्थशास्त्र' की रचना किसने की?"
+   },
+   "options": [
+    {
+     "en": "Kalidasa",
+     "hi": "कालिदास"
+    },
+    {
+     "en": "Megasthenes",
+     "hi": "मेगस्थनीज़"
+    },
+    {
+     "en": "Banabhatta",
+     "hi": "बाणभट्ट"
+    },
+    {
+     "en": "Kautilya",
+     "hi": "कौटिल्य"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "The Arthashastra, a treatise on statecraft and economics, is attributed to Kautilya (Chanakya).",
+    "hi": "राजनीति और अर्थव्यवस्था पर ग्रंथ 'अर्थशास्त्र' कौटिल्य (चाणक्य) की रचना माना जाता है।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-019",
+   "q": {
+    "en": "'Din-i-Ilahi' was started by which Mughal emperor?",
+    "hi": "'दीन-ए-इलाही' किस मुग़ल बादशाह ने शुरू किया?"
+   },
+   "options": [
+    {
+     "en": "Babur",
+     "hi": "बाबर"
+    },
+    {
+     "en": "Aurangzeb",
+     "hi": "औरंगज़ेब"
+    },
+    {
+     "en": "Jahangir",
+     "hi": "जहाँगीर"
+    },
+    {
+     "en": "Akbar",
+     "hi": "अकबर"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Akbar started Din-i-Ilahi in 1582, drawing ideas from several religions.",
+    "hi": "अकबर ने 1582 में कई धर्मों के विचारों को मिलाकर दीन-ए-इलाही शुरू किया।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-020",
+   "q": {
+    "en": "Where was Chhatrapati Shivaji crowned in 1674?",
+    "hi": "छत्रपति शिवाजी का राज्याभिषेक 1674 में कहाँ हुआ?"
+   },
+   "options": [
+    {
+     "en": "Raigad",
+     "hi": "रायगढ़"
+    },
+    {
+     "en": "Pune",
+     "hi": "पुणे"
+    },
+    {
+     "en": "Sinhagad",
+     "hi": "सिंहगढ़"
+    },
+    {
+     "en": "Pratapgad",
+     "hi": "प्रतापगढ़"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Shivaji was crowned Chhatrapati at Raigad Fort in 1674.",
+    "hi": "शिवाजी का 1674 में रायगढ़ किले में छत्रपति के रूप में राज्याभिषेक हुआ।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-021",
+   "q": {
+    "en": "The Revolt of 1857 began on 10 May 1857 at:",
+    "hi": "1857 का विद्रोह 10 मई 1857 को कहाँ से शुरू हुआ?"
+   },
+   "options": [
+    {
+     "en": "Delhi",
+     "hi": "दिल्ली"
+    },
+    {
+     "en": "Lucknow",
+     "hi": "लखनऊ"
+    },
+    {
+     "en": "Kanpur",
+     "hi": "कानपुर"
+    },
+    {
+     "en": "Meerut",
+     "hi": "मेरठ"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Sepoys at Meerut rose on 10 May 1857 and marched to Delhi, starting the revolt.",
+    "hi": "10 मई 1857 को मेरठ के सिपाहियों ने विद्रोह किया और दिल्ली की ओर कूच किया, जिससे विद्रोह शुरू हुआ।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-022",
+   "q": {
+    "en": "Who was the only Indian to serve as Governor-General of independent India?",
+    "hi": "स्वतंत्र भारत के एकमात्र भारतीय गवर्नर-जनरल कौन थे?"
+   },
+   "options": [
+    {
+     "en": "C. Rajagopalachari",
+     "hi": "सी. राजगोपालाचारी"
+    },
+    {
+     "en": "Rajendra Prasad",
+     "hi": "राजेंद्र प्रसाद"
+    },
+    {
+     "en": "Lord Mountbatten",
+     "hi": "लॉर्ड माउंटबेटन"
+    },
+    {
+     "en": "Sardar Patel",
+     "hi": "सरदार पटेल"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "C. Rajagopalachari succeeded Lord Mountbatten in 1948 and was the only Indian Governor-General; the post ended in 1950.",
+    "hi": "सी. राजगोपालाचारी 1948 में लॉर्ड माउंटबेटन के बाद आए और एकमात्र भारतीय गवर्नर-जनरल रहे; यह पद 1950 में समाप्त हो गया।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-023",
+   "q": {
+    "en": "Gandhi called off the Non-Cooperation Movement after the incident at:",
+    "hi": "गांधी ने किस घटना के बाद असहयोग आंदोलन वापस लिया?"
+   },
+   "options": [
+    {
+     "en": "Chauri Chaura",
+     "hi": "चौरी चौरा"
+    },
+    {
+     "en": "Jallianwala Bagh",
+     "hi": "जलियाँवाला बाग"
+    },
+    {
+     "en": "Kakori",
+     "hi": "काकोरी"
+    },
+    {
+     "en": "Champaran",
+     "hi": "चंपारण"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "After a mob set fire to the police station at Chauri Chaura (Gorakhpur) in February 1922, Gandhi withdrew the movement.",
+    "hi": "फ़रवरी 1922 में चौरी चौरा (गोरखपुर) में भीड़ द्वारा थाने में आग लगाने के बाद गांधी ने आंदोलन वापस ले लिया।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-history-024",
+   "q": {
+    "en": "Gandhi's first Satyagraha in India (1917) was at:",
+    "hi": "भारत में गांधी का पहला सत्याग्रह (1917) कहाँ हुआ?"
+   },
+   "options": [
+    {
+     "en": "Kheda",
+     "hi": "खेड़ा"
+    },
+    {
+     "en": "Bardoli",
+     "hi": "बारडोली"
+    },
+    {
+     "en": "Ahmedabad",
+     "hi": "अहमदाबाद"
+    },
+    {
+     "en": "Champaran",
+     "hi": "चंपारण"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "In 1917 Gandhi led the Champaran Satyagraha in Bihar for indigo farmers.",
+    "hi": "1917 में गांधी ने बिहार के चंपारण में नील किसानों के लिए सत्याग्रह का नेतृत्व किया।"
+   },
+   "subject": "history",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  }
+ ]
+}

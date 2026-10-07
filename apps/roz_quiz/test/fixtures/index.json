@@ -1,0 +1,38 @@
+{
+ "schema": 1,
+ "generatedAt": "2026-10-07T00:45:00Z",
+ "daily": [
+  "2026-10-07",
+  "2026-10-06",
+  "2026-10-05",
+  "not-a-date",
+  "2026-02-30"
+ ],
+ "currentAffairs": [
+  "2026-10-07",
+  "2026-10-06"
+ ],
+ "banks": [
+  {
+   "id": "polity",
+   "title": {
+    "en": "Polity",
+    "hi": "राजव्यवस्था"
+   },
+   "count": 3,
+   "file": "quiz/banks/polity.json",
+   "updatedAt": "2026-10-06T12:00:00Z"
+  },
+  {
+   "id": "evil",
+   "title": {
+    "en": "Bad",
+    "hi": "Bad"
+   },
+   "count": 1,
+   "file": "../../etc/passwd",
+   "updatedAt": null
+  }
+ ],
+ "somethingNew": true
+}

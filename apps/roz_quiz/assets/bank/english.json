@@ -1,0 +1,404 @@
+{
+ "schema": 1,
+ "subject": "english",
+ "questions": [
+  {
+   "id": "rq-english-001",
+   "q": {
+    "en": "Choose the synonym of 'Happy'.",
+    "hi": "'Happy' का समानार्थी शब्द चुनें।"
+   },
+   "options": [
+    {
+     "en": "Sad",
+     "hi": "Sad"
+    },
+    {
+     "en": "Joyful",
+     "hi": "Joyful"
+    },
+    {
+     "en": "Angry",
+     "hi": "Angry"
+    },
+    {
+     "en": "Tired",
+     "hi": "Tired"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "'Happy' and 'joyful' both mean feeling pleasure.",
+    "hi": "'Happy' और 'joyful' दोनों का अर्थ है प्रसन्न होना।"
+   },
+   "subject": "english",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-english-002",
+   "q": {
+    "en": "Choose the antonym of 'Ancient'.",
+    "hi": "'Ancient' का विलोम शब्द चुनें।"
+   },
+   "options": [
+    {
+     "en": "Old",
+     "hi": "Old"
+    },
+    {
+     "en": "Modern",
+     "hi": "Modern"
+    },
+    {
+     "en": "Historic",
+     "hi": "Historic"
+    },
+    {
+     "en": "Antique",
+     "hi": "Antique"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "'Ancient' means very old; its opposite is 'modern'.",
+    "hi": "'Ancient' का अर्थ बहुत पुराना है; इसका विलोम 'modern' है।"
+   },
+   "subject": "english",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-english-003",
+   "q": {
+    "en": "What is the plural of 'child'?",
+    "hi": "'child' का बहुवचन क्या है?"
+   },
+   "options": [
+    {
+     "en": "Childs",
+     "hi": "Childs"
+    },
+    {
+     "en": "Childes",
+     "hi": "Childes"
+    },
+    {
+     "en": "Children",
+     "hi": "Children"
+    },
+    {
+     "en": "Childrens",
+     "hi": "Childrens"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "'Child' has an irregular plural: 'children'.",
+    "hi": "'Child' का बहुवचन अनियमित है: 'children'।"
+   },
+   "subject": "english",
+   "exams": [
+    "ssc",
+    "banking",
+    "teaching"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-english-004",
+   "q": {
+    "en": "Choose the correctly spelt word.",
+    "hi": "सही वर्तनी वाला शब्द चुनें।"
+   },
+   "options": [
+    {
+     "en": "Neccessary",
+     "hi": "Neccessary"
+    },
+    {
+     "en": "Necessary",
+     "hi": "Necessary"
+    },
+    {
+     "en": "Necesary",
+     "hi": "Necesary"
+    },
+    {
+     "en": "Neccesary",
+     "hi": "Neccesary"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "'Necessary' has one 'c' and double 's'.",
+    "hi": "'Necessary' में एक 'c' और दो 's' होते हैं।"
+   },
+   "subject": "english",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-english-005",
+   "q": {
+    "en": "Choose the synonym of 'Rapid'.",
+    "hi": "'Rapid' का समानार्थी शब्द चुनें।"
+   },
+   "options": [
+    {
+     "en": "Slow",
+     "hi": "Slow"
+    },
+    {
+     "en": "Fast",
+     "hi": "Fast"
+    },
+    {
+     "en": "Calm",
+     "hi": "Calm"
+    },
+    {
+     "en": "Weak",
+     "hi": "Weak"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "'Rapid' means happening quickly, the same as 'fast'.",
+    "hi": "'Rapid' का अर्थ है तेज़ी से होना, यानी 'fast'।"
+   },
+   "subject": "english",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-english-006",
+   "q": {
+    "en": "Choose the antonym of 'Generous'.",
+    "hi": "'Generous' का विलोम शब्द चुनें।"
+   },
+   "options": [
+    {
+     "en": "Kind",
+     "hi": "Kind"
+    },
+    {
+     "en": "Stingy",
+     "hi": "Stingy"
+    },
+    {
+     "en": "Liberal",
+     "hi": "Liberal"
+    },
+    {
+     "en": "Noble",
+     "hi": "Noble"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "'Generous' means willing to give; 'stingy' means unwilling to give or spend.",
+    "hi": "'Generous' का अर्थ है उदार; 'stingy' का अर्थ है कंजूस।"
+   },
+   "subject": "english",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-english-007",
+   "q": {
+    "en": "Fill in the blank: She ___ to school every day.",
+    "hi": "रिक्त स्थान भरें: She ___ to school every day."
+   },
+   "options": [
+    {
+     "en": "go",
+     "hi": "go"
+    },
+    {
+     "en": "goes",
+     "hi": "goes"
+    },
+    {
+     "en": "going",
+     "hi": "going"
+    },
+    {
+     "en": "gone",
+     "hi": "gone"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "With a singular third-person subject ('she') in the simple present, the verb takes '-es': 'goes'.",
+    "hi": "Simple present में एकवचन तृतीय पुरुष कर्ता ('she') के साथ क्रिया में '-es' लगता है: 'goes'।"
+   },
+   "subject": "english",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway",
+    "teaching"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-english-008",
+   "q": {
+    "en": "One word for 'a person who knows everything':",
+    "hi": "'जो सब कुछ जानता हो' के लिए एक शब्द:"
+   },
+   "options": [
+    {
+     "en": "Omnipotent",
+     "hi": "Omnipotent"
+    },
+    {
+     "en": "Omnipresent",
+     "hi": "Omnipresent"
+    },
+    {
+     "en": "Omniscient",
+     "hi": "Omniscient"
+    },
+    {
+     "en": "Optimist",
+     "hi": "Optimist"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Omniscient = all-knowing. Omnipotent = all-powerful; omnipresent = present everywhere.",
+    "hi": "Omniscient = सर्वज्ञ। Omnipotent = सर्वशक्तिमान; omnipresent = सर्वव्यापी।"
+   },
+   "subject": "english",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-english-009",
+   "q": {
+    "en": "What is the past tense of 'write'?",
+    "hi": "'write' का भूतकाल (past tense) रूप क्या है?"
+   },
+   "options": [
+    {
+     "en": "Writed",
+     "hi": "Writed"
+    },
+    {
+     "en": "Wrote",
+     "hi": "Wrote"
+    },
+    {
+     "en": "Written",
+     "hi": "Written"
+    },
+    {
+     "en": "Writing",
+     "hi": "Writing"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "write - wrote - written: 'wrote' is the simple past; 'written' is the past participle.",
+    "hi": "write - wrote - written: 'wrote' सामान्य भूतकाल है; 'written' भूतकालिक कृदंत (past participle) है।"
+   },
+   "subject": "english",
+   "exams": [
+    "ssc",
+    "railway",
+    "teaching"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-english-010",
+   "q": {
+    "en": "The idiom 'a piece of cake' means:",
+    "hi": "मुहावरे 'a piece of cake' का अर्थ है:"
+   },
+   "options": [
+    {
+     "en": "Something very easy",
+     "hi": "बहुत आसान काम"
+    },
+    {
+     "en": "A small reward",
+     "hi": "छोटा इनाम"
+    },
+    {
+     "en": "A sweet dish",
+     "hi": "मीठा व्यंजन"
+    },
+    {
+     "en": "A difficult task",
+     "hi": "कठिन काम"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "'A piece of cake' means something very easy to do.",
+    "hi": "'A piece of cake' का अर्थ है बहुत आसान काम।"
+   },
+   "subject": "english",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  }
+ ]
+}

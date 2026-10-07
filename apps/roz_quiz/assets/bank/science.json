@@ -1,0 +1,992 @@
+{
+ "schema": 1,
+ "subject": "science",
+ "questions": [
+  {
+   "id": "rq-science-001",
+   "q": {
+    "en": "Which is the largest planet in the solar system?",
+    "hi": "सौरमंडल का सबसे बड़ा ग्रह कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Saturn",
+     "hi": "शनि"
+    },
+    {
+     "en": "Jupiter",
+     "hi": "बृहस्पति"
+    },
+    {
+     "en": "Neptune",
+     "hi": "नेपच्यून"
+    },
+    {
+     "en": "Earth",
+     "hi": "पृथ्वी"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Jupiter is the largest planet; its mass is more than twice that of all other planets combined.",
+    "hi": "बृहस्पति सबसे बड़ा ग्रह है; इसका द्रव्यमान बाकी सभी ग्रहों के कुल द्रव्यमान के दोगुने से अधिक है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-002",
+   "q": {
+    "en": "Which planet is known as the 'Red Planet'?",
+    "hi": "किस ग्रह को 'लाल ग्रह' कहा जाता है?"
+   },
+   "options": [
+    {
+     "en": "Venus",
+     "hi": "शुक्र"
+    },
+    {
+     "en": "Mars",
+     "hi": "मंगल"
+    },
+    {
+     "en": "Jupiter",
+     "hi": "बृहस्पति"
+    },
+    {
+     "en": "Mercury",
+     "hi": "बुध"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Mars looks red because of iron oxide (rust) on its surface.",
+    "hi": "मंगल अपनी सतह पर आयरन ऑक्साइड (जंग) के कारण लाल दिखता है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-003",
+   "q": {
+    "en": "What is the chemical symbol of gold?",
+    "hi": "सोने का रासायनिक प्रतीक क्या है?"
+   },
+   "options": [
+    {
+     "en": "Go",
+     "hi": "Go"
+    },
+    {
+     "en": "Gd",
+     "hi": "Gd"
+    },
+    {
+     "en": "Au",
+     "hi": "Au"
+    },
+    {
+     "en": "Ag",
+     "hi": "Ag"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Gold's symbol Au comes from its Latin name 'aurum'. Ag is silver.",
+    "hi": "सोने का प्रतीक Au उसके लैटिन नाम 'ऑरम' से आता है। Ag चाँदी का प्रतीक है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-004",
+   "q": {
+    "en": "What is the chemical formula of common salt?",
+    "hi": "साधारण नमक का रासायनिक सूत्र क्या है?"
+   },
+   "options": [
+    {
+     "en": "NaCl",
+     "hi": "NaCl"
+    },
+    {
+     "en": "KCl",
+     "hi": "KCl"
+    },
+    {
+     "en": "Na2CO3",
+     "hi": "Na2CO3"
+    },
+    {
+     "en": "NaHCO3",
+     "hi": "NaHCO3"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Common salt is sodium chloride, NaCl. NaHCO3 is baking soda and Na2CO3 is washing soda.",
+    "hi": "साधारण नमक सोडियम क्लोराइड (NaCl) है। NaHCO3 बेकिंग सोडा और Na2CO3 धोने का सोडा है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-005",
+   "q": {
+    "en": "Scurvy is caused by the deficiency of which vitamin?",
+    "hi": "स्कर्वी रोग किस विटामिन की कमी से होता है?"
+   },
+   "options": [
+    {
+     "en": "Vitamin A",
+     "hi": "विटामिन A"
+    },
+    {
+     "en": "Vitamin B1",
+     "hi": "विटामिन B1"
+    },
+    {
+     "en": "Vitamin C",
+     "hi": "विटामिन C"
+    },
+    {
+     "en": "Vitamin D",
+     "hi": "विटामिन D"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Lack of vitamin C (ascorbic acid) causes scurvy, with bleeding gums and weakness.",
+    "hi": "विटामिन C (एस्कॉर्बिक अम्ल) की कमी से स्कर्वी होता है, जिसमें मसूड़ों से खून आता है और कमज़ोरी होती है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway",
+    "teaching"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-006",
+   "q": {
+    "en": "Rickets in children is caused by the deficiency of:",
+    "hi": "बच्चों में रिकेट्स किसकी कमी से होता है?"
+   },
+   "options": [
+    {
+     "en": "Vitamin A",
+     "hi": "विटामिन A"
+    },
+    {
+     "en": "Vitamin C",
+     "hi": "विटामिन C"
+    },
+    {
+     "en": "Vitamin D",
+     "hi": "विटामिन D"
+    },
+    {
+     "en": "Vitamin K",
+     "hi": "विटामिन K"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Vitamin D is needed to absorb calcium; its lack softens bones and causes rickets.",
+    "hi": "कैल्शियम के अवशोषण के लिए विटामिन D ज़रूरी है; इसकी कमी से हड्डियाँ कमज़ोर होकर रिकेट्स होता है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway",
+    "teaching"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-007",
+   "q": {
+    "en": "What is the SI unit of electric current?",
+    "hi": "विद्युत धारा की SI इकाई क्या है?"
+   },
+   "options": [
+    {
+     "en": "Volt",
+     "hi": "वोल्ट"
+    },
+    {
+     "en": "Ohm",
+     "hi": "ओम"
+    },
+    {
+     "en": "Ampere",
+     "hi": "एम्पियर"
+    },
+    {
+     "en": "Watt",
+     "hi": "वाट"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Current is measured in amperes (A). Volt is for potential difference, ohm for resistance and watt for power.",
+    "hi": "धारा एम्पियर (A) में मापी जाती है। वोल्ट विभवांतर, ओम प्रतिरोध और वाट शक्ति की इकाई है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-008",
+   "q": {
+    "en": "What is the SI unit of force?",
+    "hi": "बल की SI इकाई क्या है?"
+   },
+   "options": [
+    {
+     "en": "Joule",
+     "hi": "जूल"
+    },
+    {
+     "en": "Newton",
+     "hi": "न्यूटन"
+    },
+    {
+     "en": "Pascal",
+     "hi": "पास्कल"
+    },
+    {
+     "en": "Watt",
+     "hi": "वाट"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Force is measured in newtons (N); 1 N = 1 kg·m/s².",
+    "hi": "बल न्यूटन (N) में मापा जाता है; 1 N = 1 किग्रा·मी/से²।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-009",
+   "q": {
+    "en": "The speed of light in vacuum is about:",
+    "hi": "निर्वात में प्रकाश की गति लगभग कितनी है?"
+   },
+   "options": [
+    {
+     "en": "3 × 10^8 m/s",
+     "hi": "3 × 10^8 मी/से"
+    },
+    {
+     "en": "3 × 10^6 m/s",
+     "hi": "3 × 10^6 मी/से"
+    },
+    {
+     "en": "3 × 10^5 m/s",
+     "hi": "3 × 10^5 मी/से"
+    },
+    {
+     "en": "340 m/s",
+     "hi": "340 मी/से"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Light travels at about 3 × 10^8 m/s (3 lakh km per second) in vacuum. About 340 m/s is the speed of sound in air.",
+    "hi": "निर्वात में प्रकाश लगभग 3 × 10^8 मी/से (3 लाख किमी प्रति सेकंड) की गति से चलता है। लगभग 340 मी/से हवा में ध्वनि की गति है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-010",
+   "q": {
+    "en": "Which is the hardest natural substance?",
+    "hi": "सबसे कठोर प्राकृतिक पदार्थ कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Iron",
+     "hi": "लोहा"
+    },
+    {
+     "en": "Diamond",
+     "hi": "हीरा"
+    },
+    {
+     "en": "Quartz",
+     "hi": "क्वार्ट्ज़"
+    },
+    {
+     "en": "Platinum",
+     "hi": "प्लैटिनम"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Diamond, a form of carbon, is the hardest naturally occurring substance.",
+    "hi": "कार्बन का एक रूप, हीरा, सबसे कठोर प्राकृतिक पदार्थ है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-011",
+   "q": {
+    "en": "Which cell organelle is called the 'powerhouse of the cell'?",
+    "hi": "किस कोशिकांग को 'कोशिका का पावरहाउस' कहा जाता है?"
+   },
+   "options": [
+    {
+     "en": "Nucleus",
+     "hi": "केंद्रक"
+    },
+    {
+     "en": "Ribosome",
+     "hi": "राइबोसोम"
+    },
+    {
+     "en": "Mitochondria",
+     "hi": "माइटोकॉन्ड्रिया"
+    },
+    {
+     "en": "Golgi body",
+     "hi": "गॉल्जी काय"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Mitochondria produce energy in the form of ATP through cellular respiration.",
+    "hi": "माइटोकॉन्ड्रिया कोशिकीय श्वसन द्वारा ATP के रूप में ऊर्जा बनाते हैं।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway",
+    "teaching"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-012",
+   "q": {
+    "en": "Which gas makes up the largest part of Earth's atmosphere?",
+    "hi": "पृथ्वी के वायुमंडल में सबसे अधिक मात्रा में कौन-सी गैस है?"
+   },
+   "options": [
+    {
+     "en": "Oxygen",
+     "hi": "ऑक्सीजन"
+    },
+    {
+     "en": "Nitrogen",
+     "hi": "नाइट्रोजन"
+    },
+    {
+     "en": "Carbon dioxide",
+     "hi": "कार्बन डाइऑक्साइड"
+    },
+    {
+     "en": "Argon",
+     "hi": "आर्गन"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Nitrogen is about 78% of dry air; oxygen is about 21%.",
+    "hi": "शुष्क वायु में लगभग 78% नाइट्रोजन और लगभग 21% ऑक्सीजन होती है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-013",
+   "q": {
+    "en": "What is the pH of pure water at 25 °C?",
+    "hi": "25 °C पर शुद्ध जल का pH कितना होता है?"
+   },
+   "options": [
+    {
+     "en": "0",
+     "hi": "0"
+    },
+    {
+     "en": "5",
+     "hi": "5"
+    },
+    {
+     "en": "7",
+     "hi": "7"
+    },
+    {
+     "en": "14",
+     "hi": "14"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Pure water is neutral with pH 7. Below 7 is acidic, above 7 is basic.",
+    "hi": "शुद्ध जल उदासीन होता है और उसका pH 7 है। 7 से कम अम्लीय और 7 से अधिक क्षारीय होता है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-014",
+   "q": {
+    "en": "People with which blood group are called universal donors?",
+    "hi": "किस रक्त समूह वाले लोगों को सर्वदाता कहा जाता है?"
+   },
+   "options": [
+    {
+     "en": "A+",
+     "hi": "A+"
+    },
+    {
+     "en": "B+",
+     "hi": "B+"
+    },
+    {
+     "en": "AB+",
+     "hi": "AB+"
+    },
+    {
+     "en": "O−",
+     "hi": "O−"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "People with O− (O-negative) blood are universal donors: their red cells carry no A, B or Rh antigens. AB+ people are universal recipients.",
+    "hi": "O− (O-नेगेटिव) रक्त वाले लोग सर्वदाता होते हैं: उनकी लाल रक्त कोशिकाओं पर A, B या Rh एंटीजन नहीं होते। AB+ वाले सर्वग्राही होते हैं।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-015",
+   "q": {
+    "en": "Insulin is produced by which organ?",
+    "hi": "इंसुलिन किस अंग द्वारा बनाया जाता है?"
+   },
+   "options": [
+    {
+     "en": "Liver",
+     "hi": "यकृत"
+    },
+    {
+     "en": "Pancreas",
+     "hi": "अग्न्याशय"
+    },
+    {
+     "en": "Kidney",
+     "hi": "गुर्दा"
+    },
+    {
+     "en": "Stomach",
+     "hi": "आमाशय"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Beta cells in the islets of Langerhans of the pancreas produce insulin, which controls blood sugar.",
+    "hi": "अग्न्याशय की लैंगरहैंस द्वीपिकाओं की बीटा कोशिकाएँ इंसुलिन बनाती हैं, जो रक्त शर्करा नियंत्रित करता है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway",
+    "teaching"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-016",
+   "q": {
+    "en": "Which is the largest gland in the human body?",
+    "hi": "मानव शरीर की सबसे बड़ी ग्रंथि कौन-सी है?"
+   },
+   "options": [
+    {
+     "en": "Thyroid",
+     "hi": "थायरॉयड"
+    },
+    {
+     "en": "Pancreas",
+     "hi": "अग्न्याशय"
+    },
+    {
+     "en": "Liver",
+     "hi": "यकृत"
+    },
+    {
+     "en": "Pituitary",
+     "hi": "पीयूष ग्रंथि"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "The liver is the largest gland in the human body.",
+    "hi": "यकृत मानव शरीर की सबसे बड़ी ग्रंथि है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-017",
+   "q": {
+    "en": "How many bones are there in an adult human body?",
+    "hi": "एक वयस्क मानव शरीर में कितनी हड्डियाँ होती हैं?"
+   },
+   "options": [
+    {
+     "en": "196",
+     "hi": "196"
+    },
+    {
+     "en": "206",
+     "hi": "206"
+    },
+    {
+     "en": "216",
+     "hi": "216"
+    },
+    {
+     "en": "300",
+     "hi": "300"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "An adult has 206 bones. A newborn has around 300, many of which fuse as the child grows.",
+    "hi": "वयस्क में 206 हड्डियाँ होती हैं। नवजात में लगभग 300 होती हैं, जिनमें से कई बढ़ने के साथ जुड़ जाती हैं।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-018",
+   "q": {
+    "en": "Who discovered penicillin?",
+    "hi": "पेनिसिलिन की खोज किसने की?"
+   },
+   "options": [
+    {
+     "en": "Louis Pasteur",
+     "hi": "लुई पाश्चर"
+    },
+    {
+     "en": "Alexander Fleming",
+     "hi": "अलेक्ज़ेंडर फ़्लेमिंग"
+    },
+    {
+     "en": "Edward Jenner",
+     "hi": "एडवर्ड जेनर"
+    },
+    {
+     "en": "Robert Koch",
+     "hi": "रॉबर्ट कोच"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Alexander Fleming discovered penicillin, the first widely used antibiotic, in 1928.",
+    "hi": "अलेक्ज़ेंडर फ़्लेमिंग ने 1928 में पहले व्यापक रूप से इस्तेमाल हुए एंटीबायोटिक पेनिसिलिन की खोज की।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-019",
+   "q": {
+    "en": "Newton's first law of motion is also called the law of:",
+    "hi": "न्यूटन के गति के पहले नियम को किस नियम के नाम से भी जाना जाता है?"
+   },
+   "options": [
+    {
+     "en": "Inertia",
+     "hi": "जड़त्व"
+    },
+    {
+     "en": "Gravitation",
+     "hi": "गुरुत्वाकर्षण"
+    },
+    {
+     "en": "Action and reaction",
+     "hi": "क्रिया-प्रतिक्रिया"
+    },
+    {
+     "en": "Momentum",
+     "hi": "संवेग"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "The first law says a body stays at rest or in uniform motion unless a force acts on it; this property is inertia.",
+    "hi": "पहला नियम कहता है कि कोई वस्तु तब तक विराम या एकसमान गति में रहती है जब तक उस पर बल न लगे; यही गुण जड़त्व है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-020",
+   "q": {
+    "en": "Sound cannot travel through:",
+    "hi": "ध्वनि किसमें से होकर नहीं चल सकती?"
+   },
+   "options": [
+    {
+     "en": "Water",
+     "hi": "पानी"
+    },
+    {
+     "en": "Steel",
+     "hi": "स्टील"
+    },
+    {
+     "en": "Air",
+     "hi": "हवा"
+    },
+    {
+     "en": "Vacuum",
+     "hi": "निर्वात"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Sound needs a medium (solid, liquid or gas) to travel, so it cannot pass through a vacuum.",
+    "hi": "ध्वनि को चलने के लिए माध्यम (ठोस, द्रव या गैस) चाहिए, इसलिए यह निर्वात में नहीं चल सकती।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-021",
+   "q": {
+    "en": "Which gas do green plants release during photosynthesis?",
+    "hi": "प्रकाश संश्लेषण के दौरान हरे पौधे कौन-सी गैस छोड़ते हैं?"
+   },
+   "options": [
+    {
+     "en": "Carbon dioxide",
+     "hi": "कार्बन डाइऑक्साइड"
+    },
+    {
+     "en": "Nitrogen",
+     "hi": "नाइट्रोजन"
+    },
+    {
+     "en": "Oxygen",
+     "hi": "ऑक्सीजन"
+    },
+    {
+     "en": "Hydrogen",
+     "hi": "हाइड्रोजन"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Plants take in carbon dioxide and water, use sunlight to make glucose and release oxygen.",
+    "hi": "पौधे कार्बन डाइऑक्साइड और पानी लेकर सूर्य के प्रकाश से ग्लूकोज़ बनाते हैं और ऑक्सीजन छोड़ते हैं।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway",
+    "teaching"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-022",
+   "q": {
+    "en": "Which star is nearest to the Earth?",
+    "hi": "पृथ्वी के सबसे निकट कौन-सा तारा है?"
+   },
+   "options": [
+    {
+     "en": "Proxima Centauri",
+     "hi": "प्रॉक्सिमा सेंटॉरी"
+    },
+    {
+     "en": "The Sun",
+     "hi": "सूर्य"
+    },
+    {
+     "en": "Sirius",
+     "hi": "सीरियस"
+    },
+    {
+     "en": "Polaris",
+     "hi": "ध्रुव तारा"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The Sun is the nearest star to Earth. After the Sun, the nearest is Proxima Centauri.",
+    "hi": "सूर्य पृथ्वी का सबसे निकट तारा है। सूर्य के बाद सबसे निकट प्रॉक्सिमा सेंटॉरी है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-023",
+   "q": {
+    "en": "Which element has atomic number 1?",
+    "hi": "किस तत्व की परमाणु संख्या 1 है?"
+   },
+   "options": [
+    {
+     "en": "Helium",
+     "hi": "हीलियम"
+    },
+    {
+     "en": "Hydrogen",
+     "hi": "हाइड्रोजन"
+    },
+    {
+     "en": "Oxygen",
+     "hi": "ऑक्सीजन"
+    },
+    {
+     "en": "Lithium",
+     "hi": "लिथियम"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Hydrogen, the lightest element, has one proton, so its atomic number is 1.",
+    "hi": "सबसे हल्के तत्व हाइड्रोजन में एक प्रोटॉन होता है, इसलिए इसकी परमाणु संख्या 1 है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-024",
+   "q": {
+    "en": "Which vitamin helps in the clotting of blood?",
+    "hi": "कौन-सा विटामिन रक्त के थक्के जमने में सहायक है?"
+   },
+   "options": [
+    {
+     "en": "Vitamin A",
+     "hi": "विटामिन A"
+    },
+    {
+     "en": "Vitamin C",
+     "hi": "विटामिन C"
+    },
+    {
+     "en": "Vitamin E",
+     "hi": "विटामिन E"
+    },
+    {
+     "en": "Vitamin K",
+     "hi": "विटामिन K"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Vitamin K is needed to make the clotting factors in blood.",
+    "hi": "रक्त में थक्का बनाने वाले कारकों के निर्माण के लिए विटामिन K ज़रूरी है।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-science-025",
+   "q": {
+    "en": "What is the SI unit of temperature?",
+    "hi": "तापमान की SI इकाई क्या है?"
+   },
+   "options": [
+    {
+     "en": "Celsius",
+     "hi": "सेल्सियस"
+    },
+    {
+     "en": "Fahrenheit",
+     "hi": "फ़ारेनहाइट"
+    },
+    {
+     "en": "Kelvin",
+     "hi": "केल्विन"
+    },
+    {
+     "en": "Joule",
+     "hi": "जूल"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "The kelvin (K) is the SI base unit of temperature; 0 °C = 273.15 K.",
+    "hi": "केल्विन (K) तापमान की SI मूल इकाई है; 0 °C = 273.15 K।"
+   },
+   "subject": "science",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  }
+ ]
+}

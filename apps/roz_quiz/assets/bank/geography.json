@@ -1,0 +1,917 @@
+{
+ "schema": 1,
+ "subject": "geography",
+ "questions": [
+  {
+   "id": "rq-geography-001",
+   "q": {
+    "en": "Which is the longest river flowing within India?",
+    "hi": "भारत के भीतर बहने वाली सबसे लंबी नदी कौन-सी है?"
+   },
+   "options": [
+    {
+     "en": "Godavari",
+     "hi": "गोदावरी"
+    },
+    {
+     "en": "Narmada",
+     "hi": "नर्मदा"
+    },
+    {
+     "en": "Yamuna",
+     "hi": "यमुना"
+    },
+    {
+     "en": "Ganga",
+     "hi": "गंगा"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "The Ganga flows about 2,525 km and is the longest river within India.",
+    "hi": "गंगा लगभग 2,525 किमी बहती है और भारत के भीतर सबसे लंबी नदी है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-002",
+   "q": {
+    "en": "Which river is known as the 'Dakshin Ganga' (Ganga of the South)?",
+    "hi": "किस नदी को 'दक्षिण गंगा' कहा जाता है?"
+   },
+   "options": [
+    {
+     "en": "Krishna",
+     "hi": "कृष्णा"
+    },
+    {
+     "en": "Tapti",
+     "hi": "ताप्ती"
+    },
+    {
+     "en": "Godavari",
+     "hi": "गोदावरी"
+    },
+    {
+     "en": "Mahanadi",
+     "hi": "महानदी"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "The Godavari, the longest river of peninsular India, is called the Dakshin Ganga.",
+    "hi": "प्रायद्वीपीय भारत की सबसे लंबी नदी गोदावरी को दक्षिण गंगा कहा जाता है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-003",
+   "q": {
+    "en": "Kangchenjunga, the third-highest mountain in the world, lies on the border of Nepal and which Indian state?",
+    "hi": "विश्व का तीसरा सबसे ऊँचा पर्वत कंचनजंगा नेपाल और किस भारतीय राज्य की सीमा पर है?"
+   },
+   "options": [
+    {
+     "en": "Sikkim",
+     "hi": "सिक्किम"
+    },
+    {
+     "en": "Arunachal Pradesh",
+     "hi": "अरुणाचल प्रदेश"
+    },
+    {
+     "en": "Uttarakhand",
+     "hi": "उत्तराखंड"
+    },
+    {
+     "en": "Himachal Pradesh",
+     "hi": "हिमाचल प्रदेश"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Kangchenjunga (8,586 m) stands on the Sikkim-Nepal border.",
+    "hi": "कंचनजंगा (8,586 मीटर) सिक्किम-नेपाल सीमा पर स्थित है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-004",
+   "q": {
+    "en": "Which is the largest state of India by area?",
+    "hi": "क्षेत्रफल की दृष्टि से भारत का सबसे बड़ा राज्य कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Madhya Pradesh",
+     "hi": "मध्य प्रदेश"
+    },
+    {
+     "en": "Maharashtra",
+     "hi": "महाराष्ट्र"
+    },
+    {
+     "en": "Rajasthan",
+     "hi": "राजस्थान"
+    },
+    {
+     "en": "Uttar Pradesh",
+     "hi": "उत्तर प्रदेश"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Rajasthan is the largest state by area (about 3.42 lakh sq km).",
+    "hi": "राजस्थान क्षेत्रफल में सबसे बड़ा राज्य है (लगभग 3.42 लाख वर्ग किमी)।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-005",
+   "q": {
+    "en": "Which is the smallest state of India by area?",
+    "hi": "क्षेत्रफल की दृष्टि से भारत का सबसे छोटा राज्य कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Sikkim",
+     "hi": "सिक्किम"
+    },
+    {
+     "en": "Manipur",
+     "hi": "मणिपुर"
+    },
+    {
+     "en": "Tripura",
+     "hi": "त्रिपुरा"
+    },
+    {
+     "en": "Goa",
+     "hi": "गोवा"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Goa is the smallest state by area (about 3,702 sq km).",
+    "hi": "गोवा क्षेत्रफल में सबसे छोटा राज्य है (लगभग 3,702 वर्ग किमी)।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-006",
+   "q": {
+    "en": "Through how many Indian states does the Tropic of Cancer pass?",
+    "hi": "कर्क रेखा भारत के कितने राज्यों से होकर गुज़रती है?"
+   },
+   "options": [
+    {
+     "en": "6",
+     "hi": "6"
+    },
+    {
+     "en": "7",
+     "hi": "7"
+    },
+    {
+     "en": "8",
+     "hi": "8"
+    },
+    {
+     "en": "9",
+     "hi": "9"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "It passes through 8 states: Gujarat, Rajasthan, Madhya Pradesh, Chhattisgarh, Jharkhand, West Bengal, Tripura and Mizoram.",
+    "hi": "यह 8 राज्यों से गुज़रती है: गुजरात, राजस्थान, मध्य प्रदेश, छत्तीसगढ़, झारखंड, पश्चिम बंगाल, त्रिपुरा और मिज़ोरम।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "hard",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-007",
+   "q": {
+    "en": "Indian Standard Time is based on which longitude?",
+    "hi": "भारतीय मानक समय किस देशांतर पर आधारित है?"
+   },
+   "options": [
+    {
+     "en": "75° E",
+     "hi": "75° पू"
+    },
+    {
+     "en": "80° E",
+     "hi": "80° पू"
+    },
+    {
+     "en": "82.5° E",
+     "hi": "82.5° पू"
+    },
+    {
+     "en": "88.5° E",
+     "hi": "88.5° पू"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "IST is based on the 82.5° E (82°30' E) meridian, which passes near Mirzapur in Uttar Pradesh. It is 5 hours 30 minutes ahead of UTC.",
+    "hi": "भारतीय मानक समय 82°30' पूर्व पर आधारित है, जो उत्तर प्रदेश के मिर्ज़ापुर के पास से गुज़रता है। यह UTC से 5 घंटे 30 मिनट आगे है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-008",
+   "q": {
+    "en": "Which is the largest freshwater lake in India?",
+    "hi": "भारत की सबसे बड़ी मीठे पानी की झील कौन-सी है?"
+   },
+   "options": [
+    {
+     "en": "Dal Lake",
+     "hi": "डल झील"
+    },
+    {
+     "en": "Chilika Lake",
+     "hi": "चिल्का झील"
+    },
+    {
+     "en": "Loktak Lake",
+     "hi": "लोकटक झील"
+    },
+    {
+     "en": "Wular Lake",
+     "hi": "वुलर झील"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Wular Lake in Jammu and Kashmir, fed by the Jhelum, is India's largest freshwater lake. Chilika is a brackish-water lagoon.",
+    "hi": "झेलम से पोषित जम्मू-कश्मीर की वुलर झील भारत की सबसे बड़ी मीठे पानी की झील है। चिल्का खारे पानी का लैगून है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-009",
+   "q": {
+    "en": "Chilika Lake is located in which state?",
+    "hi": "चिल्का झील किस राज्य में है?"
+   },
+   "options": [
+    {
+     "en": "Andhra Pradesh",
+     "hi": "आंध्र प्रदेश"
+    },
+    {
+     "en": "Tamil Nadu",
+     "hi": "तमिलनाडु"
+    },
+    {
+     "en": "West Bengal",
+     "hi": "पश्चिम बंगाल"
+    },
+    {
+     "en": "Odisha",
+     "hi": "ओडिशा"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Chilika in Odisha is India's largest brackish-water coastal lagoon.",
+    "hi": "ओडिशा की चिल्का झील भारत का सबसे बड़ा खारे पानी का तटीय लैगून है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-010",
+   "q": {
+    "en": "Which strait separates India and Sri Lanka?",
+    "hi": "कौन-सा जलडमरूमध्य भारत और श्रीलंका को अलग करता है?"
+   },
+   "options": [
+    {
+     "en": "Strait of Malacca",
+     "hi": "मलक्का जलडमरूमध्य"
+    },
+    {
+     "en": "Strait of Hormuz",
+     "hi": "होर्मुज़ जलडमरूमध्य"
+    },
+    {
+     "en": "Bass Strait",
+     "hi": "बास जलडमरूमध्य"
+    },
+    {
+     "en": "Palk Strait",
+     "hi": "पाक जलडमरूमध्य"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "The Palk Strait lies between Tamil Nadu and the northern part of Sri Lanka.",
+    "hi": "पाक जलडमरूमध्य तमिलनाडु और श्रीलंका के उत्तरी भाग के बीच स्थित है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-011",
+   "q": {
+    "en": "Which is the largest ocean in the world?",
+    "hi": "विश्व का सबसे बड़ा महासागर कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Atlantic Ocean",
+     "hi": "अटलांटिक महासागर"
+    },
+    {
+     "en": "Indian Ocean",
+     "hi": "हिंद महासागर"
+    },
+    {
+     "en": "Pacific Ocean",
+     "hi": "प्रशांत महासागर"
+    },
+    {
+     "en": "Arctic Ocean",
+     "hi": "आर्कटिक महासागर"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "The Pacific is the largest and deepest ocean.",
+    "hi": "प्रशांत महासागर सबसे बड़ा और सबसे गहरा महासागर है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-012",
+   "q": {
+    "en": "Which is the largest hot desert in the world?",
+    "hi": "विश्व का सबसे बड़ा गर्म मरुस्थल कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Thar",
+     "hi": "थार"
+    },
+    {
+     "en": "Gobi",
+     "hi": "गोबी"
+    },
+    {
+     "en": "Sahara",
+     "hi": "सहारा"
+    },
+    {
+     "en": "Kalahari",
+     "hi": "कालाहारी"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "The Sahara in North Africa is the largest hot desert. Antarctica is the largest desert overall (a cold desert).",
+    "hi": "उत्तरी अफ़्रीका का सहारा सबसे बड़ा गर्म मरुस्थल है। कुल मिलाकर सबसे बड़ा मरुस्थल अंटार्कटिका (ठंडा मरुस्थल) है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-013",
+   "q": {
+    "en": "What is the capital of Australia?",
+    "hi": "ऑस्ट्रेलिया की राजधानी क्या है?"
+   },
+   "options": [
+    {
+     "en": "Sydney",
+     "hi": "सिडनी"
+    },
+    {
+     "en": "Melbourne",
+     "hi": "मेलबर्न"
+    },
+    {
+     "en": "Canberra",
+     "hi": "कैनबरा"
+    },
+    {
+     "en": "Perth",
+     "hi": "पर्थ"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Canberra is the capital of Australia, although Sydney is its largest city.",
+    "hi": "कैनबरा ऑस्ट्रेलिया की राजधानी है, जबकि सिडनी सबसे बड़ा शहर है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-014",
+   "q": {
+    "en": "Which is the largest country in the world by area?",
+    "hi": "क्षेत्रफल की दृष्टि से विश्व का सबसे बड़ा देश कौन-सा है?"
+   },
+   "options": [
+    {
+     "en": "Canada",
+     "hi": "कनाडा"
+    },
+    {
+     "en": "China",
+     "hi": "चीन"
+    },
+    {
+     "en": "USA",
+     "hi": "अमेरिका"
+    },
+    {
+     "en": "Russia",
+     "hi": "रूस"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Russia is the largest country by area, covering about 1.7 crore sq km.",
+    "hi": "रूस क्षेत्रफल में सबसे बड़ा देश है, लगभग 1.7 करोड़ वर्ग किमी।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-015",
+   "q": {
+    "en": "Which country is called the 'Land of the Rising Sun'?",
+    "hi": "किस देश को 'उगते सूरज का देश' कहा जाता है?"
+   },
+   "options": [
+    {
+     "en": "China",
+     "hi": "चीन"
+    },
+    {
+     "en": "South Korea",
+     "hi": "दक्षिण कोरिया"
+    },
+    {
+     "en": "Thailand",
+     "hi": "थाईलैंड"
+    },
+    {
+     "en": "Japan",
+     "hi": "जापान"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Japan is called the Land of the Rising Sun; its name Nippon means 'origin of the sun'.",
+    "hi": "जापान को उगते सूरज का देश कहा जाता है; उसके नाम 'निप्पॉन' का अर्थ है 'सूर्य का उद्गम'।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-016",
+   "q": {
+    "en": "The Nathu La pass is located in which state?",
+    "hi": "नाथू ला दर्रा किस राज्य में है?"
+   },
+   "options": [
+    {
+     "en": "Sikkim",
+     "hi": "सिक्किम"
+    },
+    {
+     "en": "Himachal Pradesh",
+     "hi": "हिमाचल प्रदेश"
+    },
+    {
+     "en": "Arunachal Pradesh",
+     "hi": "अरुणाचल प्रदेश"
+    },
+    {
+     "en": "Uttarakhand",
+     "hi": "उत्तराखंड"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Nathu La in Sikkim connects India with the Tibet region of China.",
+    "hi": "सिक्किम का नाथू ला दर्रा भारत को चीन के तिब्बत क्षेत्र से जोड़ता है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "defence",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-017",
+   "q": {
+    "en": "Silent Valley National Park is in which state?",
+    "hi": "साइलेंट वैली राष्ट्रीय उद्यान किस राज्य में है?"
+   },
+   "options": [
+    {
+     "en": "Kerala",
+     "hi": "केरल"
+    },
+    {
+     "en": "Karnataka",
+     "hi": "कर्नाटक"
+    },
+    {
+     "en": "Tamil Nadu",
+     "hi": "तमिलनाडु"
+    },
+    {
+     "en": "Goa",
+     "hi": "गोवा"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Silent Valley National Park is in the Palakkad district of Kerala, in the Nilgiri hills.",
+    "hi": "साइलेंट वैली राष्ट्रीय उद्यान केरल के पलक्कड़ ज़िले में नीलगिरि पहाड़ियों में है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-018",
+   "q": {
+    "en": "Kaziranga National Park, famous for the one-horned rhinoceros, is in:",
+    "hi": "एक सींग वाले गैंडे के लिए प्रसिद्ध काज़ीरंगा राष्ट्रीय उद्यान कहाँ है?"
+   },
+   "options": [
+    {
+     "en": "West Bengal",
+     "hi": "पश्चिम बंगाल"
+    },
+    {
+     "en": "Odisha",
+     "hi": "ओडिशा"
+    },
+    {
+     "en": "Meghalaya",
+     "hi": "मेघालय"
+    },
+    {
+     "en": "Assam",
+     "hi": "असम"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Kaziranga in Assam is a UNESCO World Heritage Site and home to most of the world's one-horned rhinos.",
+    "hi": "असम का काज़ीरंगा यूनेस्को विश्व धरोहर स्थल है और दुनिया के अधिकांश एक सींग वाले गैंडों का घर है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-019",
+   "q": {
+    "en": "Gir National Park, the only natural home of the Asiatic lion, is in:",
+    "hi": "एशियाई शेर का एकमात्र प्राकृतिक आवास गिर राष्ट्रीय उद्यान कहाँ है?"
+   },
+   "options": [
+    {
+     "en": "Gujarat",
+     "hi": "गुजरात"
+    },
+    {
+     "en": "Rajasthan",
+     "hi": "राजस्थान"
+    },
+    {
+     "en": "Madhya Pradesh",
+     "hi": "मध्य प्रदेश"
+    },
+    {
+     "en": "Maharashtra",
+     "hi": "महाराष्ट्र"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Gir National Park in Gujarat is the only natural habitat of the Asiatic lion.",
+    "hi": "गुजरात का गिर राष्ट्रीय उद्यान एशियाई शेर का एकमात्र प्राकृतिक आवास है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-020",
+   "q": {
+    "en": "Black soil (regur) is best suited for growing:",
+    "hi": "काली मिट्टी (रेगुर) किस फ़सल के लिए सबसे उपयुक्त है?"
+   },
+   "options": [
+    {
+     "en": "Cotton",
+     "hi": "कपास"
+    },
+    {
+     "en": "Tea",
+     "hi": "चाय"
+    },
+    {
+     "en": "Rice",
+     "hi": "चावल"
+    },
+    {
+     "en": "Coffee",
+     "hi": "कॉफ़ी"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Black soil holds moisture well and is ideal for cotton, so it is also called black cotton soil.",
+    "hi": "काली मिट्टी नमी अच्छी तरह रोकती है और कपास के लिए आदर्श है, इसलिए इसे काली कपासी मिट्टी भी कहते हैं।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-021",
+   "q": {
+    "en": "The Strait of Gibraltar connects the Atlantic Ocean with the:",
+    "hi": "जिब्राल्टर जलडमरूमध्य अटलांटिक महासागर को किससे जोड़ता है?"
+   },
+   "options": [
+    {
+     "en": "Red Sea",
+     "hi": "लाल सागर"
+    },
+    {
+     "en": "Caspian Sea",
+     "hi": "कैस्पियन सागर"
+    },
+    {
+     "en": "Black Sea",
+     "hi": "काला सागर"
+    },
+    {
+     "en": "Mediterranean Sea",
+     "hi": "भूमध्य सागर"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "The Strait of Gibraltar, between Spain and Morocco, links the Atlantic Ocean and the Mediterranean Sea.",
+    "hi": "स्पेन और मोरक्को के बीच स्थित जिब्राल्टर जलडमरूमध्य अटलांटिक महासागर और भूमध्य सागर को जोड़ता है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "upsc",
+    "defence"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-022",
+   "q": {
+    "en": "What is the southernmost point of India called?",
+    "hi": "भारत के सबसे दक्षिणी बिंदु का क्या नाम है?"
+   },
+   "options": [
+    {
+     "en": "Indira Point",
+     "hi": "इंदिरा पॉइंट"
+    },
+    {
+     "en": "Kanyakumari",
+     "hi": "कन्याकुमारी"
+    },
+    {
+     "en": "Rameswaram",
+     "hi": "रामेश्वरम"
+    },
+    {
+     "en": "Point Calimere",
+     "hi": "पॉइंट कैलिमेरे"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Indira Point on Great Nicobar Island is India's southernmost point. Kanyakumari is the southern tip of the mainland.",
+    "hi": "ग्रेट निकोबार द्वीप पर स्थित इंदिरा पॉइंट भारत का सबसे दक्षिणी बिंदु है। कन्याकुमारी मुख्य भूमि का दक्षिणी छोर है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-geography-023",
+   "q": {
+    "en": "Which planet is known as the 'Blue Planet'?",
+    "hi": "किस ग्रह को 'नीला ग्रह' कहा जाता है?"
+   },
+   "options": [
+    {
+     "en": "Neptune",
+     "hi": "नेपच्यून"
+    },
+    {
+     "en": "Venus",
+     "hi": "शुक्र"
+    },
+    {
+     "en": "Uranus",
+     "hi": "यूरेनस"
+    },
+    {
+     "en": "Earth",
+     "hi": "पृथ्वी"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Earth is called the Blue Planet because about 71% of its surface is covered by water.",
+    "hi": "पृथ्वी को नीला ग्रह कहा जाता है क्योंकि इसकी सतह का लगभग 71% भाग पानी से ढका है।"
+   },
+   "subject": "geography",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  }
+ ]
+}

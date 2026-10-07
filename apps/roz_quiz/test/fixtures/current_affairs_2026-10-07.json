@@ -1,0 +1,139 @@
+{
+ "schema": 1,
+ "date": "2026-10-07",
+ "notes": [
+  {
+   "id": "ca-2026-10-07-1",
+   "title": {
+    "en": "Swachhata Hi Seva campaign concludes",
+    "hi": "स्वच्छता ही सेवा अभियान संपन्न"
+   },
+   "body": {
+    "en": "The fortnight-long Swachhata Hi Seva campaign ended on Gandhi Jayanti with cleanliness drives across cities and villages. The campaign is held every year under the Swachh Bharat Mission to encourage citizen participation in keeping public places clean.",
+    "hi": "पखवाड़े भर चला स्वच्छता ही सेवा अभियान गांधी जयंती पर शहरों और गाँवों में सफ़ाई अभियानों के साथ संपन्न हुआ। यह अभियान हर साल स्वच्छ भारत मिशन के तहत सार्वजनिक स्थानों को साफ़ रखने में नागरिकों की भागीदारी बढ़ाने के लिए चलाया जाता है।"
+   },
+   "source": {
+    "name": "PIB",
+    "url": "https://pib.gov.in/PressReleasePage.aspx?PRID=1"
+   },
+   "tags": [
+    "gk"
+   ]
+  },
+  {
+   "id": "ca-2026-10-07-2",
+   "title": {
+    "en": "World Space Week observed",
+    "hi": "विश्व अंतरिक्ष सप्ताह मनाया गया"
+   },
+   "body": {
+    "en": "World Space Week is observed every year from 4 to 10 October. It marks the launch of Sputnik 1 on 4 October 1957 and the Outer Space Treaty, which came into force on 10 October 1967.",
+    "hi": "विश्व अंतरिक्ष सप्ताह हर साल 4 से 10 अक्टूबर तक मनाया जाता है। यह 4 अक्टूबर 1957 को स्पुतनिक 1 के प्रक्षेपण और 10 अक्टूबर 1967 को लागू हुई बाह्य अंतरिक्ष संधि की याद में है।"
+   },
+   "source": {
+    "name": "UN",
+    "url": "https://www.un.org/en/observances/space-week"
+   },
+   "tags": [
+    "science"
+   ]
+  },
+  {
+   "id": "ca-2026-10-07-3",
+   "title": {
+    "en": "Note without source",
+    "hi": "बिना स्रोत का नोट"
+   },
+   "body": {
+    "en": "A short note that has no source link.",
+    "hi": "एक छोटा नोट जिसका कोई स्रोत लिंक नहीं है।"
+   },
+   "source": null,
+   "tags": []
+  }
+ ],
+ "questions": [
+  {
+   "id": "q-current_affairs-000201",
+   "q": {
+    "en": "Rashtriya Ekta Diwas (National Unity Day) is observed on the birth anniversary of:",
+    "hi": "राष्ट्रीय एकता दिवस किसकी जयंती पर मनाया जाता है?"
+   },
+   "options": [
+    {
+     "en": "Sardar Vallabhbhai Patel",
+     "hi": "सरदार वल्लभभाई पटेल"
+    },
+    {
+     "en": "Mahatma Gandhi",
+     "hi": "महात्मा गांधी"
+    },
+    {
+     "en": "Subhas Chandra Bose",
+     "hi": "सुभाष चंद्र बोस"
+    },
+    {
+     "en": "B. R. Ambedkar",
+     "hi": "बी. आर. आंबेडकर"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "National Unity Day is observed on 31 October, the birth anniversary of Sardar Patel.",
+    "hi": "राष्ट्रीय एकता दिवस 31 अक्टूबर को सरदार पटेल की जयंती पर मनाया जाता है।"
+   },
+   "subject": "current_affairs",
+   "exams": [
+    "ssc"
+   ],
+   "difficulty": "medium",
+   "source": {
+    "name": "PIB",
+    "url": "https://pib.gov.in/PressReleasePage.aspx?PRID=1"
+   },
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "q-current_affairs-000202",
+   "q": {
+    "en": "Which ministry runs the Swachh Bharat Mission (Urban)?",
+    "hi": "स्वच्छ भारत मिशन (शहरी) कौन-सा मंत्रालय चलाता है?"
+   },
+   "options": [
+    {
+     "en": "Ministry of Housing and Urban Affairs",
+     "hi": "आवास और शहरी कार्य मंत्रालय"
+    },
+    {
+     "en": "Ministry of Jal Shakti",
+     "hi": "जल शक्ति मंत्रालय"
+    },
+    {
+     "en": "Ministry of Rural Development",
+     "hi": "ग्रामीण विकास मंत्रालय"
+    },
+    {
+     "en": "Ministry of Health",
+     "hi": "स्वास्थ्य मंत्रालय"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "SBM (Urban) is run by the Ministry of Housing and Urban Affairs; SBM (Gramin) by the Ministry of Jal Shakti.",
+    "hi": "SBM (शहरी) आवास और शहरी कार्य मंत्रालय चलाता है; SBM (ग्रामीण) जल शक्ति मंत्रालय।"
+   },
+   "subject": "current_affairs",
+   "exams": [
+    "ssc"
+   ],
+   "difficulty": "medium",
+   "source": {
+    "name": "PIB",
+    "url": "https://pib.gov.in/PressReleasePage.aspx?PRID=1"
+   },
+   "asked": null,
+   "verified": true
+  }
+ ]
+}
