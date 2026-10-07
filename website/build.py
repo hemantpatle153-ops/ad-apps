@@ -35,6 +35,12 @@ FIREBASE = (
     "in Firebase</a>."
 )
 
+NO_ADS = (
+    "This version of the app shows no ads and does not use your advertising "
+    "ID. If a later version adds ads, this page will be updated before that "
+    "version is released."
+)
+
 ON_DEVICE = (
     "Everything else you create in the app stays on your phone. We do not run "
     "our own servers and we never receive, sell or share it. Uninstalling the "
@@ -124,6 +130,28 @@ APPS = {
         "Firebase Realtime Database and are deleted automatically within 6 "
         "hours. Only people with the room code can see them. " + FIREBASE,
     ]),
+    "vacancy_bell": ("Vacancy Bell", [
+        "Vacancy Bell is not a government app and is not linked to any "
+        "government body. It lists public notices from official websites so "
+        "you can find them; always check the official notice before you apply.",
+        "To show the job list, the app downloads it from GitHub "
+        "(raw.githubusercontent.com). Like any website, GitHub sees your IP "
+        "address and basic request details; the app sends no personal data "
+        "with these requests.",
+        "Your details for the eligibility check (date of birth, qualification, "
+        "category, state, gender), saved posts, reminders and settings are "
+        "stored only on your phone and are never uploaded.",
+        "Reminders and new-post alerts are notifications created on your phone. "
+        "About every 3 hours the app checks the job list in the background to "
+        "find new posts; you can turn this off in Settings.",
+        "If you use <b>Report a mistake</b>, the app sends the post's id, the "
+        "reason you pick, the note you type, the time and a random anonymous "
+        "id, so we can correct the listing. Please do not put personal details "
+        "in the note. Reports use Google Firebase (Anonymous Authentication "
+        "and Realtime Database); data is sent encrypted (HTTPS). See "
+        '<a href="https://firebase.google.com/support/privacy">Privacy and '
+        "Security in Firebase</a>. Reports are kept only until we review them.",
+    ], NO_ADS),
 }
 
 PAGE = """<!doctype html>
@@ -146,8 +174,13 @@ PAGE = """<!doctype html>
 """
 
 
-def policy(name: str, facts: list[str]) -> str:
+def policy(name: str, facts: list[str], ads: str = ADS) -> str:
     items = "\n".join(f"<li>{f}</li>" for f in facts)
+    ad_data = (
+        " For data\nheld by Google for ads, use the controls above or\n"
+        '<a href="https://myadcenter.google.com/">My Ad Center</a>.'
+        if ads == ADS else ""
+    )
     return f"""<h1>{escape(name)} privacy policy</h1>
 <p class="muted">{DEVELOPER} &middot; last updated {UPDATED}</p>
 <p>{escape(name)} is a free Android app by {DEVELOPER}. This page explains what
@@ -159,15 +192,13 @@ not sell personal data.</p>
 </ul>
 <p>{ON_DEVICE}</p>
 <h2>Ads</h2>
-<p>{ADS}</p>
+<p>{ads}</p>
 <h2>Children</h2>
 <p>The app is not made for children under 13 and we do not knowingly collect
 data from them.</p>
 <h2>Security and deletion</h2>
 <p>Anything the app sends over the internet is encrypted in transit. Data on
-your phone is deleted when you uninstall the app or clear its data. For data
-held by Google for ads, use the controls above or
-<a href="https://myadcenter.google.com/">My Ad Center</a>.</p>
+your phone is deleted when you uninstall the app or clear its data.{ad_data}</p>
 <h2>Changes and contact</h2>
 <p>If this policy changes, the new version is posted on this page with a new
 date. Questions: write to the developer email shown on the app's Google Play
@@ -178,8 +209,8 @@ page.</p>
 def main() -> None:
     (PUBLIC / "privacy").mkdir(parents=True, exist_ok=True)
     links = []
-    for app, (name, facts) in APPS.items():
-        html = PAGE.format(title=f"{name} privacy policy", body=policy(name, facts))
+    for app, (name, facts, *ads) in APPS.items():
+        html = PAGE.format(title=f"{name} privacy policy", body=policy(name, facts, *ads))
         (PUBLIC / "privacy" / f"{app}.html").write_text(html, encoding="utf-8")
         links.append(f'<li><a href="privacy/{app}.html">{escape(name)}</a></li>')
     index = (

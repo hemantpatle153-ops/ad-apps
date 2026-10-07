@@ -30,14 +30,20 @@ $storeNames = [ordered]@{
     multi_speaker   = 'multi_speaker'
     video_player    = 'video_player'
     snakes_ladders  = 'dice_dhamaal'
+    vacancy_bell    = 'vacancy_bell'
 }
+# Apps released without ads (built with ADS=off, the default): they need
+# no admob.json entry.
+$adFree = @('vacancy_bell')
 if (-not $Apps) { $Apps = @($storeNames.Keys) }
 
 $admobFile = Join-Path $Signing 'admob.json'
-if (-not (Test-Path $admobFile)) {
+$admob = $null
+if (Test-Path $admobFile) {
+    $admob = Get-Content $admobFile -Raw | ConvertFrom-Json
+} elseif (@($Apps | Where-Object { $adFree -notcontains $_ }).Count -gt 0) {
     throw "Missing $admobFile. Copy tool\admob.example.json there and fill in the real AdMob IDs."
 }
-$admob = Get-Content $admobFile -Raw | ConvertFrom-Json
 New-Item -ItemType Directory -Force $Out | Out-Null
 
 foreach ($app in $Apps) {
@@ -57,15 +63,19 @@ foreach ($app in $Apps) {
     $lines = @("storeFile=$($jks -replace '\\', '/')") + $keep
     Set-Content -Path (Join-Path $dir 'android\key.properties') -Value $lines -Encoding ascii
 
-    $ids = $admob.$app
-    if (-not $ids -or -not $ids.appId -or -not $ids.banner -or -not $ids.interstitial) {
-        throw "admob.json has no appId/banner/interstitial for '$app'."
+    if ($adFree -contains $app) {
+        $buildArgs = @('build', 'appbundle', '--release')
+    } else {
+        $ids = $admob.$app
+        if (-not $ids -or -not $ids.appId -or -not $ids.banner -or -not $ids.interstitial) {
+            throw "admob.json has no appId/banner/interstitial for '$app'."
+        }
+        $buildArgs = @('build', 'appbundle', '--release',
+            "-PadmobAppId=$($ids.appId)",
+            "--dart-define=ADMOB_BANNER_ID=$($ids.banner)",
+            "--dart-define=ADMOB_INTERSTITIAL_ID=$($ids.interstitial)")
+        if ($ids.rewarded) { $buildArgs += "--dart-define=ADMOB_REWARDED_ID=$($ids.rewarded)" }
     }
-    $buildArgs = @('build', 'appbundle', '--release',
-        "-PadmobAppId=$($ids.appId)",
-        "--dart-define=ADMOB_BANNER_ID=$($ids.banner)",
-        "--dart-define=ADMOB_INTERSTITIAL_ID=$($ids.interstitial)")
-    if ($ids.rewarded) { $buildArgs += "--dart-define=ADMOB_REWARDED_ID=$($ids.rewarded)" }
 
     Push-Location $dir
     try {
