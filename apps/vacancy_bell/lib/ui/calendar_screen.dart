@@ -121,7 +121,10 @@ class _EventTile extends StatelessWidget {
           color: urgent ? status.urgent : theme.colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
+        // Scales down rather than overflowing with large system text.
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
           Text('${event.date.day}',
               style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
@@ -131,7 +134,8 @@ class _EventTile extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.labelSmall?.copyWith(
                   color: urgent ? status.onUrgent : theme.colorScheme.onPrimaryContainer)),
-        ]),
+          ]),
+        ),
       ),
       title: Text(s.text(event.post.title), maxLines: 2, overflow: TextOverflow.ellipsis),
       subtitle: Text(kindLabel),

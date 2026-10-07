@@ -108,18 +108,18 @@ class AgeSpan {
     if (on.isBefore(birth)) return null;
     var years = on.year - birth.year;
     var months = on.month - birth.month;
-    var days = on.day - birth.day;
-    if (days < 0) {
-      months -= 1;
-      // Borrow the length of the month before [on].
-      final prevMonth = on.month == 1 ? 12 : on.month - 1;
-      final prevYear = on.month == 1 ? on.year - 1 : on.year;
-      days += Ymd.daysInMonth(prevYear, prevMonth);
-    }
+    if (on.day < birth.day) months -= 1;
     if (months < 0) {
       years -= 1;
       months += 12;
     }
+    // The last "monthiversary" on or before [on]; a 31st falls back to the
+    // month's last day.
+    final total = birth.month - 1 + years * 12 + months;
+    final y = birth.year + total ~/ 12;
+    final m = total % 12 + 1;
+    final d = birth.day > Ymd.daysInMonth(y, m) ? Ymd.daysInMonth(y, m) : birth.day;
+    final days = Ymd(y, m, d).daysUntil(on);
     return AgeSpan(years, months, days);
   }
 

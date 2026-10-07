@@ -232,7 +232,8 @@ class VacancyEntry {
     if (b == null) return const [];
     final out = <(String, int)>[];
     final part = RegExp(r'^\s*([A-Za-z][A-Za-z\-/ ().]*?)\s*[:\-]?\s*(\d[\d,]*)\s*$');
-    for (final piece in b.split(RegExp(r'[,;|]'))) {
+    // Split on ; | and commas, but not the comma inside "1,200".
+    for (final piece in b.split(RegExp(r'[;|]|(?<!\d),|,(?!\d)'))) {
       final m = part.firstMatch(piece);
       if (m == null) continue;
       final n = int.tryParse(m.group(2)!.replaceAll(',', ''));

@@ -103,7 +103,9 @@ class JobsRepository {
           .then((r) {
         if (r.data != null) _index = r.data;
         return r;
-      }).whenComplete(() => _indexInFlight = null);
+      }).whenComplete(() {
+        _indexInFlight = null;
+      });
 
   /// Fetches one post, falling back to the cached copy.
   Future<FeedResult<PostDetail>> post(String id) {
@@ -118,7 +120,10 @@ class JobsRepository {
         if (r.source == FeedSource.network) await _trimPosts();
       }
       return r;
-    }).whenComplete(() => _postsInFlight.remove(id));
+    }).whenComplete(() {
+      // Block body: returning the removed future would make it wait on itself.
+      _postsInFlight.remove(id);
+    });
   }
 
   /// A post from memory or disk only (for the calendar and offline lists).
