@@ -115,6 +115,23 @@ await no('bad side in index', B.ref().update({ ['ledgerUsers/bob/ledgers/L2']: '
 await no('extra field in index', B.ref().update({ ['ledgerUsers/bob/other']: 1 }));
 await no('list all users', C.ref('ledgerUsers').get());
 await ok('bob clears own entry', B.ref().update({ ['ledgerUsers/bob/ledgers/L1']: null }));
+// Feed reports (Vacancy Bell, Roz Quiz): write-once, never readable from apps
+const rep = (by, extra = {}) => ({ app: 'vacancy_bell', item: 'ssc-cgl-2026-abc123', reason: 'wrong_date', note: 'Last date is 6 Oct', by, at: TS, ...extra });
+await ok('report', A.ref('feedReports/r1').set(rep('alice')));
+await ok('quiz report without note', A.ref('feedReports/r2').set({ app: 'roz_quiz', item: 'q-gk-1', reason: 'wrong_answer', by: 'alice', at: TS }));
+await no('anon report', anon.ref('feedReports/r3').set(rep('x')));
+await no('report as someone else', A.ref('feedReports/r3').set(rep('bob')));
+await no('overwrite report', B.ref('feedReports/r1').set(rep('bob')));
+await no('delete report', A.ref('feedReports/r1').remove());
+await no('unknown app', A.ref('feedReports/r3').set(rep('alice', { app: 'other' })));
+await no('unknown reason', A.ref('feedReports/r3').set(rep('alice', { reason: 'spam' })));
+await no('long note', A.ref('feedReports/r3').set(rep('alice', { note: 'x'.repeat(301) })));
+await no('empty item', A.ref('feedReports/r3').set(rep('alice', { item: '' })));
+await no('fake time', A.ref('feedReports/r3').set(rep('alice', { at: 5 })));
+await no('extra field', A.ref('feedReports/r3').set(rep('alice', { x: 1 })));
+await no('missing reason', A.ref('feedReports/r3').set({ app: 'roz_quiz', item: 'q', by: 'alice', at: TS }));
+await no('read reports', A.ref('feedReports').get());
+await no('read own report', A.ref('feedReports/r1').get());
 console.log(`passed ${pass}, failed ${fail}`);
 await env.cleanup();
 process.exit(fail ? 1 : 0);

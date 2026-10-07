@@ -228,6 +228,33 @@
           ".validate": false
         }
       }
+    },
+    "feedReports": {
+      "$id": {
+        ".write": "auth != null && !data.exists() && newData.exists()",
+        ".validate": "newData.hasChildren(['app','item','reason','by','at']) && newData.child('by').val() == auth.uid && newData.child('at').val() == now",
+        "app": {
+          ".validate": "newData.val() == 'vacancy_bell' || newData.val() == 'roz_quiz'"
+        },
+        "item": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 120"
+        },
+        "reason": {
+          ".validate": "newData.isString() && newData.val().matches(/^(wrong_date|wrong_fee|wrong_eligibility|wrong_answer|wrong_question|translation|broken_link|other)$/)"
+        },
+        "note": {
+          ".validate": "newData.isString() && newData.val().length <= 300"
+        },
+        "by": {
+          ".validate": "newData.isString()"
+        },
+        "at": {
+          ".validate": "newData.isNumber()"
+        },
+        "$other": {
+          ".validate": "false"
+        }
+      }
     }
   }
 }
