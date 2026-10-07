@@ -2,7 +2,7 @@
 
 - Folder: `apps/video_player` - Package: `in.onlysoftware.video_player`
 - Type: App - Free - Contains ads - Ages 13+
-- Privacy policy: https://dice-dhamaal.web.app/privacy/video_player.html
+- Privacy policy: https://docs.google.com/document/d/e/2PACX-1vTfrEbXLRvkphpIBmzE9dJ_gLWgh24QUcM0FZjossBmiuPtX29Vhs8ryciONNOotey4viCLpV3zf7Em/pub
 - Uses Firebase project **dice-dhamaal** (Anonymous Auth + Realtime Database, path `watch/{code}`)
 
 What the code really does: lists the phone's videos by folder (READ_MEDIA_VIDEO via photo_manager; supports "selected videos only" access), Recent tab, search, grid/list, hide folders; player (media_kit) with swipe gestures for brightness, volume and seeking, double-tap skip, speed, resume, audio track choice and audio delay, equalizer and night mode, picture options (e.g. mirror), subtitles (.srt/.ass/.vtt, delay, auto sync, style), sleep timer, bookmarks, chapters, play queue, background audio (foreground service) and picture-in-picture; "Play from a link" (http/https, HLS); "Open with" from file managers; share, properties, delete; **private folder** locked with a PIN (videos moved into app storage). **Watch together**: (1) *Nearby*: the host phone streams the video to friends on the same Wi-Fi (local HTTP, join by QR or nearby list); (2) *Online*: 6-letter room code via Firebase - only the video title or link, play/pause/seek state, member names, chat messages and emoji reactions go through Firebase; each friend plays their own copy of the file or the same link; rooms are deleted when the starter leaves or after 12 hours.
@@ -68,7 +68,7 @@ Videos, private folder, playback positions, bookmarks and link history stay on t
 
 | Data type | Collected | Shared | Ephemeral | Required / Optional | Purposes | Source / note |
 |---|---|---|---|---|---|---|
-| Personal info > Name | Yes | No | No | Optional | App functionality | Name shown to friends in an online room (from Settings "My name in watch parties", or the phone's device name). Deleted with the room. |
+| Personal info > Name | Yes | No | No | Optional | App functionality | Name the user types when starting or joining an online room (asked once, also in Settings "My name in watch parties"). Deleted with the room. |
 | Personal info > User IDs | Yes | No | No | Optional | App functionality, Fraud prevention/security | Random Firebase anonymous ID, used by the database rules |
 | Messages > Other in-app messages | Yes | No | No | Optional | App functionality | Chat (max 300 characters) and emoji reactions in online rooms; deleted with the room (max 12 h) |
 | App activity > Other user-generated content | Yes | No | No | Optional | App functionality | Video title or the link being watched in an online room |
@@ -123,6 +123,8 @@ Video to record (30-60 s): open a video > Settings shows the background option >
 - App access: all functions work without login. Tell the reviewer: "Watch together > Online creates a 6-letter code on one phone; enter it on a second phone. No account needed."
 
 ## 6. Policy risks found in the code
+
+Risks 1 to 3 are fixed: chat has Mute and Report (reports go write-only to `reports/` in Firebase), online rooms ask for a name instead of using the device name, and the permission screen no longer says "Nothing leaves your phone".
 
 | # | Risk | Where | What to do |
 |---|---|---|---|

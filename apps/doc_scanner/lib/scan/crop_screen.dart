@@ -77,7 +77,8 @@ class _CropScreenState extends State<CropScreen> {
       // Keep the upright original so the next crop starts from it.
       final orig = File('${pages.path}/orig_${DateTime.now().microsecondsSinceEpoch}.jpg');
       await orig.writeAsBytes(b, flush: true);
-      pageSources[f.path] = PageSource(orig.path, _quad);
+      pageSources[f.path] =
+          PageSource(orig.path, _quad, enhance: _source?.enhance ?? false);
       _imagePath = orig.path;
       if (mounted) Navigator.pop(context, f.path);
     } catch (e) {

@@ -12,12 +12,11 @@ import '../ui_helpers.dart';
 import 'capture.dart';
 import 'geometry.dart';
 
-/// What the camera is for. Documents get edge detection and auto-crop;
-/// photos are kept whole.
+/// What the camera is for. Both keep the whole photo (no auto-crop);
+/// documents get auto-capture and Magic color by default.
 enum ScanMode { document, photo }
 
-/// The app's own document camera: live page outline, auto-capture when the
-/// page is steady, flash, tap to focus, batch pages. Runs entirely in the
+/// The app's own document camera: auto-capture when a page is steady, flash, tap to focus, batch pages. Runs entirely in the
 /// app, with no Google Play services scanner.
 class CameraScanScreen extends StatefulWidget {
   const CameraScanScreen({
@@ -49,7 +48,6 @@ class _CameraScanScreenState extends State<CameraScanScreen>
 
   // Live detection.
   Quad? _live; // in portrait preview coordinates
-  Quad? _shown; // smoothed for drawing
   int _steady = 0;
   bool _detecting = false;
   DateTime _lastFrame = DateTime.fromMillisecondsSinceEpoch(0);
@@ -169,10 +167,6 @@ class _CameraScanScreenState extends State<CameraScanScreen>
           _steady = prev != null && prev.maxShift(portrait) < 0.025 ? _steady + 1 : 0;
           _live = portrait;
         }
-        final target = _live;
-        _shown = target == null
-            ? null
-            : (_shown == null ? target : _shown!.lerp(target, 0.6));
       });
       if (_auto && _steady >= _steadyFrames && !_shooting) _shoot();
     }).whenComplete(() => _detecting = false);
@@ -183,13 +177,12 @@ class _CameraScanScreenState extends State<CameraScanScreen>
     if (cam == null || _shooting || _pages.length >= widget.pageLimit) return;
     setState(() => _shooting = true);
     HapticFeedback.mediumImpact();
-    final hint = _live;
     try {
       await _stopStream();
       final shot = await cam.takePicture();
       _flashFx.forward(from: 0);
       _steady = 0;
-      _process(shot, hint);
+      _process(shot);
     } catch (e) {
       if (mounted) toast(context, 'Could not take the picture: $e');
     } finally {
@@ -200,7 +193,7 @@ class _CameraScanScreenState extends State<CameraScanScreen>
     }
   }
 
-  Future<void> _process(XFile shot, Quad? hint) async {
+  Future<void> _process(XFile shot) async {
     setState(() => _processing++);
     try {
       final bytes = await shot.readAsBytes();
@@ -210,10 +203,12 @@ class _CameraScanScreenState extends State<CameraScanScreen>
       final stamp = DateTime.now().microsecondsSinceEpoch;
       final original = File('${pages.path}/orig_$stamp.jpg');
       await original.writeAsBytes(bytes, flush: true);
-      final res = await bg(processCapture, (bytes, hint, _mode == ScanMode.document));
+      // Keep the whole photo, upright; the user can crop it by hand later.
+      final res = await bg(processCapture, (bytes, null, false));
       final cropped = File('${pages.path}/page_$stamp.jpg');
       await cropped.writeAsBytes(res.jpeg, flush: true);
-      pageSources[cropped.path] = PageSource(original.path, res.quad);
+      pageSources[cropped.path] =
+          PageSource(original.path, res.quad, enhance: _mode == ScanMode.document);
       if (!mounted) return;
       setState(() => _pages.add(cropped.path));
       if (_pages.length >= widget.pageLimit) _finish();
@@ -230,7 +225,7 @@ class _CameraScanScreenState extends State<CameraScanScreen>
     if (!mounted) return;
     for (final p in picked) {
       if (_pages.length + _processing >= widget.pageLimit) break;
-      await _process(XFile(p), null);
+      await _process(XFile(p));
     }
     await _startStream();
   }
@@ -325,18 +320,6 @@ class _CameraScanScreenState extends State<CameraScanScreen>
                                 child: Stack(fit: StackFit.expand, children: [
                                   CameraPreview(cam),
                                   if (_grid) const CustomPaint(painter: _GridPainter()),
-                                  if (_mode == ScanMode.document)
-                                    AnimatedOpacity(
-                                      opacity: _shown == null ? 0 : 1,
-                                      duration: const Duration(milliseconds: 200),
-                                      child: CustomPaint(
-                                        painter: _QuadPainter(
-                                          _shown,
-                                          steady: _auto ? (_steady / _steadyFrames).clamp(0, 1) : 0,
-                                          color: Theme.of(context).colorScheme.primary,
-                                        ),
-                                      ),
-                                    ),
                                   if (_focusAt != null)
                                     Positioned(
                                       left: _focusAt!.dx - 30,
@@ -438,7 +421,7 @@ class _CameraScanScreenState extends State<CameraScanScreen>
               await _stopStream();
               setState(() {
                 _mode = ScanMode.photo;
-                _live = _shown = null;
+                _live = null;
               });
             },
           ),
@@ -594,41 +577,6 @@ class _HintPill extends StatelessWidget {
       ),
     );
   }
-}
-
-class _QuadPainter extends CustomPainter {
-  _QuadPainter(this.quad, {required this.steady, required this.color});
-  final Quad? quad;
-  final double steady;
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final q = quad;
-    if (q == null) return;
-    final path = Path()
-      ..moveTo(q.tl.x * size.width, q.tl.y * size.height)
-      ..lineTo(q.tr.x * size.width, q.tr.y * size.height)
-      ..lineTo(q.br.x * size.width, q.br.y * size.height)
-      ..lineTo(q.bl.x * size.width, q.bl.y * size.height)
-      ..close();
-    final c = Color.lerp(color, Colors.greenAccent, steady)!;
-    canvas.drawPath(path, Paint()..color = c.withValues(alpha: 0.18));
-    canvas.drawPath(
-        path,
-        Paint()
-          ..color = c
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 3
-          ..strokeJoin = StrokeJoin.round);
-    for (final p in q.points) {
-      canvas.drawCircle(Offset(p.x * size.width, p.y * size.height), 7, Paint()..color = c);
-      canvas.drawCircle(Offset(p.x * size.width, p.y * size.height), 3.5, Paint()..color = Colors.white);
-    }
-  }
-
-  @override
-  bool shouldRepaint(_QuadPainter old) => old.quad != quad || old.steady != steady;
 }
 
 class _GridPainter extends CustomPainter {

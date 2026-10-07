@@ -7,6 +7,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../player/tool_sheets.dart';
+import '../settings.dart';
 import 'online.dart';
 import 'party.dart';
 import 'protocol.dart';
@@ -37,6 +38,50 @@ class _PartySheetState extends State<PartySheet> {
     _text.clear();
   }
 
+  /// Mute (or unmute) someone on this phone, or report them.
+  Future<void> _personActions(String name, {String text = ''}) async {
+    final p = widget.party;
+    if (name == p.myName) return;
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    final muted = p.isMuted(name);
+    final choice = await showModalBottomSheet<String>(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          SheetTitle(name),
+          ListTile(
+            leading: Icon(muted ? Icons.volume_up_rounded : Icons.volume_off_rounded),
+            title: Text(muted ? 'Unmute' : 'Mute this person'),
+            subtitle: Text(muted
+                ? 'Show their messages again'
+                : 'Hide their messages and reactions on this phone'),
+            onTap: () => Navigator.pop(ctx, 'mute'),
+          ),
+          if (p.canReport)
+            ListTile(
+              leading: const Icon(Icons.flag_rounded),
+              title: const Text('Report'),
+              subtitle: const Text('Tell us about abuse in this room'),
+              onTap: () => Navigator.pop(ctx, 'report'),
+            ),
+        ]),
+      ),
+    );
+    if (choice == 'mute') {
+      muted ? p.unmute(name) : p.mute(name);
+    } else if (choice == 'report') {
+      p.mute(name);
+      try {
+        await p.report(name, text);
+        messenger?.showSnackBar(const SnackBar(
+            content: Text('Reported, and muted on this phone. Thank you.')));
+      } catch (_) {
+        messenger?.showSnackBar(const SnackBar(
+            content: Text("Couldn't send the report. They're muted on this phone.")));
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -59,13 +104,18 @@ class _PartySheetState extends State<PartySheet> {
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
                     child: Wrap(spacing: 6, runSpacing: 6, children: [
                       for (final m in p.members)
-                        Chip(
-                          avatar: CircleAvatar(
-                            backgroundColor: scheme.primary,
-                            child: Text(m.isEmpty ? '?' : m.characters.first.toUpperCase(),
-                                style: const TextStyle(color: Colors.white, fontSize: 12)),
-                          ),
+                        ActionChip(
+                          avatar: p.isMuted(m)
+                              ? const Icon(Icons.volume_off_rounded, size: 18)
+                              : CircleAvatar(
+                                  backgroundColor: scheme.primary,
+                                  child: Text(
+                                      m.isEmpty ? '?' : m.characters.first.toUpperCase(),
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 12)),
+                                ),
                           label: Text(m == p.myName ? '$m (you)' : m),
+                          onPressed: m == p.myName ? null : () => _personActions(m),
                         ),
                     ]),
                   ),
@@ -89,6 +139,9 @@ class _PartySheetState extends State<PartySheet> {
                   for (final m in chat.take(40))
                     ListTile(
                       dense: true,
+                      onLongPress: m.from == p.myName
+                          ? null
+                          : () => _personActions(m.from, text: m.text),
                       title: Text.rich(TextSpan(children: [
                         TextSpan(
                             text: '${m.from}  ',
@@ -116,6 +169,11 @@ class _PartySheetState extends State<PartySheet> {
                   ),
                   IconButton(onPressed: _send, icon: const Icon(Icons.send_rounded)),
                 ]),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: Text('Be kind. Long-press a message or tap a name to mute or report.',
+                    style: Theme.of(context).textTheme.bodySmall),
               ),
             ]),
           ),
@@ -339,4 +397,37 @@ class _PartyOverlayState extends State<PartyOverlay> {
       ]),
     );
   }
+}
+
+/// The name friends see in an online room. Asked once (never the phone's
+/// own name, which would go to the server without asking) and remembered.
+/// Null when the person cancels.
+Future<String?> askOnlinePartyName(BuildContext context, Settings settings) async {
+  if (settings.partyName.isNotEmpty) return settings.partyName;
+  final c = TextEditingController();
+  final name = await showDialog<String>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: const Text('Your name in the room'),
+      content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const Text('Friends in the room see this name next to your messages.'),
+        TextField(
+          controller: c,
+          autofocus: true,
+          maxLength: 30,
+          textCapitalization: TextCapitalization.words,
+          decoration: const InputDecoration(hintText: 'Your name'),
+          onSubmitted: (v) => Navigator.pop(ctx, v),
+        ),
+      ]),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+        FilledButton(onPressed: () => Navigator.pop(ctx, c.text), child: const Text('OK')),
+      ],
+    ),
+  );
+  final v = name?.trim() ?? '';
+  if (v.isEmpty) return null;
+  settings.setPartyName(v);
+  return v;
 }

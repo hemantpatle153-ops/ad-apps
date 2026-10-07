@@ -11,6 +11,7 @@ import '../settings.dart';
 import 'discovery.dart';
 import 'online.dart';
 import 'party.dart';
+import 'party_widgets.dart';
 import 'pick_video_screen.dart';
 import 'protocol.dart';
 
@@ -118,9 +119,14 @@ class _JoinPartyScreenState extends State<JoinPartyScreen> {
     }
     if (_joining) return;
     setState(() => _joining = true);
+    final name = await askOnlinePartyName(context, widget.settings);
+    if (name == null) {
+      if (mounted) setState(() => _joining = false);
+      return;
+    }
     OnlineParty party;
     try {
-      party = await OnlineParty.join(await _myName(), code);
+      party = await OnlineParty.join(name, code);
     } on OnlineException catch (e) {
       if (mounted) setState(() => _joining = false);
       messenger.showSnackBar(SnackBar(content: Text(e.message)));

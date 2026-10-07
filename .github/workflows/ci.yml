@@ -57,7 +57,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        app: [multi_speaker, video_player, snakes_ladders]
+        app: [multi_speaker, video_player, expense_tracker, snakes_ladders]
     defaults:
       run:
         working-directory: apps/${{ matrix.app }}

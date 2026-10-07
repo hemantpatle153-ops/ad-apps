@@ -458,12 +458,14 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       : await SystemChannel.instance.deviceName();
 
   Future<void> _hostOnline() async {
+    final name = await askOnlinePartyName(context, settings);
+    if (name == null || !mounted) return;
     final it = item;
     _flash(Icons.public_rounded, 'Starting the watch party...');
     final s = player.state;
     try {
       final party = await OnlineParty.create(
-        await _myName(),
+        name,
         OnlineVideo(
           title: it.title,
           url: it.isNetwork ? it.uri : null,

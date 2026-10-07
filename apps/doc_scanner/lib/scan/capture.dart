@@ -7,9 +7,12 @@ import 'geometry.dart';
 
 /// Where a cropped page came from, so its crop can be changed later.
 class PageSource {
-  const PageSource(this.original, this.quad);
+  const PageSource(this.original, this.quad, {this.enhance = false});
   final String original;
   final Quad quad;
+
+  /// A document scan, so Magic color is the default look.
+  final bool enhance;
 }
 
 /// Cropped page path -> original photo and the corners used.

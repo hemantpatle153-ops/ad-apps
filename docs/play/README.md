@@ -12,7 +12,7 @@ Each app has its own sheet with the store text, Data safety answers, permission 
 | 4 | Expense Tracker: Daily Budget | `in.onlysoftware.expense_tracker` | [expense_tracker.md](expense_tracker.md) | https://dice-dhamaal.web.app/privacy/expense_tracker.html |
 | 5 | Water Reminder & Habit Tracker | `in.onlysoftware.water_habit` | [water_habit.md](water_habit.md) | https://dice-dhamaal.web.app/privacy/water_habit.html |
 | 6 | Multi Speaker: Sync Music | `in.onlysoftware.multi_speaker` | [multi_speaker.md](multi_speaker.md) | https://dice-dhamaal.web.app/privacy/multi_speaker.html |
-| 7 | Video Player: Watch Together | `in.onlysoftware.video_player` | [video_player.md](video_player.md) | https://dice-dhamaal.web.app/privacy/video_player.html |
+| 7 | Video Player: Watch Together | `in.onlysoftware.video_player` | [video_player.md](video_player.md) | https://docs.google.com/document/d/e/2PACX-1vTfrEbXLRvkphpIBmzE9dJ_gLWgh24QUcM0FZjossBmiuPtX29Vhs8ryciONNOotey4viCLpV3zf7Em/pub |
 | 8 | Dice Dhamaal: Ludo & Snakes | `in.onlysoftware.dice_dhamaal` (folder `apps/snakes_ladders`, branch `ludo-game`) | [snakes_ladders.md](snakes_ladders.md) | https://dice-dhamaal.web.app/privacy/dice_dhamaal.html |
 
 The privacy pages come from `website/build.py`. Deploy them (`firebase deploy --only hosting`) and open each link in a browser **before** you fill the Play forms. Play rejects an app whose policy link does not open.

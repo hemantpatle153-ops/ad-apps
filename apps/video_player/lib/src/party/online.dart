@@ -36,15 +36,37 @@ abstract final class FirebaseSetup {
       );
 }
 
-enum OnlineError { offline, notFound }
+enum OnlineError { offline, denied, failed, notFound }
 
 class OnlineException implements Exception {
-  const OnlineException(this.error);
+  const OnlineException(this.error, [this.code]);
+
+  /// Turns any error from Firebase into the message people see. The Firebase
+  /// error code is kept so a report or screenshot shows what went wrong.
+  factory OnlineException.from(Object e) {
+    if (e is OnlineException) return e;
+    if (e is TimeoutException) return const OnlineException(OnlineError.offline);
+    if (e is FirebaseException) {
+      return switch (e.code) {
+        'network-request-failed' || 'network-error' || 'disconnected' || 'unavailable' =>
+          OnlineException(OnlineError.offline, e.code),
+        'permission-denied' => OnlineException(OnlineError.denied, e.code),
+        _ => OnlineException(OnlineError.failed, e.code),
+      };
+    }
+    return OnlineException(OnlineError.failed, e.runtimeType.toString());
+  }
+
   final OnlineError error;
+  final String? code;
 
   String get message => switch (error) {
         OnlineError.offline =>
           "Couldn't reach the internet. Check your connection and try again.",
+        OnlineError.denied =>
+          'The watch party server said no. Update the app and try again. ($code)',
+        OnlineError.failed =>
+          'Something went wrong on the watch party server. Try again. ($code)',
         OnlineError.notFound => 'No watch party with that code. Check the code '
             'and that your friend still has the video open.',
       };
@@ -143,8 +165,8 @@ class OnlineParty extends WatchParty {
       final user = auth.currentUser ?? (await auth.signInAnonymously()).user!;
       final db = FirebaseDatabase.instanceFor(app: _app!, databaseURL: FirebaseSetup.dbUrl);
       return (db, user.uid);
-    } catch (_) {
-      throw const OnlineException(OnlineError.offline);
+    } catch (e) {
+      throw OnlineException.from(e);
     }
   }
 
@@ -180,10 +202,10 @@ class OnlineParty extends WatchParty {
       }
     } on OnlineException {
       rethrow;
-    } catch (_) {
-      throw const OnlineException(OnlineError.offline);
+    } catch (e) {
+      throw OnlineException.from(e);
     }
-    throw const OnlineException(OnlineError.offline);
+    throw const OnlineException(OnlineError.failed, 'no-free-code');
   }
 
   /// Rooms are deleted when their starter leaves. One left behind (app
@@ -218,8 +240,8 @@ class OnlineParty extends WatchParty {
     DataSnapshot snap;
     try {
       snap = await ref.get().timeout(const Duration(seconds: 15));
-    } catch (_) {
-      throw const OnlineException(OnlineError.offline);
+    } catch (e) {
+      throw OnlineException.from(e);
     }
     final room = snap.value;
     if (room is! Map || room['host'] == null || room['video'] is! Map) {
@@ -232,8 +254,8 @@ class OnlineParty extends WatchParty {
       await party._startClock();
       await ref.child('members/$uid').set({'name': name});
       await party._listen();
-    } catch (_) {
-      throw const OnlineException(OnlineError.offline);
+    } catch (e) {
+      throw OnlineException.from(e);
     }
     return party;
   }
@@ -241,8 +263,10 @@ class OnlineParty extends WatchParty {
   /// Firebase reports how far its clock is from this phone's.
   Future<void> _startClock() async {
     final ref = _db.ref('.info/serverTimeOffset');
-    final first = await ref.get();
-    _serverOffsetUs = (((first.value as num?) ?? 0) * 1000).round();
+    // .info values live on the phone, so read them with a listener: get()
+    // asks the server and can fail before the connection is up.
+    final first = await ref.onValue.first.timeout(const Duration(seconds: 10));
+    _serverOffsetUs = (((first.snapshot.value as num?) ?? 0) * 1000).round();
     _subs.add(ref.onValue.listen((e) {
       _serverOffsetUs = (((e.snapshot.value as num?) ?? 0) * 1000).round();
     }));
@@ -286,6 +310,7 @@ class OnlineParty extends WatchParty {
         final at = (v['at'] as num?)?.toInt() ?? 0;
         if (at != 0 && at < _joinedAtMs - 2000) {
           // Said before this phone joined: list it, don't pop it on screen.
+          if (isMuted(m.from)) return;
           messages.add(m);
           notifyListeners();
         } else {
@@ -375,6 +400,24 @@ class OnlineParty extends WatchParty {
 
   @override
   void sendReaction(String emoji) => _post(emoji, emoji: true);
+
+  @override
+  bool get canReport => true;
+
+  /// Saved write-only under `reports/` (shared with Dice Dhamaal's rules);
+  /// only the project owner can read them in the Firebase console.
+  @override
+  Future<void> report(String name, String text) async {
+    final reason = 'video_player: $text';
+    await _db.ref('reports').push().set({
+      'code': code,
+      'seat': 0,
+      'name': name.length > 40 ? name.substring(0, 40) : name,
+      'reason': reason.length > 200 ? reason.substring(0, 200) : reason,
+      'by': _uid,
+      'at': ServerValue.timestamp,
+    });
+  }
 
   @override
   Future<void> close() async {
