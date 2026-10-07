@@ -60,7 +60,8 @@ void main() {
     ));
     await tester.pumpAndSettle();
     expect(find.byType(AdWidget), findsNothing);
-    expect(tester.getSize(find.byType(BannerAdSlot)), Size.zero);
+    // Full width in the bottom bar, but no height: the layout keeps no gap.
+    expect(tester.getSize(find.byType(BannerAdSlot)).height, 0);
     expect(sdkCalls, 0);
   });
 
