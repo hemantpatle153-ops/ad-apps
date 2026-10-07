@@ -183,6 +183,39 @@ def glyph_dice(d, accent):
     die(d, 48.5, 60.5, 30, -12, ((-1, -1), (1, -1), (0, 0), (-1, 1), (1, 1)), 2.6)
 
 
+def glyph_bell(d, accent):
+    # A bell with its clapper, sound waves on the left and a spark of news
+    # on the right.
+    cx, top, lip = 51, 40, 66
+    pts = []
+    for i in range(41):  # right flank, shoulder to lip
+        t = i / 40
+        y = top + (lip - top) * t
+        pts.append((cx + 11 + 7.5 * t ** 2.2, y))
+    for i in range(41):  # left flank, lip to shoulder
+        t = 1 - i / 40
+        y = top + (lip - top) * t
+        pts.append((cx - 11 - 7.5 * t ** 2.2, y))
+    for i in range(1, 40):  # dome
+        a = math.pi + math.pi * i / 40
+        pts.append((cx + 11 * math.cos(a), top + 11 * math.sin(a)))
+    d.polygon([v * U for pt in pts for v in pt], fill=WHITE)
+    d.ellipse(p(cx - 3, 26.5, cx + 3, 32.5), fill=WHITE)
+    d.rounded_rectangle(p(cx - 21, lip - 1, cx + 21, lip + 4.5), radius=2.4 * U, fill=WHITE)
+    d.ellipse(p(cx - 4.4, lip + 5.6, cx + 4.4, lip + 14.4), fill=WHITE)
+    cap_arc(d, cx, 50, 23, 200, 238, 3.2, WHITE)
+    cap_arc(d, cx, 50, 29, 204, 234, 3.2, WHITE)
+    # Four-point spark with a cut-out ring so it reads apart from the bell.
+    sx, sy, r, w = 70, 33, 7.5, 2.4
+    star = []
+    for k in range(8):
+        a = math.radians(-90 + 45 * k)
+        rr = r if k % 2 == 0 else w
+        star.append((sx + rr * math.cos(a), sy + rr * math.sin(a)))
+    d.ellipse(p(sx - 5, sy - 5, sx + 5, sy + 5), fill=CUT)
+    d.polygon([v * U for pt in star for v in pt], fill=accent)
+
+
 APPS = {
     "qr_scanner": (glyph_qr, (61, 90, 254), (40, 53, 147)),
     "daily_sudoku": (glyph_sudoku, (149, 82, 230), (94, 53, 177)),
@@ -192,6 +225,7 @@ APPS = {
     "multi_speaker": (glyph_speaker, (236, 64, 160), (106, 27, 154)),
     "video_player": (glyph_play, (255, 152, 0), (230, 40, 100)),
     "snakes_ladders": (glyph_dice, (130, 200, 40), (21, 128, 61)),
+    "vacancy_bell": (glyph_bell, (72, 86, 196), (24, 32, 110)),
 }
 
 # Play Store listing name and tagline for each app's feature graphic.
@@ -204,6 +238,7 @@ STORE_TEXT = {
     "multi_speaker": ("Multi Speaker", "One song, many speakers"),
     "video_player": ("Video Player", "Play any video, watch with friends"),
     "snakes_ladders": ("Dice Dhamaal", "Ludo and Snakes & Ladders"),
+    "vacancy_bell": ("Vacancy Bell", "Sarkari job alerts, Hindi and English"),
 }
 ACCENT = (255, 214, 102, 255)
 
