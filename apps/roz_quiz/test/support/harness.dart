@@ -111,7 +111,8 @@ class Harness {
     reminders = FakeReminderScheduler(granted: permission);
     controller = AppController(
       store: store,
-      repo: QuizRepository(client: client, cache: cache, bundle: FileBundleLoader()),
+      repo: QuizRepository(
+          client: client, cache: cache, bundle: FileBundleLoader(), clock: () => this.now),
       reminders: reminders,
       reportSink: reports,
       clock: () => this.now,
