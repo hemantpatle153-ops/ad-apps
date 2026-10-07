@@ -6,8 +6,9 @@ import 'settings.dart';
 
 const packageName = 'in.onlysoftware.video_player';
 
+// Rahul's published Google Doc (same text as website/build.py's page).
 const privacyPolicyUrl =
-    'https://dice-dhamaal.web.app/privacy/video_player.html'; // website/build.py
+    'https://docs.google.com/document/d/e/2PACX-1vTfrEbXLRvkphpIBmzE9dJ_gLWgh24QUcM0FZjossBmiuPtX29Vhs8ryciONNOotey4viCLpV3zf7Em/pub';
 
 const _accent = Color(0xFFFF7A1A);
 
