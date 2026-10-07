@@ -7,7 +7,8 @@ Builds the Google Play upload bundles (.aab) on the Windows laptop.
 Reads two things that never go in git, from the signing folder
 (default: %USERPROFILE%\Downloads\APPS\signing):
   <app>-upload.jks + <app>.key.properties   the upload key of each app
-  admob.json                                 real AdMob IDs, see admob.example.json
+  admob.json (optional)                      real AdMob IDs, see admob.example.json;
+                                             an app without an entry ships with ads off
 
 Bundles land in %USERPROFILE%\Downloads\APPS\play_release\<store name>-<version>.aab.
 #>
@@ -34,10 +35,7 @@ $storeNames = [ordered]@{
 if (-not $Apps) { $Apps = @($storeNames.Keys) }
 
 $admobFile = Join-Path $Signing 'admob.json'
-if (-not (Test-Path $admobFile)) {
-    throw "Missing $admobFile. Copy tool\admob.example.json there and fill in the real AdMob IDs."
-}
-$admob = Get-Content $admobFile -Raw | ConvertFrom-Json
+$admob = if (Test-Path $admobFile) { Get-Content $admobFile -Raw | ConvertFrom-Json } else { $null }
 New-Item -ItemType Directory -Force $Out | Out-Null
 
 foreach ($app in $Apps) {
@@ -57,15 +55,20 @@ foreach ($app in $Apps) {
     $lines = @("storeFile=$($jks -replace '\\', '/')") + $keep
     Set-Content -Path (Join-Path $dir 'android\key.properties') -Value $lines -Encoding ascii
 
-    $ids = $admob.$app
-    if (-not $ids -or -not $ids.appId -or -not $ids.banner -or -not $ids.interstitial) {
-        throw "admob.json has no appId/banner/interstitial for '$app'."
+    $ids = if ($admob) { $admob.$app } else { $null }
+    $buildArgs = @('build', 'appbundle', '--release')
+    if (-not $ids) {
+        Write-Host "No AdMob IDs for $app in admob.json: building with ads off." -ForegroundColor Yellow
+        $buildArgs += '--dart-define=ADS=off'
+    } else {
+        if (-not $ids.appId -or -not $ids.banner -or -not $ids.interstitial) {
+            throw "admob.json entry for '$app' needs appId, banner and interstitial."
+        }
+        $buildArgs += "-PadmobAppId=$($ids.appId)",
+            "--dart-define=ADMOB_BANNER_ID=$($ids.banner)",
+            "--dart-define=ADMOB_INTERSTITIAL_ID=$($ids.interstitial)"
+        if ($ids.rewarded) { $buildArgs += "--dart-define=ADMOB_REWARDED_ID=$($ids.rewarded)" }
     }
-    $buildArgs = @('build', 'appbundle', '--release',
-        "-PadmobAppId=$($ids.appId)",
-        "--dart-define=ADMOB_BANNER_ID=$($ids.banner)",
-        "--dart-define=ADMOB_INTERSTITIAL_ID=$($ids.interstitial)")
-    if ($ids.rewarded) { $buildArgs += "--dart-define=ADMOB_REWARDED_ID=$($ids.rewarded)" }
 
     Push-Location $dir
     try {

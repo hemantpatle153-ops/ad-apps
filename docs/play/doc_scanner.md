@@ -1,5 +1,7 @@
 # Doc Scanner - Play Console sheet
 
+> **First release has ads off** (`--dart-define=ADS=off`): ignore every AdMob row and ad answer below; see [README](README.md). They apply once ads are turned on.
+
 - Folder: `apps/doc_scanner` - Package: `in.onlysoftware.doc_scanner`
 - Type: App - Free - Contains ads - Ages 13+
 - Privacy policy: https://dice-dhamaal.web.app/privacy/doc_scanner.html
@@ -46,7 +48,7 @@ SHARE AND SAVE
 Share PDFs to any app, print them, save a copy to a folder you choose, or open them in another PDF app. You can also open or share PDFs and photos from other apps straight into Doc Scanner.
 
 PRIVATE BY DESIGN
-No account, no cloud. Your files stay in the app's storage on your phone until you share or save them. The app shows ads from Google AdMob; EU and UK users are asked for consent first.
+No account, no cloud. Your files stay in the app's storage on your phone until you share or save them. No ads.
 ```
 
 **Category:** Productivity
