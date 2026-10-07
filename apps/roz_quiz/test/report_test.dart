@@ -9,33 +9,31 @@ void main() {
   group('ReportReason wire values (SCHEMA.md reasons)', () {
     test('wrong answer', () => expect(ReportReason.wrongAnswer.wire, 'wrong_answer'));
     test('wrong question', () => expect(ReportReason.wrongQuestion.wire, 'wrong_question'));
-    test('translation goes as other', () => expect(ReportReason.translation.wire, 'other'));
+    test('translation', () => expect(ReportReason.translation.wire, 'translation'));
     test('other', () => expect(ReportReason.other.wire, 'other'));
-    test('only schema reasons are used', () {
+    test('only reasons the database rules accept are used', () {
       for (final r in ReportReason.values) {
-        expect(['wrong_answer', 'wrong_question', 'other'], contains(r.wire));
+        expect(kAllowedReportReasons, contains(r.wire));
       }
+    });
+    test('wire values are distinct', () {
+      expect(ReportReason.values.map((r) => r.wire).toSet().length, ReportReason.values.length);
     });
   });
 
   group('reportNote', () {
     test('trims', () => expect(reportNote(ReportReason.other, '  hello  '), 'hello'));
     test('keeps inner spaces', () => expect(reportNote(ReportReason.other, 'a  b'), 'a  b'));
-    test('translation prefix', () {
-      expect(reportNote(ReportReason.translation, 'Hindi option B is wrong'),
-          '[translation] Hindi option B is wrong');
-    });
-    test('translation prefix without note', () {
-      expect(reportNote(ReportReason.translation, '  '), '[translation]');
+    test('translation notes are sent as typed', () {
+      expect(reportNote(ReportReason.translation, ' Hindi option B is wrong '),
+          'Hindi option B is wrong');
     });
     test('empty note for wrong answer', () => expect(reportNote(ReportReason.wrongAnswer, ''), ''));
     test('cut to 300 characters', () {
       expect(reportNote(ReportReason.other, 'x' * 400).length, kReportNoteMax);
     });
-    test('prefix counts towards the limit', () {
-      final n = reportNote(ReportReason.translation, 'y' * 300);
-      expect(n.runes.length, kReportNoteMax);
-      expect(n, startsWith(kTranslationPrefix));
+    test('300 characters are kept whole', () {
+      expect(reportNote(ReportReason.translation, 'y' * 300), 'y' * 300);
     });
     test('cuts by characters, not UTF-16 units (Hindi is safe)', () {
       final n = reportNote(ReportReason.other, 'क' * 350);
@@ -56,6 +54,11 @@ void main() {
     });
     test('missing item', () {
       expect(validateReport(item: ' ', reason: ReportReason.wrongAnswer, note: ''),
+          ReportProblem.missingItem);
+    });
+    test('item of 120 characters is fine, 121 is not (database rule)', () {
+      expect(validateReport(item: 'q' * 120, reason: ReportReason.wrongAnswer, note: ''), isNull);
+      expect(validateReport(item: 'q' * 121, reason: ReportReason.wrongAnswer, note: ''),
           ReportProblem.missingItem);
     });
     for (final r in [ReportReason.other, ReportReason.translation]) {
@@ -79,6 +82,14 @@ void main() {
     test('JSON matches the feedReports schema', () {
       const p = ReportPayload(item: 'q-1', reason: 'other', note: 'n', by: 'uid');
       expect(p.toJson(), {'app': 'roz_quiz', 'item': 'q-1', 'reason': 'other', 'note': 'n', 'by': 'uid'});
+    });
+    test('an empty note is left out (it is optional)', () {
+      const p = ReportPayload(item: 'q-1', reason: 'wrong_answer', note: '', by: 'uid');
+      expect(p.toJson().keys, ['app', 'item', 'reason', 'by']);
+    });
+    test('only allowed fields are sent', () {
+      const p = ReportPayload(item: 'q', reason: 'other', note: 'n', by: 'u');
+      expect(p.toJson().keys.toSet().difference({'app', 'item', 'reason', 'note', 'by'}), isEmpty);
     });
   });
 
@@ -164,8 +175,8 @@ void main() {
     });
     test('translation report', () async {
       await service.submit(item: 'q', reason: ReportReason.translation, note: 'Hindi typo');
-      expect(sink.sent.single.reason, 'other');
-      expect(sink.sent.single.note, '[translation] Hindi typo');
+      expect(sink.sent.single.reason, 'translation');
+      expect(sink.sent.single.note, 'Hindi typo');
     });
     test('invalid report never reaches the sink', () async {
       await expectLater(

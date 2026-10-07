@@ -14,14 +14,6 @@ Future<void> openTab(WidgetTester tester, T label) async {
   await tester.pumpAndSettle();
 }
 
-/// Scrolls [finder] into the middle of the Today list (clear of the
-/// navigation bar).
-Future<void> reveal(WidgetTester tester, Finder finder) async {
-  await tester.scrollUntilVisible(finder, 200, scrollable: find.byType(Scrollable).first);
-  await Scrollable.ensureVisible(tester.element(finder), alignment: 0.5);
-  await tester.pumpAndSettle();
-}
-
 void main() {
   group('Today', () {
     testWidgets('online: daily card with play button and greeting', (tester) async {

@@ -310,15 +310,19 @@ class _MockTestScreenState extends State<MockTestScreen> with WidgetsBindingObse
               ? Text(widget.title)
               : Semantics(
                   label: s.t(T.timeLimit),
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Icon(Icons.timer_outlined,
-                        color: low ? context.quiz.wrong : context.colors.primary),
-                    const SizedBox(width: 6),
-                    Text(formatClock(left),
-                        style: TextStyle(
-                            color: low ? context.quiz.wrong : null,
-                            fontFeatures: const [FontFeature.tabularFigures()])),
-                  ]),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: AlignmentDirectional.centerStart,
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Icon(Icons.timer_outlined,
+                          color: low ? context.quiz.wrong : context.colors.primary),
+                      const SizedBox(width: 6),
+                      Text(formatClock(left),
+                          style: TextStyle(
+                              color: low ? context.quiz.wrong : null,
+                              fontFeatures: const [FontFeature.tabularFigures()])),
+                    ]),
+                  ),
                 ),
           actions: [
             IconButton(

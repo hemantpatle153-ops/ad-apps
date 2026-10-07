@@ -222,8 +222,10 @@ class _NoteCard extends StatelessWidget {
           children: [
             Row(children: [
               if (tag != null)
-                Tag(kSubjects.contains(tag) ? s.subject(tag) : tag,
-                    icon: subjectIcon(tag), color: subjectColor(tag)),
+                Flexible(
+                  child: Tag(kSubjects.contains(tag) ? s.subject(tag) : tag,
+                      icon: subjectIcon(tag), color: subjectColor(tag)),
+                ),
               const Spacer(),
               Text('${index + 1}/$total', style: context.text.labelMedium),
             ]),
@@ -264,10 +266,10 @@ class _NoteCard extends StatelessWidget {
                           ?.copyWith(color: context.colors.onSurfaceVariant)),
                 ),
                 if (note.source!.url != null)
-                  TextButton.icon(
+                  IconButton(
+                    tooltip: s.t(T.caReadSource),
                     onPressed: () => openLink(note.source!.url!),
-                    icon: const Icon(Icons.open_in_new, size: 18),
-                    label: Text(s.t(T.caReadSource)),
+                    icon: const Icon(Icons.open_in_new),
                   ),
               ]),
             ],

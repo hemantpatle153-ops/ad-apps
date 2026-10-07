@@ -3,18 +3,33 @@
 enum ReportReason {
   wrongAnswer('wrong_answer'),
   wrongQuestion('wrong_question'),
-  translation('other'),
+  translation('translation'),
   other('other');
 
   const ReportReason(this.wire);
 
-  /// The value of `reason` in the database; the schema has no translation
-  /// reason, so it is sent as `other` with a "[translation]" note prefix.
+  /// The value of `reason` in the database (one of the reasons the
+  /// feedReports rules accept).
   final String wire;
 }
 
+/// Reasons the feedReports database rules accept (shared with Vacancy
+/// Bell); every [ReportReason.wire] must be one of them.
+const kAllowedReportReasons = {
+  'wrong_date',
+  'wrong_fee',
+  'wrong_eligibility',
+  'wrong_answer',
+  'wrong_question',
+  'translation',
+  'broken_link',
+  'other',
+};
+
 const kReportNoteMax = 300;
-const kTranslationPrefix = '[translation] ';
+
+/// The rules accept item ids of 1 to 120 characters.
+const kReportItemMax = 120;
 
 enum ReportProblem {
   missingItem,
@@ -38,15 +53,21 @@ class ReportPayload {
   final String note;
   final String by;
 
-  Map<String, Object> toJson() =>
-      {'app': 'roz_quiz', 'item': item, 'reason': reason, 'note': note, 'by': by};
+  /// Exactly the fields the rules allow (plus `at`, added by the sink);
+  /// `note` is optional and left out when empty.
+  Map<String, Object> toJson() => {
+        'app': 'roz_quiz',
+        'item': item,
+        'reason': reason,
+        if (note.isNotEmpty) 'note': note,
+        'by': by,
+      };
 }
 
 /// The note as stored: trimmed, inner whitespace runs kept, at most
-/// [kReportNoteMax] characters including the translation prefix.
+/// [kReportNoteMax] characters.
 String reportNote(ReportReason reason, String note) {
   var n = note.trim();
-  if (reason == ReportReason.translation) n = '$kTranslationPrefix$n'.trim();
   final runes = n.runes.toList();
   if (runes.length > kReportNoteMax) {
     n = String.fromCharCodes(runes.take(kReportNoteMax)).trimRight();
@@ -60,7 +81,8 @@ ReportProblem? validateReport({
   required ReportReason reason,
   required String note,
 }) {
-  if (item.trim().isEmpty) return ReportProblem.missingItem;
+  final id = item.trim();
+  if (id.isEmpty || id.length > kReportItemMax) return ReportProblem.missingItem;
   final n = note.trim();
   if (n.runes.length > kReportNoteMax) return ReportProblem.noteTooLong;
   if ((reason == ReportReason.other || reason == ReportReason.translation) &&

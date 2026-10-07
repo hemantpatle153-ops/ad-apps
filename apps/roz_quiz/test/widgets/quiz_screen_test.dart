@@ -239,7 +239,8 @@ void main() {
       await tester.enterText(find.byType(TextField), 'Option C Hindi is wrong');
       await tester.tap(find.text(en.t(T.send)));
       await tester.pumpAndSettle();
-      expect(h.reports.sent.single.note, '[translation] Option C Hindi is wrong');
+      expect(h.reports.sent.single.reason, 'translation');
+      expect(h.reports.sent.single.note, 'Option C Hindi is wrong');
     });
     testWidgets('offline shows an error and keeps the sheet open', (tester) async {
       final h = Harness()..reports.fail = true;

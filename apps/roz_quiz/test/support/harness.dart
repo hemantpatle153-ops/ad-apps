@@ -216,3 +216,11 @@ Map<String, Object?> questionJson({String id = 'q-gk-1', int answer = 1}) => {
       'asked': null,
       'verified': true,
     };
+
+/// Scrolls [finder] into the middle of the first scrollable, clear of any
+/// bottom bar or floating button.
+Future<void> reveal(WidgetTester tester, Finder finder, {Finder? scrollable}) async {
+  await tester.scrollUntilVisible(finder, 200, scrollable: scrollable ?? find.byType(Scrollable).first);
+  await Scrollable.ensureVisible(tester.element(finder), alignment: 0.5);
+  await tester.pumpAndSettle();
+}
