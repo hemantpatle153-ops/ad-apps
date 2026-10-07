@@ -12,19 +12,24 @@ class AdConfig {
   });
 
   /// Reads IDs from --dart-define, falling back to Google's test IDs.
-  factory AdConfig.fromEnvironment() => const AdConfig(
-        bannerId: String.fromEnvironment(
+  ///
+  /// Only apps that offer a rewarded ad pass [rewarded]; the others leave
+  /// [rewardedId] empty so no rewarded ad is ever requested.
+  factory AdConfig.fromEnvironment({bool rewarded = false}) => AdConfig(
+        bannerId: const String.fromEnvironment(
           'ADMOB_BANNER_ID',
           defaultValue: 'ca-app-pub-3940256099942544/9214589741',
         ),
-        interstitialId: String.fromEnvironment(
+        interstitialId: const String.fromEnvironment(
           'ADMOB_INTERSTITIAL_ID',
           defaultValue: 'ca-app-pub-3940256099942544/1033173712',
         ),
-        rewardedId: String.fromEnvironment(
-          'ADMOB_REWARDED_ID',
-          defaultValue: 'ca-app-pub-3940256099942544/5224354917',
-        ),
+        rewardedId: rewarded
+            ? const String.fromEnvironment(
+                'ADMOB_REWARDED_ID',
+                defaultValue: 'ca-app-pub-3940256099942544/5224354917',
+              )
+            : '',
       );
 
   final String bannerId;

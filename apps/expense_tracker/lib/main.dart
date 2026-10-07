@@ -7,7 +7,7 @@ import 'insights.dart';
 import 'settings_screen.dart';
 
 const appPackageName = 'in.onlysoftware.expense_tracker';
-const privacyPolicyUrl = 'https://example.com/privacy'; // TODO: your hosted policy
+const privacyPolicyUrl = 'https://dice-dhamaal.web.app/privacy/expense_tracker.html'; // website/build.py
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

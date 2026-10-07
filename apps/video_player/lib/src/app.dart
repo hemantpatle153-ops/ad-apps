@@ -7,7 +7,7 @@ import 'settings.dart';
 const packageName = 'in.onlysoftware.video_player';
 
 const privacyPolicyUrl =
-    'https://example.com/privacy'; // TODO: your hosted policy
+    'https://dice-dhamaal.web.app/privacy/video_player.html'; // website/build.py
 
 const _accent = Color(0xFFFF7A1A);
 

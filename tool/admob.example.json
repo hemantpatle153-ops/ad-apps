@@ -1,0 +1,10 @@
+{
+  "qr_scanner":      { "appId": "ca-app-pub-0000000000000000~0000000000", "banner": "ca-app-pub-0000000000000000/0000000000", "interstitial": "ca-app-pub-0000000000000000/0000000000" },
+  "daily_sudoku":    { "appId": "ca-app-pub-0000000000000000~0000000000", "banner": "ca-app-pub-0000000000000000/0000000000", "interstitial": "ca-app-pub-0000000000000000/0000000000", "rewarded": "ca-app-pub-0000000000000000/0000000000" },
+  "doc_scanner":     { "appId": "ca-app-pub-0000000000000000~0000000000", "banner": "ca-app-pub-0000000000000000/0000000000", "interstitial": "ca-app-pub-0000000000000000/0000000000" },
+  "expense_tracker": { "appId": "ca-app-pub-0000000000000000~0000000000", "banner": "ca-app-pub-0000000000000000/0000000000", "interstitial": "ca-app-pub-0000000000000000/0000000000" },
+  "water_habit":     { "appId": "ca-app-pub-0000000000000000~0000000000", "banner": "ca-app-pub-0000000000000000/0000000000", "interstitial": "ca-app-pub-0000000000000000/0000000000" },
+  "multi_speaker":   { "appId": "ca-app-pub-0000000000000000~0000000000", "banner": "ca-app-pub-0000000000000000/0000000000", "interstitial": "ca-app-pub-0000000000000000/0000000000" },
+  "video_player":    { "appId": "ca-app-pub-0000000000000000~0000000000", "banner": "ca-app-pub-0000000000000000/0000000000", "interstitial": "ca-app-pub-0000000000000000/0000000000" },
+  "snakes_ladders":  { "appId": "ca-app-pub-0000000000000000~0000000000", "banner": "ca-app-pub-0000000000000000/0000000000", "interstitial": "ca-app-pub-0000000000000000/0000000000" }
+}
