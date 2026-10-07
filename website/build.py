@@ -85,8 +85,8 @@ APPS = {
         "Watch with friends on the same Wi-Fi streams the video directly from "
         "the host's phone to the friends' phones on that network.",
         "Online watch rooms (6-letter code) keep only what is needed to keep "
-        "everyone in sync: your party name (your phone's name unless you set "
-        "one in Settings), the video's title or link, play "
+        "everyone in sync: the name you type for the room, the video's title or "
+        "link, play "
         "and pause position, chat messages and reactions. Room data is deleted "
         "automatically within 12 hours. Only people with the room code can see "
         "it. " + FIREBASE,

@@ -68,7 +68,7 @@ Videos, private folder, playback positions, bookmarks and link history stay on t
 
 | Data type | Collected | Shared | Ephemeral | Required / Optional | Purposes | Source / note |
 |---|---|---|---|---|---|---|
-| Personal info > Name | Yes | No | No | Optional | App functionality | Name shown to friends in an online room (from Settings "My name in watch parties", or the phone's device name). Deleted with the room. |
+| Personal info > Name | Yes | No | No | Optional | App functionality | Name the user types when starting or joining an online room (asked once, also in Settings "My name in watch parties"). Deleted with the room. |
 | Personal info > User IDs | Yes | No | No | Optional | App functionality, Fraud prevention/security | Random Firebase anonymous ID, used by the database rules |
 | Messages > Other in-app messages | Yes | No | No | Optional | App functionality | Chat (max 300 characters) and emoji reactions in online rooms; deleted with the room (max 12 h) |
 | App activity > Other user-generated content | Yes | No | No | Optional | App functionality | Video title or the link being watched in an online room |
@@ -123,6 +123,8 @@ Video to record (30-60 s): open a video > Settings shows the background option >
 - App access: all functions work without login. Tell the reviewer: "Watch together > Online creates a 6-letter code on one phone; enter it on a second phone. No account needed."
 
 ## 6. Policy risks found in the code
+
+Risks 1 to 3 are fixed: chat has Mute and Report (reports go write-only to `reports/` in Firebase), online rooms ask for a name instead of using the device name, and the permission screen no longer says "Nothing leaves your phone".
 
 | # | Risk | Where | What to do |
 |---|---|---|---|

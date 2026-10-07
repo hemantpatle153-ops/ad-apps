@@ -43,11 +43,36 @@ abstract class WatchParty extends ChangeNotifier {
   void sendReaction(String emoji);
   Future<void> close();
 
+  /// Names muted on this phone: their chat and reactions are hidden here.
+  final Set<String> muted = {};
+
+  bool isMuted(String name) => name != myName && muted.contains(name);
+
+  void mute(String name) {
+    if (name == myName) return;
+    muted.add(name);
+    messages.removeWhere((m) => m.from == name);
+    notifyListeners();
+  }
+
+  void unmute(String name) {
+    muted.remove(name);
+    notifyListeners();
+  }
+
+  /// Whether [report] reaches anyone; only online rooms have somewhere to
+  /// send it.
+  bool get canReport => false;
+
+  /// Reports [name] for abuse, quoting [text] (a chat line, or empty).
+  Future<void> report(String name, String text) async {}
+
   /// Adds a chat line or reaction and shows it on the video.
   @protected
   void received(PartyMessage m) => _received(m);
 
   void _received(PartyMessage m) {
+    if (isMuted(m.from)) return;
     messages.add(m);
     if (messages.length > 200) messages.removeAt(0);
     _incoming.add(m);
