@@ -47,7 +47,7 @@ MADE FOR FUN
 - Offline games work without internet. Online rooms need internet.
 
 FAIR AND FREE
-There is no real money, betting, coins or prizes in this game. The app shows ads from Google AdMob; EU and UK users are asked for consent first.
+There is no real money, betting, coins or prizes in this game. No ads.
 
 PRIVACY
 No account or sign-up. For online rooms the app uses a random anonymous ID and the name you type. Room data is deleted automatically. Voice is never recorded.

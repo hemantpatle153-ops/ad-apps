@@ -39,7 +39,7 @@ HABITS
 - Add an optional daily reminder for each habit.
 
 SIMPLE AND PRIVATE
-No account and no cloud. Your log, habits and reminder times are stored only on your phone, and reminders are scheduled on the phone too. The app shows ads from Google AdMob; EU and UK users are asked for consent first.
+No account and no cloud. Your log, habits and reminder times are stored only on your phone, and reminders are scheduled on the phone too. No ads.
 
 Note: this app is a personal tracker and reminder tool. It is not a medical device and does not give medical advice. How much water you need depends on your body, the weather and your activity; ask a doctor if you have a health condition.
 ```

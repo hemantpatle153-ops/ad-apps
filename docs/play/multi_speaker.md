@@ -46,7 +46,7 @@ MORE THAN ONE SPEAKER ON ONE PHONE?
 A help page explains your options, such as Dual audio on some phones and the party modes built into many Bluetooth speakers.
 
 PRIVATE
-Music only travels on your own local network, directly between your phones. It never goes to our servers. The app shows ads from Google AdMob; EU and UK users are asked for consent first.
+Music only travels on your own local network, directly between your phones. It never goes to our servers. No ads.
 
 Tip: Wi-Fi quality matters. For the best sync, keep the phones close to the router or use the host phone's hotspot.
 ```

@@ -56,7 +56,7 @@ WATCH TOGETHER
 - Online: share a 6-letter code. Each friend plays their own copy of the video, or the same link, and play, pause and seek stay in sync. Send quick emoji reactions and short chat messages. Only the room details travel online, never your video file. Rooms are deleted automatically.
 
 PRIVACY
-No account needed. Your videos stay on your phone. The app shows ads from Google AdMob; EU and UK users are asked for consent first.
+No account needed. Your videos stay on your phone. No ads.
 ```
 
 **Category:** Video Players & Editors
