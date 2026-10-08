@@ -26,6 +26,7 @@ class AdService {
 
   Future<void> init(AdConfig config) async {
     _config = config;
+    if (!config.enabled) return;
     await _gatherConsent();
     if (await ConsentInformation.instance.canRequestAds()) {
       await MobileAds.instance.initialize();
@@ -52,6 +53,7 @@ class AdService {
 
   /// Whether settings should offer a "Privacy options" entry.
   Future<bool> privacyOptionsRequired() async =>
+      _config.enabled &&
       await ConsentInformation.instance.getPrivacyOptionsRequirementStatus() ==
       PrivacyOptionsRequirementStatus.required;
 

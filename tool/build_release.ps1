@@ -8,6 +8,7 @@ Reads two things that never go in git, from the signing folder
 (default: %USERPROFILE%\Downloads\APPS\signing):
   <app>-upload.jks + <app>.key.properties   the upload key of each app
   admob.json                                 real AdMob IDs, see admob.example.json
+                                             (not needed with -NoAds; only apps that support it)
 
 Bundles land in %USERPROFILE%\Downloads\APPS\play_release\<store name>-<version>.aab.
 #>
@@ -15,7 +16,8 @@ param(
     [Parameter(Position = 0, ValueFromRemainingArguments = $true)]
     [string[]]$Apps,
     [string]$Signing = "$env:USERPROFILE\Downloads\APPS\signing",
-    [string]$Out = "$env:USERPROFILE\Downloads\APPS\play_release"
+    [string]$Out = "$env:USERPROFILE\Downloads\APPS\play_release",
+    [switch]$NoAds
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
@@ -33,11 +35,18 @@ $storeNames = [ordered]@{
 }
 if (-not $Apps) { $Apps = @($storeNames.Keys) }
 
-$admobFile = Join-Path $Signing 'admob.json'
-if (-not (Test-Path $admobFile)) {
-    throw "Missing $admobFile. Copy tool\admob.example.json there and fill in the real AdMob IDs."
+# Apps whose build.gradle.kts accepts --dart-define=ADS=false.
+$noAdsApps = @('video_player')
+if ($NoAds) {
+    $bad = $Apps | Where-Object { $_ -notin $noAdsApps }
+    if ($bad) { throw "-NoAds is supported only for: $($noAdsApps -join ', ')" }
+} else {
+    $admobFile = Join-Path $Signing 'admob.json'
+    if (-not (Test-Path $admobFile)) {
+        throw "Missing $admobFile. Copy tool\admob.example.json there and fill in the real AdMob IDs."
+    }
+    $admob = Get-Content $admobFile -Raw | ConvertFrom-Json
 }
-$admob = Get-Content $admobFile -Raw | ConvertFrom-Json
 New-Item -ItemType Directory -Force $Out | Out-Null
 
 foreach ($app in $Apps) {
@@ -57,15 +66,19 @@ foreach ($app in $Apps) {
     $lines = @("storeFile=$($jks -replace '\\', '/')") + $keep
     Set-Content -Path (Join-Path $dir 'android\key.properties') -Value $lines -Encoding ascii
 
-    $ids = $admob.$app
-    if (-not $ids -or -not $ids.appId -or -not $ids.banner -or -not $ids.interstitial) {
-        throw "admob.json has no appId/banner/interstitial for '$app'."
+    if ($NoAds) {
+        $buildArgs = @('build', 'appbundle', '--release', '--dart-define=ADS=false')
+    } else {
+        $ids = $admob.$app
+        if (-not $ids -or -not $ids.appId -or -not $ids.banner -or -not $ids.interstitial) {
+            throw "admob.json has no appId/banner/interstitial for '$app'."
+        }
+        $buildArgs = @('build', 'appbundle', '--release',
+            "-PadmobAppId=$($ids.appId)",
+            "--dart-define=ADMOB_BANNER_ID=$($ids.banner)",
+            "--dart-define=ADMOB_INTERSTITIAL_ID=$($ids.interstitial)")
+        if ($ids.rewarded) { $buildArgs += "--dart-define=ADMOB_REWARDED_ID=$($ids.rewarded)" }
     }
-    $buildArgs = @('build', 'appbundle', '--release',
-        "-PadmobAppId=$($ids.appId)",
-        "--dart-define=ADMOB_BANNER_ID=$($ids.banner)",
-        "--dart-define=ADMOB_INTERSTITIAL_ID=$($ids.interstitial)")
-    if ($ids.rewarded) { $buildArgs += "--dart-define=ADMOB_REWARDED_ID=$($ids.rewarded)" }
 
     Push-Location $dir
     try {
