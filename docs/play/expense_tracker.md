@@ -81,7 +81,7 @@ Shared ledgers are stored in Firebase = **collected** (sent off the phone), not 
 
 - Encrypted in transit: **Yes**.
 - Users can request deletion: **Yes**. In the app: Friends tab > cloud icon > Delete account. Settled ledgers are deleted automatically after 14 days.
-- Account deletion web link (required by Play when an app has accounts): use `https://luzzan.com/delete-account`, which explains in-app deletion and email requests.
+- Account deletion web link (required by Play when an app has accounts): use `https://luzzan.com/delete-data`, which explains in-app deletion and email requests (`/delete-account` on the same site belongs to WowCity, another LUZZAN product).
 
 ## 3. Permissions and declarations
 
