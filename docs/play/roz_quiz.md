@@ -2,7 +2,7 @@
 
 - Folder: `apps/roz_quiz` - Package: `in.onlysoftware.roz_quiz`
 - Type: App - Free - **No ads in the first release** (built with the default `ADS=off`) - Ages 13+
-- Privacy policy: https://dice-dhamaal.web.app/privacy/roz_quiz.html (from `website/build.py`; deploy hosting before filling the forms)
+- Privacy policy: https://luzzan.com/privacy/roz_quiz (from `website/build.py`; deploy hosting before filling the forms)
 - Uses Firebase project **dice-dhamaal** (Anonymous Auth, Realtime Database path `feedReports/`, write-only). The app id in `lib/services/firebase_reports.dart` is borrowed from Expense Tracker: **register `in.onlysoftware.roz_quiz` in the Firebase project and put its own app id there before release.**
 - Feed: daily quiz, current affairs and question banks are read from the `feed-data` branch of `ad-apps-builds` (`AppConfig.feedBaseUrl`, override with `--dart-define=FEED_BASE_URL=...`).
 

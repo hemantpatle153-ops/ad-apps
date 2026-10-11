@@ -8,7 +8,7 @@ const packageName = 'in.onlysoftware.video_player';
 
 // Rahul's published Google Doc (same text as website/build.py's page).
 const privacyPolicyUrl =
-    'https://docs.google.com/document/d/e/2PACX-1vTfrEbXLRvkphpIBmzE9dJ_gLWgh24QUcM0FZjossBmiuPtX29Vhs8ryciONNOotey4viCLpV3zf7Em/pub';
+    'https://luzzan.com/privacy/video_player';
 
 const _accent = Color(0xFFFF7A1A);
 

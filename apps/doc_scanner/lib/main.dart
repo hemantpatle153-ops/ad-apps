@@ -16,7 +16,7 @@ import 'screens/viewer_screen.dart';
 import 'ui_helpers.dart';
 
 const appPackageName = 'in.onlysoftware.doc_scanner';
-const privacyPolicyUrl = 'https://dice-dhamaal.web.app/privacy/doc_scanner.html'; // website/build.py
+const privacyPolicyUrl = 'https://luzzan.com/privacy/doc_scanner';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

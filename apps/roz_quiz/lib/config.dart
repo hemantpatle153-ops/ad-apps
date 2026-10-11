@@ -18,7 +18,7 @@ abstract final class AppConfig {
 
   /// Placeholder until website/build.py has a Roz Quiz page.
   static const privacyPolicyUrl =
-      'https://dice-dhamaal.web.app/privacy/roz_quiz.html';
+      'https://luzzan.com/privacy/roz_quiz';
 
   static const storeUrl =
       'https://play.google.com/store/apps/details?id=$packageName';

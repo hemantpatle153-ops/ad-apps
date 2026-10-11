@@ -26,7 +26,7 @@ abstract final class AppConfig {
 
   /// Written by website/build.py, served by Firebase Hosting.
   static const privacyPolicyUrl =
-      'https://dice-dhamaal.web.app/privacy/vacancy_bell.html';
+      'https://luzzan.com/privacy/vacancy_bell';
 
   /// Name used in the feedReports database entries.
   static const reportAppId = 'vacancy_bell';

@@ -16,7 +16,7 @@ const appName = 'Dice Dhamaal';
 const packageName = 'in.onlysoftware.dice_dhamaal';
 
 const privacyPolicyUrl =
-    'https://dice-dhamaal.web.app/privacy/dice_dhamaal.html'; // website/build.py
+    'https://luzzan.com/privacy/dice_dhamaal';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

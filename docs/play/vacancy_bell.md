@@ -2,7 +2,7 @@
 
 - Folder: `apps/vacancy_bell` - Package: `in.onlysoftware.vacancy_bell`
 - Type: App - Free - **No ads in version 1** - Ages 13+
-- Privacy policy: https://dice-dhamaal.web.app/privacy/vacancy_bell.html
+- Privacy policy: https://luzzan.com/privacy/vacancy_bell
 
 What the code really does: downloads one public job list (`jobs/index.json`, plus one file per post when opened) from the `feed-data` branch of `hemantpatle153-ops/ad-apps-builds` on GitHub (`AppConfig.feedBaseUrl`, ETag cache, works offline from the last copy). Tabs by post type (Jobs, Admit Card, Result, Answer Key, Syllabus, Admission, Notice), search, filters (qualification, state, category, only posts you can apply for, hide closed), sort by newest or closing soon. Detail page with dates, fees, age limit, vacancies, eligibility text, selection steps and links to the recruiting body's own site. Optional "My details" (date of birth, qualification, category, PwBD, ex-serviceman, state, gender) stay on the phone and power an eligibility hint and an age calculator. Saved posts, exam calendar, reminders 3 days and 1 day before the last date (local notifications, inexact alarms), and a background check about every 3 hours (WorkManager) that notifies about new posts. "Report a mistake" writes one record to Firebase Realtime Database `feedReports/` after anonymous sign-in, limited to 10 a day on the phone. Hindi and English.
 

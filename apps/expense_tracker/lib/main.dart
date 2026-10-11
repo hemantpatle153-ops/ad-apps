@@ -12,7 +12,7 @@ import 'insights.dart';
 import 'settings_screen.dart';
 
 const appPackageName = 'in.onlysoftware.expense_tracker';
-const privacyPolicyUrl = 'https://dice-dhamaal.web.app/privacy/expense_tracker.html'; // website/build.py
+const privacyPolicyUrl = 'https://luzzan.com/privacy/expense_tracker';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
