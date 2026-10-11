@@ -16,9 +16,9 @@ abstract final class AppConfig {
   /// for what a Play bundle then needs).
   static const adsEnabled = String.fromEnvironment('ADS', defaultValue: 'off') == 'on';
 
-  /// Placeholder until website/build.py has a Roz Quiz page.
+  /// Policy page on luzzan.com (company site of LUZZAN PRIVATE LIMITED).
   static const privacyPolicyUrl =
-      'https://dice-dhamaal.web.app/privacy/roz_quiz.html';
+      'https://luzzan.com/privacy/roz_quiz';
 
   static const storeUrl =
       'https://play.google.com/store/apps/details?id=$packageName';

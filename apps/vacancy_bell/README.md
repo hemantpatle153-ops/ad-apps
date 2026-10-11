@@ -34,7 +34,7 @@ Version 1 ships **without ads**. Ads are controlled by one build flag:
 - `--dart-define=ADS=on`: banner above the bottom bar like the other apps; a
   bundle build then requires `-PadmobAppId` and the `ADMOB_*` dart-defines.
   Remove the app from `$adFree`, add it to `admob.json`, and update the Play
-  sheet and the privacy page (`website/build.py`) first.
+  sheet and the privacy page on luzzan.com first.
 
 ## Reports
 

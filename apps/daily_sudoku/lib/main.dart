@@ -9,7 +9,7 @@ import 'sudoku_engine.dart';
 
 const packageName = 'in.onlysoftware.daily_sudoku';
 
-const privacyPolicyUrl = 'https://dice-dhamaal.web.app/privacy/daily_sudoku.html'; // website/build.py
+const privacyPolicyUrl = 'https://luzzan.com/privacy/daily_sudoku'; // policy page on luzzan.com
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -7,17 +7,17 @@ Each app has its own sheet with the store text, Data safety answers, permission 
 
 | # | App (store name) | Package | Sheet | Privacy policy URL |
 |---|---|---|---|---|
-| 1 | QR & Barcode Scanner | `in.onlysoftware.qr_scanner` | [qr_scanner.md](qr_scanner.md) | https://dice-dhamaal.web.app/privacy/qr_scanner.html |
-| 2 | Daily Sudoku | `in.onlysoftware.daily_sudoku` | [daily_sudoku.md](daily_sudoku.md) | https://dice-dhamaal.web.app/privacy/daily_sudoku.html |
-| 3 | Doc Scanner: PDF & OCR | `in.onlysoftware.doc_scanner` | [doc_scanner.md](doc_scanner.md) | https://dice-dhamaal.web.app/privacy/doc_scanner.html |
-| 4 | Expense Tracker: Daily Budget | `in.onlysoftware.expense_tracker` | [expense_tracker.md](expense_tracker.md) | https://dice-dhamaal.web.app/privacy/expense_tracker.html |
-| 5 | Water Reminder & Habit Tracker | `in.onlysoftware.water_habit` | [water_habit.md](water_habit.md) | https://dice-dhamaal.web.app/privacy/water_habit.html |
-| 6 | Multi Speaker: Sync Music | `in.onlysoftware.multi_speaker` | [multi_speaker.md](multi_speaker.md) | https://dice-dhamaal.web.app/privacy/multi_speaker.html |
-| 7 | Video Player: Watch Together | `in.onlysoftware.video_player` | [video_player.md](video_player.md) | https://docs.google.com/document/d/e/2PACX-1vTfrEbXLRvkphpIBmzE9dJ_gLWgh24QUcM0FZjossBmiuPtX29Vhs8ryciONNOotey4viCLpV3zf7Em/pub |
-| 8 | Dice Dhamaal: Ludo & Snakes | `in.onlysoftware.dice_dhamaal` (folder `apps/snakes_ladders`, branch `ludo-game`) | [snakes_ladders.md](snakes_ladders.md) | https://dice-dhamaal.web.app/privacy/dice_dhamaal.html |
-| 9 | Vacancy Bell: Sarkari Jobs (requested name is 31 chars, see sheet) | `in.onlysoftware.vacancy_bell` | [vacancy_bell.md](vacancy_bell.md) | https://dice-dhamaal.web.app/privacy/vacancy_bell.html |
+| 1 | QR & Barcode Scanner | `in.onlysoftware.qr_scanner` | [qr_scanner.md](qr_scanner.md) | https://luzzan.com/privacy/qr_scanner |
+| 2 | Daily Sudoku | `in.onlysoftware.daily_sudoku` | [daily_sudoku.md](daily_sudoku.md) | https://luzzan.com/privacy/daily_sudoku |
+| 3 | Doc Scanner: PDF & OCR | `in.onlysoftware.doc_scanner` | [doc_scanner.md](doc_scanner.md) | https://luzzan.com/privacy/doc_scanner |
+| 4 | Expense Tracker: Daily Budget | `in.onlysoftware.expense_tracker` | [expense_tracker.md](expense_tracker.md) | https://luzzan.com/privacy/expense_tracker |
+| 5 | Water Reminder & Habit Tracker | `in.onlysoftware.water_habit` | [water_habit.md](water_habit.md) | https://luzzan.com/privacy/water_habit |
+| 6 | Multi Speaker: Sync Music | `in.onlysoftware.multi_speaker` | [multi_speaker.md](multi_speaker.md) | https://luzzan.com/privacy/multi_speaker |
+| 7 | Video Player: Watch Together | `in.onlysoftware.video_player` | [video_player.md](video_player.md) | https://luzzan.com/privacy/video_player |
+| 8 | Dice Dhamaal: Ludo & Snakes | `in.onlysoftware.dice_dhamaal` (folder `apps/snakes_ladders`, branch `ludo-game`) | [snakes_ladders.md](snakes_ladders.md) | https://luzzan.com/privacy/dice_dhamaal |
+| 9 | Vacancy Bell: Sarkari Jobs (requested name is 31 chars, see sheet) | `in.onlysoftware.vacancy_bell` | [vacancy_bell.md](vacancy_bell.md) | https://luzzan.com/privacy/vacancy_bell |
 
-The privacy pages come from `website/build.py`. Deploy them (`firebase deploy --only hosting`) and open each link in a browser **before** you fill the Play forms. Play rejects an app whose policy link does not open.
+The privacy pages are live on the company website at `https://luzzan.com/privacy/<app>` (the text started in `website/build.py`). Open each link in a browser **before** you fill the Play forms. Play rejects an app whose policy link does not open.
 
 ---
 
@@ -25,7 +25,7 @@ The privacy pages come from `website/build.py`. Deploy them (`firebase deploy --
 
 - [ ] Create the account at https://play.google.com/console (one-time fee, 25 USD). Choose **Personal** account if you have no company papers. (An **Organization** account needs a D-U-N-S number but skips the testing rule below.)
 - [ ] Finish identity verification (ID card, address) and phone/email verification. The legal name stays private for a personal account; the public **developer name** can be "Only Software".
-- [ ] Set a public **contact email** (Play shows it on every app page; the privacy policies tell users to write there). Set the **website** to `https://dice-dhamaal.web.app` (needed for app-ads.txt, see step 6).
+- [ ] Set a public **contact email** (Play shows it on every app page; the privacy policies tell users to write there). Set the **website** to `https://luzzan.com` (verified; also needed for app-ads.txt, see step 6).
 
 ## 2. Testing rule for new personal accounts (very important)
 
@@ -76,7 +76,7 @@ Screenshot rules: show the real app only. No other company's logo or app (no You
 
 - [ ] In AdMob, add the app, create the ad units (banner + interstitial; Daily Sudoku also rewarded). After the app is live on Play, **link** the AdMob app to the Play listing.
 - [ ] **Privacy & messaging > GDPR**: create and **publish** one European consent message for these apps. Without a published message the in-app consent form never shows and EU/UK ad revenue is limited.
-- [ ] **app-ads.txt**: put `website/public/app-ads.txt` with the line AdMob gives you (`google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0`) and deploy, so it is at `https://dice-dhamaal.web.app/app-ads.txt`. The website in Play Console must be this same domain.
+- [ ] **app-ads.txt**: put `website/public/app-ads.txt` with the line AdMob gives you (`google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0`) and publish it at `https://luzzan.com/app-ads.txt`. The website in Play Console must be this same domain.
 - [ ] Never click your own live ads. Add your phones as **test devices** in AdMob.
 
 ## 7. Firebase (Video Player and Dice Dhamaal only)
