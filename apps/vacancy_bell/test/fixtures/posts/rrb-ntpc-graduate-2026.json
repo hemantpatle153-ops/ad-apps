@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "id": "rrb-ntpc-graduate-2026",
+  "type": "job",
+  "title": {"en": "RRB NTPC Graduate Level 2026", "hi": "आरआरबी एनटीपीसी स्नातक स्तर 2026"},
+  "org": {"en": "Railway Recruitment Boards", "hi": "रेलवे भर्ती बोर्ड"},
+  "category": "railway",
+  "postedAt": "2026-10-05T04:00:00Z",
+  "lastDate": "2026-10-09",
+  "totalPosts": null,
+  "qualifications": ["graduate"],
+  "states": ["all"],
+  "tags": ["central-govt"],
+  "verified": true,
+  "shortInfo": null,
+  "importantDates": "not a list",
+  "fees": null,
+  "age": {"min": "18", "max": 36.0, "asOn": "01-01-2027", "relaxation": null},
+  "vacancies": [
+    {"post": {"en": "Station Master", "hi": "स्टेशन मास्टर"}, "total": 615},
+    {"post": {"en": "Goods Train Manager", "hi": "मालगाड़ी प्रबंधक"}, "total": 3416},
+    {"post": {"en": "Junior Accounts Assistant", "hi": "कनिष्ठ लेखा सहायक"}, "total": 4082}
+  ],
+  "eligibility": null,
+  "selection": null,
+  "links": [],
+  "officialNoticeUrl": "ftp://example.com/notice.pdf",
+  "sourcePageUrl": "https://www.rrbcdg.gov.in"
+}
