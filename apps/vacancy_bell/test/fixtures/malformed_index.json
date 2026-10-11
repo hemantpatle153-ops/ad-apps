@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "generatedAt": "yesterday",
+  "posts": [
+    null,
+    42,
+    "ssc-cgl",
+    [],
+    {"type": "job", "title": {"en": "No id"}},
+    {"id": "Bad ID With Spaces", "title": {"en": "Invalid id"}},
+    {"id": "../../etc/passwd", "title": {"en": "Path traversal"}},
+    {"id": "no-title"},
+    {"id": "empty-title", "title": {"en": "", "hi": "  "}},
+    {"id": "title-number", "title": 12},
+    {
+      "id": "good-minimal",
+      "title": "Plain string title"
+    },
+    {
+      "id": "good-weird-fields",
+      "type": "webinar",
+      "title": {"en": "Weird fields", "hi": null},
+      "org": 5,
+      "category": "astronaut",
+      "postedAt": "not a date",
+      "updatedAt": 1700000000,
+      "lastDate": "2026-02-30",
+      "totalPosts": -5,
+      "qualifications": ["graduate", "phd", 7, "GRADUATE", null],
+      "states": ["up", "XX", "all", "MH"],
+      "ageMin": 40,
+      "ageMax": 18,
+      "salary": [],
+      "tags": "central-govt",
+      "verified": "yes"
+    },
+    {
+      "id": "good-minimal",
+      "title": {"en": "Duplicate id, dropped"}
+    },
+    {
+      "id": "good-states-only",
+      "type": "result",
+      "title": {"hi": "केवल हिंदी शीर्षक"},
+      "states": ["mp", "MP", "rj"],
+      "lastDate": "2026-12-31",
+      "totalPosts": "1,200",
+      "ageMin": 18.0,
+      "ageMax": "35"
+    }
+  ]
+}

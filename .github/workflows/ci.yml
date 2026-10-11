@@ -21,6 +21,7 @@ jobs:
           - apps/snakes_ladders
           - apps/multi_speaker
           - apps/video_player
+          - apps/vacancy_bell
           - apps/roz_quiz
     defaults:
       run:
@@ -58,7 +59,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        app: [multi_speaker, video_player, expense_tracker, snakes_ladders, roz_quiz]
+        app: [multi_speaker, video_player, expense_tracker, snakes_ladders, vacancy_bell, roz_quiz]
     defaults:
       run:
         working-directory: apps/${{ matrix.app }}

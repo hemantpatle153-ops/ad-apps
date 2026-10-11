@@ -1,6 +1,7 @@
 # Google Play release checklist (all 8 apps)
 
 Developer name on Play: **Only Software**. Every app: free, has ads (AdMob + Google consent form), no login, made for ages 13+.
+Exception: **Vacancy Bell** version 1 has no ads (answer the ads and Advertising ID questions with **No**; its sheet explains) and needs the extra government-information checks in its sheet.
 
 Each app has its own sheet with the store text, Data safety answers, permission declarations, content rating hints and policy risks:
 
@@ -14,6 +15,7 @@ Each app has its own sheet with the store text, Data safety answers, permission 
 | 6 | Multi Speaker: Sync Music | `in.onlysoftware.multi_speaker` | [multi_speaker.md](multi_speaker.md) | https://dice-dhamaal.web.app/privacy/multi_speaker.html |
 | 7 | Video Player: Watch Together | `in.onlysoftware.video_player` | [video_player.md](video_player.md) | https://docs.google.com/document/d/e/2PACX-1vTfrEbXLRvkphpIBmzE9dJ_gLWgh24QUcM0FZjossBmiuPtX29Vhs8ryciONNOotey4viCLpV3zf7Em/pub |
 | 8 | Dice Dhamaal: Ludo & Snakes | `in.onlysoftware.dice_dhamaal` (folder `apps/snakes_ladders`, branch `ludo-game`) | [snakes_ladders.md](snakes_ladders.md) | https://dice-dhamaal.web.app/privacy/dice_dhamaal.html |
+| 9 | Vacancy Bell: Sarkari Jobs (requested name is 31 chars, see sheet) | `in.onlysoftware.vacancy_bell` | [vacancy_bell.md](vacancy_bell.md) | https://dice-dhamaal.web.app/privacy/vacancy_bell.html |
 
 The privacy pages come from `website/build.py`. Deploy them (`firebase deploy --only hosting`) and open each link in a browser **before** you fill the Play forms. Play rejects an app whose policy link does not open.
 
