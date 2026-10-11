@@ -2,7 +2,7 @@
 
 - Folder: `apps/snakes_ladders`, **branch `ludo-game`** - Package: `in.onlysoftware.dice_dhamaal`
 - Type: **Game** (Board) - Free - Contains ads - Ages 13+
-- Privacy policy: https://dice-dhamaal.web.app/privacy/dice_dhamaal.html
+- Privacy policy: https://luzzan.com/privacy/dice_dhamaal
 - Uses Firebase project **dice-dhamaal** (Anonymous Auth + Realtime Database, path `rooms/{code}`) and WebRTC voice
 
 Build and upload from `ludo-game`. The `main` branch still has the old offline-only "Snakes & Ladders" with package `in.onlysoftware.snakes_ladders` (`apps/snakes_ladders/android/app/build.gradle.kts:27` on main). The first upload fixes the package name forever.
