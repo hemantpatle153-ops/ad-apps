@@ -1,0 +1,124 @@
+{
+ "schema": 1,
+ "subject": "polity",
+ "questions": [
+  {
+   "id": "q-polity-000301",
+   "q": {
+    "en": "Who administers the oath of office to the President of India?",
+    "hi": "भारत के राष्ट्रपति को पद की शपथ कौन दिलाता है?"
+   },
+   "options": [
+    {
+     "en": "The Vice-President",
+     "hi": "उपराष्ट्रपति"
+    },
+    {
+     "en": "The Chief Justice of India",
+     "hi": "भारत के मुख्य न्यायाधीश"
+    },
+    {
+     "en": "The Speaker",
+     "hi": "लोकसभा अध्यक्ष"
+    },
+    {
+     "en": "The Prime Minister",
+     "hi": "प्रधानमंत्री"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Under Article 60 the Chief Justice of India administers the oath to the President.",
+    "hi": "अनुच्छेद 60 के तहत भारत के मुख्य न्यायाधीश राष्ट्रपति को शपथ दिलाते हैं।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "upsc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": "SSC CHSL 2020",
+   "verified": true
+  },
+  {
+   "id": "q-polity-000302",
+   "q": {
+    "en": "The Rajya Sabha is a permanent House. One-third of its members retire every:",
+    "hi": "राज्यसभा एक स्थायी सदन है। इसके एक-तिहाई सदस्य हर कितने वर्ष में सेवानिवृत्त होते हैं?"
+   },
+   "options": [
+    {
+     "en": "1 year",
+     "hi": "1 वर्ष"
+    },
+    {
+     "en": "2 years",
+     "hi": "2 वर्ष"
+    },
+    {
+     "en": "3 years",
+     "hi": "3 वर्ष"
+    },
+    {
+     "en": "6 years",
+     "hi": "6 वर्ष"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Members serve six-year terms and one-third retire every second year (Article 83).",
+    "hi": "सदस्यों का कार्यकाल छह वर्ष है और हर दूसरे वर्ष एक-तिहाई सेवानिवृत्त होते हैं (अनुच्छेद 83)।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "hard",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "q-polity-000303",
+   "q": {
+    "en": "Which schedule of the Constitution lists the official languages?",
+    "hi": "संविधान की कौन-सी अनुसूची में भाषाओं की सूची है?"
+   },
+   "options": [
+    {
+     "en": "Sixth",
+     "hi": "छठी"
+    },
+    {
+     "en": "Seventh",
+     "hi": "सातवीं"
+    },
+    {
+     "en": "Eighth",
+     "hi": "आठवीं"
+    },
+    {
+     "en": "Ninth",
+     "hi": "नौवीं"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "The Eighth Schedule lists the languages of India.",
+    "hi": "आठवीं अनुसूची में भारत की भाषाओं की सूची है।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": "RRB NTPC 2021",
+   "verified": true
+  }
+ ]
+}

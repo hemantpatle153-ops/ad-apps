@@ -1,0 +1,562 @@
+{
+ "schema": 1,
+ "subject": "maths",
+ "questions": [
+  {
+   "id": "rq-maths-001",
+   "q": {
+    "en": "What is 15% of 200?",
+    "hi": "200 का 15% कितना है?"
+   },
+   "options": [
+    {
+     "en": "15",
+     "hi": "15"
+    },
+    {
+     "en": "20",
+     "hi": "20"
+    },
+    {
+     "en": "30",
+     "hi": "30"
+    },
+    {
+     "en": "35",
+     "hi": "35"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "15% of 200 = 15/100 × 200 = 30.",
+    "hi": "200 का 15% = 15/100 × 200 = 30।"
+   },
+   "subject": "maths",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-maths-002",
+   "q": {
+    "en": "What is the square root of 144?",
+    "hi": "144 का वर्गमूल क्या है?"
+   },
+   "options": [
+    {
+     "en": "11",
+     "hi": "11"
+    },
+    {
+     "en": "12",
+     "hi": "12"
+    },
+    {
+     "en": "13",
+     "hi": "13"
+    },
+    {
+     "en": "14",
+     "hi": "14"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "12 × 12 = 144, so √144 = 12.",
+    "hi": "12 × 12 = 144, इसलिए √144 = 12।"
+   },
+   "subject": "maths",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-maths-003",
+   "q": {
+    "en": "What is the LCM of 12 and 18?",
+    "hi": "12 और 18 का लघुत्तम समापवर्त्य (LCM) क्या है?"
+   },
+   "options": [
+    {
+     "en": "6",
+     "hi": "6"
+    },
+    {
+     "en": "24",
+     "hi": "24"
+    },
+    {
+     "en": "36",
+     "hi": "36"
+    },
+    {
+     "en": "72",
+     "hi": "72"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "12 = 2² × 3 and 18 = 2 × 3², so LCM = 2² × 3² = 36.",
+    "hi": "12 = 2² × 3 और 18 = 2 × 3², इसलिए LCM = 2² × 3² = 36।"
+   },
+   "subject": "maths",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-maths-004",
+   "q": {
+    "en": "What is the HCF of 24 and 36?",
+    "hi": "24 और 36 का महत्तम समापवर्तक (HCF) क्या है?"
+   },
+   "options": [
+    {
+     "en": "6",
+     "hi": "6"
+    },
+    {
+     "en": "8",
+     "hi": "8"
+    },
+    {
+     "en": "12",
+     "hi": "12"
+    },
+    {
+     "en": "18",
+     "hi": "18"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "24 = 2³ × 3 and 36 = 2² × 3², so HCF = 2² × 3 = 12.",
+    "hi": "24 = 2³ × 3 और 36 = 2² × 3², इसलिए HCF = 2² × 3 = 12।"
+   },
+   "subject": "maths",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-maths-005",
+   "q": {
+    "en": "What is the simple interest on ₹1,000 at 10% per annum for 2 years?",
+    "hi": "₹1,000 पर 10% वार्षिक दर से 2 वर्ष का साधारण ब्याज कितना होगा?"
+   },
+   "options": [
+    {
+     "en": "₹100",
+     "hi": "₹100"
+    },
+    {
+     "en": "₹200",
+     "hi": "₹200"
+    },
+    {
+     "en": "₹210",
+     "hi": "₹210"
+    },
+    {
+     "en": "₹220",
+     "hi": "₹220"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "SI = P × R × T / 100 = 1000 × 10 × 2 / 100 = ₹200. (Compound interest would be ₹210.)",
+    "hi": "साधारण ब्याज = P × R × T / 100 = 1000 × 10 × 2 / 100 = ₹200। (चक्रवृद्धि ब्याज ₹210 होता।)"
+   },
+   "subject": "maths",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-maths-006",
+   "q": {
+    "en": "A train 120 m long runs at 36 km/h. How long does it take to cross a pole?",
+    "hi": "120 मीटर लंबी ट्रेन 36 किमी/घंटा की गति से चलती है। एक खंभे को पार करने में उसे कितना समय लगेगा?"
+   },
+   "options": [
+    {
+     "en": "10 seconds",
+     "hi": "10 सेकंड"
+    },
+    {
+     "en": "12 seconds",
+     "hi": "12 सेकंड"
+    },
+    {
+     "en": "15 seconds",
+     "hi": "15 सेकंड"
+    },
+    {
+     "en": "20 seconds",
+     "hi": "20 सेकंड"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "36 km/h = 36 × 5/18 = 10 m/s. Time = 120 / 10 = 12 seconds.",
+    "hi": "36 किमी/घंटा = 36 × 5/18 = 10 मी/से। समय = 120 / 10 = 12 सेकंड।"
+   },
+   "subject": "maths",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-maths-007",
+   "q": {
+    "en": "What is the average of 10, 20, 30, 40 and 50?",
+    "hi": "10, 20, 30, 40 और 50 का औसत क्या है?"
+   },
+   "options": [
+    {
+     "en": "25",
+     "hi": "25"
+    },
+    {
+     "en": "30",
+     "hi": "30"
+    },
+    {
+     "en": "35",
+     "hi": "35"
+    },
+    {
+     "en": "150",
+     "hi": "150"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Sum = 150 and there are 5 numbers, so the average = 150 / 5 = 30.",
+    "hi": "योग = 150 और 5 संख्याएँ हैं, इसलिए औसत = 150 / 5 = 30।"
+   },
+   "subject": "maths",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-maths-008",
+   "q": {
+    "en": "An article bought for ₹400 is sold for ₹500. What is the profit percentage?",
+    "hi": "₹400 में खरीदी गई वस्तु ₹500 में बेची गई। लाभ प्रतिशत कितना है?"
+   },
+   "options": [
+    {
+     "en": "20%",
+     "hi": "20%"
+    },
+    {
+     "en": "25%",
+     "hi": "25%"
+    },
+    {
+     "en": "30%",
+     "hi": "30%"
+    },
+    {
+     "en": "100%",
+     "hi": "100%"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Profit = ₹100. Profit % = 100 / 400 × 100 = 25% (profit is calculated on cost price).",
+    "hi": "लाभ = ₹100। लाभ % = 100 / 400 × 100 = 25% (लाभ क्रय मूल्य पर निकाला जाता है)।"
+   },
+   "subject": "maths",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-maths-009",
+   "q": {
+    "en": "What is 3/4 expressed as a percentage?",
+    "hi": "3/4 को प्रतिशत में व्यक्त करें।"
+   },
+   "options": [
+    {
+     "en": "34%",
+     "hi": "34%"
+    },
+    {
+     "en": "60%",
+     "hi": "60%"
+    },
+    {
+     "en": "75%",
+     "hi": "75%"
+    },
+    {
+     "en": "80%",
+     "hi": "80%"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "3/4 × 100 = 75%.",
+    "hi": "3/4 × 100 = 75%।"
+   },
+   "subject": "maths",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-maths-010",
+   "q": {
+    "en": "The sum of the interior angles of a triangle is:",
+    "hi": "त्रिभुज के आंतरिक कोणों का योग कितना होता है?"
+   },
+   "options": [
+    {
+     "en": "90°",
+     "hi": "90°"
+    },
+    {
+     "en": "180°",
+     "hi": "180°"
+    },
+    {
+     "en": "270°",
+     "hi": "270°"
+    },
+    {
+     "en": "360°",
+     "hi": "360°"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The three interior angles of any triangle add up to 180°.",
+    "hi": "किसी भी त्रिभुज के तीनों आंतरिक कोणों का योग 180° होता है।"
+   },
+   "subject": "maths",
+   "exams": [
+    "ssc",
+    "railway",
+    "teaching"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-maths-011",
+   "q": {
+    "en": "What is the area of a rectangle 8 cm long and 5 cm wide?",
+    "hi": "8 सेमी लंबे और 5 सेमी चौड़े आयत का क्षेत्रफल क्या है?"
+   },
+   "options": [
+    {
+     "en": "13 cm²",
+     "hi": "13 सेमी²"
+    },
+    {
+     "en": "26 cm²",
+     "hi": "26 सेमी²"
+    },
+    {
+     "en": "40 cm²",
+     "hi": "40 सेमी²"
+    },
+    {
+     "en": "45 cm²",
+     "hi": "45 सेमी²"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Area = length × breadth = 8 × 5 = 40 cm². (26 cm is the perimeter.)",
+    "hi": "क्षेत्रफल = लंबाई × चौड़ाई = 8 × 5 = 40 सेमी²। (26 सेमी परिमाप है।)"
+   },
+   "subject": "maths",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-maths-012",
+   "q": {
+    "en": "What is the value of 2^10?",
+    "hi": "2^10 का मान क्या है?"
+   },
+   "options": [
+    {
+     "en": "512",
+     "hi": "512"
+    },
+    {
+     "en": "1000",
+     "hi": "1000"
+    },
+    {
+     "en": "1024",
+     "hi": "1024"
+    },
+    {
+     "en": "2048",
+     "hi": "2048"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "2^10 = 1024.",
+    "hi": "2^10 = 1024।"
+   },
+   "subject": "maths",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-maths-013",
+   "q": {
+    "en": "If 5 pens cost ₹60, how much do 8 pens cost?",
+    "hi": "यदि 5 पेन ₹60 के हैं, तो 8 पेन कितने के होंगे?"
+   },
+   "options": [
+    {
+     "en": "₹84",
+     "hi": "₹84"
+    },
+    {
+     "en": "₹90",
+     "hi": "₹90"
+    },
+    {
+     "en": "₹96",
+     "hi": "₹96"
+    },
+    {
+     "en": "₹100",
+     "hi": "₹100"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "One pen costs 60 / 5 = ₹12, so 8 pens cost 8 × 12 = ₹96.",
+    "hi": "एक पेन 60 / 5 = ₹12 का है, इसलिए 8 पेन 8 × 12 = ₹96 के होंगे।"
+   },
+   "subject": "maths",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-maths-014",
+   "q": {
+    "en": "A sum doubles in 5 years at simple interest. What is the rate of interest per annum?",
+    "hi": "साधारण ब्याज पर कोई राशि 5 वर्ष में दोगुनी हो जाती है। वार्षिक ब्याज दर क्या है?"
+   },
+   "options": [
+    {
+     "en": "10%",
+     "hi": "10%"
+    },
+    {
+     "en": "15%",
+     "hi": "15%"
+    },
+    {
+     "en": "20%",
+     "hi": "20%"
+    },
+    {
+     "en": "25%",
+     "hi": "25%"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Doubling means interest = principal. P = P × R × 5 / 100, so R = 20%.",
+    "hi": "दोगुना होने का अर्थ है ब्याज = मूलधन। P = P × R × 5 / 100, इसलिए R = 20%।"
+   },
+   "subject": "maths",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  }
+ ]
+}

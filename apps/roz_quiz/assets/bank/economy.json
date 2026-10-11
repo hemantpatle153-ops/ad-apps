@@ -1,0 +1,758 @@
+{
+ "schema": 1,
+ "subject": "economy",
+ "questions": [
+  {
+   "id": "rq-economy-001",
+   "q": {
+    "en": "The Reserve Bank of India was established in:",
+    "hi": "भारतीय रिज़र्व बैंक की स्थापना कब हुई?"
+   },
+   "options": [
+    {
+     "en": "1935",
+     "hi": "1935"
+    },
+    {
+     "en": "1947",
+     "hi": "1947"
+    },
+    {
+     "en": "1949",
+     "hi": "1949"
+    },
+    {
+     "en": "1969",
+     "hi": "1969"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "The RBI was set up on 1 April 1935 under the RBI Act, 1934, and was nationalised in 1949.",
+    "hi": "RBI की स्थापना RBI अधिनियम, 1934 के तहत 1 अप्रैल 1935 को हुई और 1949 में इसका राष्ट्रीयकरण हुआ।"
+   },
+   "subject": "economy",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-002",
+   "q": {
+    "en": "Where is the headquarters of the Reserve Bank of India?",
+    "hi": "भारतीय रिज़र्व बैंक का मुख्यालय कहाँ है?"
+   },
+   "options": [
+    {
+     "en": "New Delhi",
+     "hi": "नई दिल्ली"
+    },
+    {
+     "en": "Kolkata",
+     "hi": "कोलकाता"
+    },
+    {
+     "en": "Mumbai",
+     "hi": "मुंबई"
+    },
+    {
+     "en": "Chennai",
+     "hi": "चेन्नई"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "The RBI's central office has been in Mumbai since 1937; it started in Kolkata.",
+    "hi": "RBI का केंद्रीय कार्यालय 1937 से मुंबई में है; इसकी शुरुआत कोलकाता में हुई थी।"
+   },
+   "subject": "economy",
+   "exams": [
+    "ssc",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-003",
+   "q": {
+    "en": "The Goods and Services Tax (GST) came into effect in India on:",
+    "hi": "भारत में वस्तु एवं सेवा कर (GST) कब लागू हुआ?"
+   },
+   "options": [
+    {
+     "en": "1 April 2017",
+     "hi": "1 अप्रैल 2017"
+    },
+    {
+     "en": "1 July 2017",
+     "hi": "1 जुलाई 2017"
+    },
+    {
+     "en": "1 January 2018",
+     "hi": "1 जनवरी 2018"
+    },
+    {
+     "en": "1 April 2016",
+     "hi": "1 अप्रैल 2016"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "GST was rolled out on 1 July 2017 after the 101st Constitutional Amendment.",
+    "hi": "101वें संविधान संशोधन के बाद GST 1 जुलाई 2017 को लागू हुआ।"
+   },
+   "subject": "economy",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-004",
+   "q": {
+    "en": "India's First Five-Year Plan started in:",
+    "hi": "भारत की पहली पंचवर्षीय योजना कब शुरू हुई?"
+   },
+   "options": [
+    {
+     "en": "1947",
+     "hi": "1947"
+    },
+    {
+     "en": "1950",
+     "hi": "1950"
+    },
+    {
+     "en": "1951",
+     "hi": "1951"
+    },
+    {
+     "en": "1956",
+     "hi": "1956"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "The First Five-Year Plan ran from 1951 to 1956 and focused on agriculture.",
+    "hi": "पहली पंचवर्षीय योजना 1951 से 1956 तक चली और इसका ध्यान कृषि पर था।"
+   },
+   "subject": "economy",
+   "exams": [
+    "ssc",
+    "banking",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-005",
+   "q": {
+    "en": "NITI Aayog replaced which body in 2015?",
+    "hi": "नीति आयोग ने 2015 में किस संस्था का स्थान लिया?"
+   },
+   "options": [
+    {
+     "en": "Finance Commission",
+     "hi": "वित्त आयोग"
+    },
+    {
+     "en": "Planning Commission",
+     "hi": "योजना आयोग"
+    },
+    {
+     "en": "National Development Council",
+     "hi": "राष्ट्रीय विकास परिषद"
+    },
+    {
+     "en": "Election Commission",
+     "hi": "चुनाव आयोग"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "NITI Aayog was set up on 1 January 2015 in place of the Planning Commission (1950).",
+    "hi": "नीति आयोग 1 जनवरी 2015 को योजना आयोग (1950) के स्थान पर बनाया गया।"
+   },
+   "subject": "economy",
+   "exams": [
+    "ssc",
+    "banking",
+    "upsc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-006",
+   "q": {
+    "en": "Which Indian currency note is signed by the Finance Secretary instead of the RBI Governor?",
+    "hi": "भारत का कौन-सा नोट RBI गवर्नर के बजाय वित्त सचिव के हस्ताक्षर से जारी होता है?"
+   },
+   "options": [
+    {
+     "en": "₹1",
+     "hi": "₹1"
+    },
+    {
+     "en": "₹2",
+     "hi": "₹2"
+    },
+    {
+     "en": "₹5",
+     "hi": "₹5"
+    },
+    {
+     "en": "₹10",
+     "hi": "₹10"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "The ₹1 note is issued by the Government of India and signed by the Finance Secretary; other notes carry the RBI Governor's signature.",
+    "hi": "₹1 का नोट भारत सरकार जारी करती है और उस पर वित्त सचिव के हस्ताक्षर होते हैं; बाकी नोटों पर RBI गवर्नर के हस्ताक्षर होते हैं।"
+   },
+   "subject": "economy",
+   "exams": [
+    "banking",
+    "ssc"
+   ],
+   "difficulty": "hard",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-007",
+   "q": {
+    "en": "In which year were 14 major commercial banks nationalised in India?",
+    "hi": "भारत में 14 प्रमुख वाणिज्यिक बैंकों का राष्ट्रीयकरण किस वर्ष हुआ?"
+   },
+   "options": [
+    {
+     "en": "1955",
+     "hi": "1955"
+    },
+    {
+     "en": "1969",
+     "hi": "1969"
+    },
+    {
+     "en": "1980",
+     "hi": "1980"
+    },
+    {
+     "en": "1991",
+     "hi": "1991"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Fourteen major banks were nationalised on 19 July 1969; six more followed in 1980.",
+    "hi": "19 जुलाई 1969 को 14 प्रमुख बैंकों का राष्ट्रीयकरण हुआ; 1980 में छह और बैंक राष्ट्रीयकृत हुए।"
+   },
+   "subject": "economy",
+   "exams": [
+    "banking",
+    "ssc",
+    "upsc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-008",
+   "q": {
+    "en": "The repo rate is the rate at which:",
+    "hi": "रेपो दर वह दर है जिस पर:"
+   },
+   "options": [
+    {
+     "en": "RBI lends to commercial banks",
+     "hi": "RBI वाणिज्यिक बैंकों को ऋण देता है"
+    },
+    {
+     "en": "Banks lend to the RBI",
+     "hi": "बैंक RBI को ऋण देते हैं"
+    },
+    {
+     "en": "Banks lend to customers",
+     "hi": "बैंक ग्राहकों को ऋण देते हैं"
+    },
+    {
+     "en": "The government borrows from the public",
+     "hi": "सरकार जनता से उधार लेती है"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Repo rate is the rate at which the RBI lends to commercial banks for short periods against government securities. Reverse repo is the opposite.",
+    "hi": "रेपो दर वह दर है जिस पर RBI सरकारी प्रतिभूतियों के बदले बैंकों को अल्पकालिक ऋण देता है। रिवर्स रेपो इसका उलटा है।"
+   },
+   "subject": "economy",
+   "exams": [
+    "banking",
+    "ssc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-009",
+   "q": {
+    "en": "Which body regulates the securities (stock) market in India?",
+    "hi": "भारत में प्रतिभूति (शेयर) बाज़ार का नियामक कौन है?"
+   },
+   "options": [
+    {
+     "en": "RBI",
+     "hi": "RBI"
+    },
+    {
+     "en": "SEBI",
+     "hi": "SEBI"
+    },
+    {
+     "en": "IRDAI",
+     "hi": "IRDAI"
+    },
+    {
+     "en": "NABARD",
+     "hi": "NABARD"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The Securities and Exchange Board of India (SEBI) regulates the securities market; it became a statutory body in 1992.",
+    "hi": "भारतीय प्रतिभूति और विनिमय बोर्ड (SEBI) प्रतिभूति बाज़ार का नियामक है; यह 1992 में वैधानिक निकाय बना।"
+   },
+   "subject": "economy",
+   "exams": [
+    "banking",
+    "ssc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-010",
+   "q": {
+    "en": "India's financial year runs from:",
+    "hi": "भारत का वित्तीय वर्ष कब से कब तक होता है?"
+   },
+   "options": [
+    {
+     "en": "1 January to 31 December",
+     "hi": "1 जनवरी से 31 दिसंबर"
+    },
+    {
+     "en": "1 April to 31 March",
+     "hi": "1 अप्रैल से 31 मार्च"
+    },
+    {
+     "en": "1 July to 30 June",
+     "hi": "1 जुलाई से 30 जून"
+    },
+    {
+     "en": "1 October to 30 September",
+     "hi": "1 अक्टूबर से 30 सितंबर"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The Government of India's financial year runs from 1 April to 31 March.",
+    "hi": "भारत सरकार का वित्तीय वर्ष 1 अप्रैल से 31 मार्च तक होता है।"
+   },
+   "subject": "economy",
+   "exams": [
+    "banking",
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-011",
+   "q": {
+    "en": "Under which Article is the Union Budget presented as the 'Annual Financial Statement'?",
+    "hi": "केंद्रीय बजट 'वार्षिक वित्तीय विवरण' के रूप में किस अनुच्छेद के तहत प्रस्तुत किया जाता है?"
+   },
+   "options": [
+    {
+     "en": "Article 110",
+     "hi": "अनुच्छेद 110"
+    },
+    {
+     "en": "Article 112",
+     "hi": "अनुच्छेद 112"
+    },
+    {
+     "en": "Article 266",
+     "hi": "अनुच्छेद 266"
+    },
+    {
+     "en": "Article 280",
+     "hi": "अनुच्छेद 280"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Article 112 requires the President to lay the Annual Financial Statement (the Budget) before Parliament. Article 280 is about the Finance Commission.",
+    "hi": "अनुच्छेद 112 के अनुसार राष्ट्रपति वार्षिक वित्तीय विवरण (बजट) संसद के सामने रखवाते हैं। अनुच्छेद 280 वित्त आयोग से संबंधित है।"
+   },
+   "subject": "economy",
+   "exams": [
+    "ssc",
+    "upsc",
+    "banking"
+   ],
+   "difficulty": "hard",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-012",
+   "q": {
+    "en": "Who is known as the father of the Green Revolution in India?",
+    "hi": "भारत में हरित क्रांति के जनक किसे कहा जाता है?"
+   },
+   "options": [
+    {
+     "en": "Verghese Kurien",
+     "hi": "वर्गीज़ कुरियन"
+    },
+    {
+     "en": "M. S. Swaminathan",
+     "hi": "एम. एस. स्वामीनाथन"
+    },
+    {
+     "en": "Norman Borlaug",
+     "hi": "नॉर्मन बोरलॉग"
+    },
+    {
+     "en": "Amartya Sen",
+     "hi": "अमर्त्य सेन"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Agricultural scientist M. S. Swaminathan is called the father of India's Green Revolution. Norman Borlaug is its global father.",
+    "hi": "कृषि वैज्ञानिक एम. एस. स्वामीनाथन को भारत की हरित क्रांति का जनक कहा जाता है। नॉर्मन बोरलॉग इसके वैश्विक जनक हैं।"
+   },
+   "subject": "economy",
+   "exams": [
+    "ssc",
+    "banking",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-013",
+   "q": {
+    "en": "The White Revolution (Operation Flood) is associated with:",
+    "hi": "श्वेत क्रांति (ऑपरेशन फ़्लड) किससे जुड़ी है?"
+   },
+   "options": [
+    {
+     "en": "M. S. Swaminathan",
+     "hi": "एम. एस. स्वामीनाथन"
+    },
+    {
+     "en": "Verghese Kurien",
+     "hi": "वर्गीज़ कुरियन"
+    },
+    {
+     "en": "Amartya Sen",
+     "hi": "अमर्त्य सेन"
+    },
+    {
+     "en": "Raj Krishna",
+     "hi": "राज कृष्ण"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "Dr. Verghese Kurien led Operation Flood, which made India the world's largest milk producer.",
+    "hi": "डॉ. वर्गीज़ कुरियन ने ऑपरेशन फ़्लड का नेतृत्व किया, जिससे भारत विश्व का सबसे बड़ा दुग्ध उत्पादक बना।"
+   },
+   "subject": "economy",
+   "exams": [
+    "ssc",
+    "banking",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-014",
+   "q": {
+    "en": "NABARD mainly provides finance for:",
+    "hi": "नाबार्ड (NABARD) मुख्य रूप से किसके लिए वित्त उपलब्ध कराता है?"
+   },
+   "options": [
+    {
+     "en": "Foreign trade",
+     "hi": "विदेशी व्यापार"
+    },
+    {
+     "en": "Agriculture and rural development",
+     "hi": "कृषि और ग्रामीण विकास"
+    },
+    {
+     "en": "Housing",
+     "hi": "आवास"
+    },
+    {
+     "en": "Large industries",
+     "hi": "बड़े उद्योग"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The National Bank for Agriculture and Rural Development (set up in 1982) is the apex bank for rural credit.",
+    "hi": "राष्ट्रीय कृषि और ग्रामीण विकास बैंक (1982 में स्थापित) ग्रामीण ऋण का शीर्ष बैंक है।"
+   },
+   "subject": "economy",
+   "exams": [
+    "banking",
+    "ssc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-015",
+   "q": {
+    "en": "Pradhan Mantri Jan Dhan Yojana (2014) mainly aims at:",
+    "hi": "प्रधानमंत्री जन धन योजना (2014) का मुख्य उद्देश्य क्या है?"
+   },
+   "options": [
+    {
+     "en": "Financial inclusion through bank accounts",
+     "hi": "बैंक खातों के माध्यम से वित्तीय समावेशन"
+    },
+    {
+     "en": "Free housing",
+     "hi": "मुफ़्त आवास"
+    },
+    {
+     "en": "Crop insurance",
+     "hi": "फ़सल बीमा"
+    },
+    {
+     "en": "Skill training",
+     "hi": "कौशल प्रशिक्षण"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "PMJDY, launched in August 2014, aims at financial inclusion through bank accounts: access to a basic bank account and related financial services for every household.",
+    "hi": "अगस्त 2014 में शुरू हुई PMJDY का उद्देश्य बैंक खातों के माध्यम से वित्तीय समावेशन है: हर परिवार को बुनियादी बैंक खाता और संबंधित वित्तीय सेवाएँ देना।"
+   },
+   "subject": "economy",
+   "exams": [
+    "banking",
+    "ssc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-016",
+   "q": {
+    "en": "In economics, what does GDP stand for?",
+    "hi": "अर्थशास्त्र में GDP का पूरा नाम क्या है?"
+   },
+   "options": [
+    {
+     "en": "Gross Domestic Product",
+     "hi": "सकल घरेलू उत्पाद (Gross Domestic Product)"
+    },
+    {
+     "en": "Gross Development Plan",
+     "hi": "सकल विकास योजना (Gross Development Plan)"
+    },
+    {
+     "en": "General Domestic Price",
+     "hi": "सामान्य घरेलू मूल्य (General Domestic Price)"
+    },
+    {
+     "en": "Government Debt Position",
+     "hi": "सरकारी ऋण स्थिति (Government Debt Position)"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "GDP (Gross Domestic Product) is the total value of final goods and services produced within a country in a period.",
+    "hi": "GDP किसी अवधि में देश के भीतर उत्पादित अंतिम वस्तुओं और सेवाओं का कुल मूल्य है।"
+   },
+   "subject": "economy",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-017",
+   "q": {
+    "en": "Where is the headquarters of the World Bank?",
+    "hi": "विश्व बैंक का मुख्यालय कहाँ है?"
+   },
+   "options": [
+    {
+     "en": "New York",
+     "hi": "न्यूयॉर्क"
+    },
+    {
+     "en": "Washington, D.C.",
+     "hi": "वाशिंगटन, डी.सी."
+    },
+    {
+     "en": "Geneva",
+     "hi": "जिनेवा"
+    },
+    {
+     "en": "Paris",
+     "hi": "पेरिस"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The World Bank and the IMF are both headquartered in Washington, D.C.",
+    "hi": "विश्व बैंक और IMF दोनों का मुख्यालय वाशिंगटन, डी.सी. में है।"
+   },
+   "subject": "economy",
+   "exams": [
+    "banking",
+    "ssc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-018",
+   "q": {
+    "en": "The 'Blue Revolution' is related to:",
+    "hi": "'नीली क्रांति' किससे संबंधित है?"
+   },
+   "options": [
+    {
+     "en": "Fish production",
+     "hi": "मछली उत्पादन"
+    },
+    {
+     "en": "Milk production",
+     "hi": "दुग्ध उत्पादन"
+    },
+    {
+     "en": "Oilseeds",
+     "hi": "तिलहन"
+    },
+    {
+     "en": "Fertilisers",
+     "hi": "उर्वरक"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "The Blue Revolution refers to raising fish production through fisheries and aquaculture.",
+    "hi": "नीली क्रांति मत्स्य पालन और जलीय कृषि के विकास से जुड़ी है।"
+   },
+   "subject": "economy",
+   "exams": [
+    "ssc",
+    "banking",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-economy-019",
+   "q": {
+    "en": "Which is the 'Yellow Revolution' associated with?",
+    "hi": "'पीली क्रांति' किससे जुड़ी है?"
+   },
+   "options": [
+    {
+     "en": "Oilseeds",
+     "hi": "तिलहन"
+    },
+    {
+     "en": "Eggs",
+     "hi": "अंडे"
+    },
+    {
+     "en": "Gold",
+     "hi": "सोना"
+    },
+    {
+     "en": "Bananas",
+     "hi": "केले"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "The Yellow Revolution aimed to raise the production of oilseeds such as mustard and sunflower.",
+    "hi": "पीली क्रांति का उद्देश्य सरसों और सूरजमुखी जैसे तिलहनों का उत्पादन बढ़ाना था।"
+   },
+   "subject": "economy",
+   "exams": [
+    "banking",
+    "ssc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  }
+ ]
+}

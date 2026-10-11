@@ -13,6 +13,7 @@ apps/snakes_ladders app 6: Dice Dhamaal, two games in one: Ludo (vs computer, pa
 apps/multi_speaker  app 7: one song on many speakers in sync (phones on the same Wi-Fi/hotspot, each on its own speaker)
 apps/video_player   app 8: video player: folders, gestures, subtitles, background audio, PiP, private folder
 apps/vacancy_bell   app 9: Vacancy Bell, Sarkari job alerts in Hindi/English: post tabs, filters, eligibility check, last-date reminders, new-post alerts (no ads in v1)
+apps/roz_quiz       app 10: Roz Quiz, daily bilingual GK and exam quiz, current affairs, practice, mock tests, streaks (first release has no ads)
 ```
 
 Package names are `in.onlysoftware.<folder name>`. Every app works offline; the only network use is ads (Multi Speaker also talks to other phones on the local Wi-Fi). Vacancy Bell is the exception: it downloads a public job list (and keeps the last copy for offline use) and ships without ads; see `apps/vacancy_bell/README.md`.

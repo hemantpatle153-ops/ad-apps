@@ -152,6 +152,26 @@ APPS = {
         '<a href="https://firebase.google.com/support/privacy">Privacy and '
         "Security in Firebase</a>. Reports are kept only until we review them.",
     ], NO_ADS),
+    "roz_quiz": ("Roz Quiz", [
+        "The app downloads the daily quiz, current affairs and question banks "
+        "from a public file server (GitHub). These downloads send nothing "
+        "about you; like any web request they reveal your IP address to the "
+        "server.",
+        "Your answers, scores, streak, XP, badges, bookmarks, mistakes and "
+        "settings are stored only on your phone. Reminders are local "
+        "notifications scheduled on the phone.",
+        "Report a mistake is optional. When you send a report, the app stores "
+        "the question's id, the reason you picked, the note you typed (if "
+        "any), a random anonymous id and the time, so we can fix the "
+        "question. Nobody can read reports from the app. Reports use Google "
+        "Firebase (Anonymous Authentication and Realtime Database); the "
+        "anonymous id is not linked to your name, email or phone number, and "
+        "data is sent encrypted (HTTPS). See "
+        '<a href="https://firebase.google.com/support/privacy">Privacy and '
+        "Security in Firebase</a>.",
+        "This version shows no ads and does not use the advertising ID; the "
+        "Ads section below applies only if a later version adds ads.",
+    ]),
 }
 
 PAGE = """<!doctype html>

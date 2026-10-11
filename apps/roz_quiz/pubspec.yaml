@@ -1,0 +1,35 @@
+name: roz_quiz
+description: Roz Quiz - daily GK, current affairs and exam practice quizzes in English and Hindi.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
+  flutter: ">=3.24.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  app_core:
+    path: ../../packages/app_core
+  shared_preferences: ^2.3.0
+  path_provider: any
+  http: ^1.2.0
+  share_plus: ^13.3.1
+  flutter_local_notifications: any
+  timezone: any
+  firebase_core: ^4.15.0
+  firebase_auth: ^6.7.0
+  firebase_database: ^12.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/bank/

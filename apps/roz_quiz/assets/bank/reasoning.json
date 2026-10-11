@@ -1,0 +1,404 @@
+{
+ "schema": 1,
+ "subject": "reasoning",
+ "questions": [
+  {
+   "id": "rq-reasoning-001",
+   "q": {
+    "en": "Find the next number: 2, 4, 8, 16, ?",
+    "hi": "अगली संख्या ज्ञात करें: 2, 4, 8, 16, ?"
+   },
+   "options": [
+    {
+     "en": "18",
+     "hi": "18"
+    },
+    {
+     "en": "24",
+     "hi": "24"
+    },
+    {
+     "en": "32",
+     "hi": "32"
+    },
+    {
+     "en": "64",
+     "hi": "64"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Each number is double the previous one: 16 × 2 = 32.",
+    "hi": "हर संख्या पिछली की दोगुनी है: 16 × 2 = 32।"
+   },
+   "subject": "reasoning",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-reasoning-002",
+   "q": {
+    "en": "Find the next number: 1, 4, 9, 16, 25, ?",
+    "hi": "अगली संख्या ज्ञात करें: 1, 4, 9, 16, 25, ?"
+   },
+   "options": [
+    {
+     "en": "30",
+     "hi": "30"
+    },
+    {
+     "en": "35",
+     "hi": "35"
+    },
+    {
+     "en": "36",
+     "hi": "36"
+    },
+    {
+     "en": "49",
+     "hi": "49"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "These are squares: 1², 2², 3², 4², 5², so next is 6² = 36.",
+    "hi": "ये वर्ग संख्याएँ हैं: 1², 2², 3², 4², 5², इसलिए अगली 6² = 36 है।"
+   },
+   "subject": "reasoning",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-reasoning-003",
+   "q": {
+    "en": "Find the odd one out: Apple, Mango, Potato, Banana",
+    "hi": "विषम चुनें: सेब, आम, आलू, केला"
+   },
+   "options": [
+    {
+     "en": "Apple",
+     "hi": "सेब"
+    },
+    {
+     "en": "Mango",
+     "hi": "आम"
+    },
+    {
+     "en": "Potato",
+     "hi": "आलू"
+    },
+    {
+     "en": "Banana",
+     "hi": "केला"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Potato is a vegetable (a tuber); the others are fruits.",
+    "hi": "आलू एक सब्ज़ी (कंद) है; बाकी सभी फल हैं।"
+   },
+   "subject": "reasoning",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-reasoning-004",
+   "q": {
+    "en": "If CAT is written as DBU, how is DOG written in that code?",
+    "hi": "यदि CAT को DBU लिखा जाता है, तो उसी कूट में DOG को कैसे लिखेंगे?"
+   },
+   "options": [
+    {
+     "en": "EPH",
+     "hi": "EPH"
+    },
+    {
+     "en": "EPG",
+     "hi": "EPG"
+    },
+    {
+     "en": "DPH",
+     "hi": "DPH"
+    },
+    {
+     "en": "FQI",
+     "hi": "FQI"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Each letter moves one step forward: C→D, A→B, T→U. So D→E, O→P, G→H gives EPH.",
+    "hi": "हर अक्षर एक स्थान आगे बढ़ता है: C→D, A→B, T→U। इसलिए D→E, O→P, G→H से EPH बनता है।"
+   },
+   "subject": "reasoning",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-reasoning-005",
+   "q": {
+    "en": "A is B's brother. B is C's mother. How is A related to C?",
+    "hi": "A, B का भाई है। B, C की माँ है। A का C से क्या संबंध है?"
+   },
+   "options": [
+    {
+     "en": "Father",
+     "hi": "पिता"
+    },
+    {
+     "en": "Maternal uncle",
+     "hi": "मामा"
+    },
+    {
+     "en": "Brother",
+     "hi": "भाई"
+    },
+    {
+     "en": "Grandfather",
+     "hi": "दादा"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "B is C's mother and A is B's brother, so A is C's mother's brother: maternal uncle.",
+    "hi": "B, C की माँ है और A, B का भाई है, इसलिए A, C की माँ का भाई यानी मामा है।"
+   },
+   "subject": "reasoning",
+   "exams": [
+    "ssc",
+    "banking",
+    "railway"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-reasoning-006",
+   "q": {
+    "en": "If today is Monday, what day will it be after 10 days?",
+    "hi": "यदि आज सोमवार है, तो 10 दिन बाद कौन-सा दिन होगा?"
+   },
+   "options": [
+    {
+     "en": "Wednesday",
+     "hi": "बुधवार"
+    },
+    {
+     "en": "Thursday",
+     "hi": "गुरुवार"
+    },
+    {
+     "en": "Friday",
+     "hi": "शुक्रवार"
+    },
+    {
+     "en": "Saturday",
+     "hi": "शनिवार"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "10 days = 1 week + 3 days. Monday + 3 days = Thursday.",
+    "hi": "10 दिन = 1 सप्ताह + 3 दिन। सोमवार + 3 दिन = गुरुवार।"
+   },
+   "subject": "reasoning",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-reasoning-007",
+   "q": {
+    "en": "Find the odd one out: 2, 3, 5, 9",
+    "hi": "विषम संख्या चुनें: 2, 3, 5, 9"
+   },
+   "options": [
+    {
+     "en": "2",
+     "hi": "2"
+    },
+    {
+     "en": "3",
+     "hi": "3"
+    },
+    {
+     "en": "5",
+     "hi": "5"
+    },
+    {
+     "en": "9",
+     "hi": "9"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "2, 3 and 5 are prime numbers; 9 = 3 × 3 is not prime.",
+    "hi": "2, 3 और 5 अभाज्य संख्याएँ हैं; 9 = 3 × 3 अभाज्य नहीं है।"
+   },
+   "subject": "reasoning",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-reasoning-008",
+   "q": {
+    "en": "Book is to Author as Painting is to:",
+    "hi": "पुस्तक का लेखक से वही संबंध है जो चित्र का:"
+   },
+   "options": [
+    {
+     "en": "Canvas",
+     "hi": "कैनवास"
+    },
+    {
+     "en": "Painter",
+     "hi": "चित्रकार"
+    },
+    {
+     "en": "Museum",
+     "hi": "संग्रहालय"
+    },
+    {
+     "en": "Colour",
+     "hi": "रंग"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "An author creates a book; a painter creates a painting.",
+    "hi": "लेखक पुस्तक बनाता है; चित्रकार चित्र बनाता है।"
+   },
+   "subject": "reasoning",
+   "exams": [
+    "ssc",
+    "railway",
+    "teaching"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-reasoning-009",
+   "q": {
+    "en": "Ravi faces North. He turns 90° clockwise and then 180°. Which direction does he face now?",
+    "hi": "रवि उत्तर की ओर मुँह करके खड़ा है। वह 90° दक्षिणावर्त मुड़ता है और फिर 180° मुड़ता है। अब उसका मुँह किस दिशा में है?"
+   },
+   "options": [
+    {
+     "en": "North",
+     "hi": "उत्तर"
+    },
+    {
+     "en": "South",
+     "hi": "दक्षिण"
+    },
+    {
+     "en": "East",
+     "hi": "पूर्व"
+    },
+    {
+     "en": "West",
+     "hi": "पश्चिम"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "North turned 90° clockwise is East; turning 180° from East gives West.",
+    "hi": "उत्तर से 90° दक्षिणावर्त मुड़ने पर पूर्व; पूर्व से 180° मुड़ने पर पश्चिम।"
+   },
+   "subject": "reasoning",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-reasoning-010",
+   "q": {
+    "en": "Find the next number: 3, 6, 9, 12, ?",
+    "hi": "अगली संख्या ज्ञात करें: 3, 6, 9, 12, ?"
+   },
+   "options": [
+    {
+     "en": "13",
+     "hi": "13"
+    },
+    {
+     "en": "14",
+     "hi": "14"
+    },
+    {
+     "en": "15",
+     "hi": "15"
+    },
+    {
+     "en": "18",
+     "hi": "18"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "The numbers increase by 3 each time: 12 + 3 = 15.",
+    "hi": "संख्याएँ हर बार 3 बढ़ती हैं: 12 + 3 = 15।"
+   },
+   "subject": "reasoning",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  }
+ ]
+}

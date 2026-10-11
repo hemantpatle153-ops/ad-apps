@@ -1,0 +1,926 @@
+{
+ "schema": 1,
+ "subject": "polity",
+ "questions": [
+  {
+   "id": "rq-polity-001",
+   "q": {
+    "en": "The Constitution of India came into force on:",
+    "hi": "भारत का संविधान कब लागू हुआ?"
+   },
+   "options": [
+    {
+     "en": "15 August 1947",
+     "hi": "15 अगस्त 1947"
+    },
+    {
+     "en": "26 November 1949",
+     "hi": "26 नवंबर 1949"
+    },
+    {
+     "en": "26 January 1950",
+     "hi": "26 जनवरी 1950"
+    },
+    {
+     "en": "2 October 1950",
+     "hi": "2 अक्टूबर 1950"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "The Constitution came into force on 26 January 1950, celebrated as Republic Day.",
+    "hi": "संविधान 26 जनवरी 1950 को लागू हुआ, जिसे गणतंत्र दिवस के रूप में मनाया जाता है।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-002",
+   "q": {
+    "en": "Constitution Day (Samvidhan Divas) is observed on 26 November because on that day in 1949 the Constitution was:",
+    "hi": "संविधान दिवस 26 नवंबर को मनाया जाता है क्योंकि 1949 में इस दिन संविधान:"
+   },
+   "options": [
+    {
+     "en": "Adopted by the Constituent Assembly",
+     "hi": "संविधान सभा द्वारा अपनाया गया"
+    },
+    {
+     "en": "Brought into force",
+     "hi": "लागू किया गया"
+    },
+    {
+     "en": "First amended",
+     "hi": "पहली बार संशोधित हुआ"
+    },
+    {
+     "en": "Signed by the Governor-General",
+     "hi": "गवर्नर-जनरल द्वारा हस्ताक्षरित हुआ"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "The Constitution was adopted by the Constituent Assembly on 26 November 1949 and came into force on 26 January 1950.",
+    "hi": "संविधान सभा ने 26 नवंबर 1949 को संविधान अपनाया; यह 26 जनवरी 1950 को लागू हुआ।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "upsc",
+    "teaching"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-003",
+   "q": {
+    "en": "Who was the Chairman of the Drafting Committee of the Constitution?",
+    "hi": "संविधान की प्रारूप समिति के अध्यक्ष कौन थे?"
+   },
+   "options": [
+    {
+     "en": "Dr. Rajendra Prasad",
+     "hi": "डॉ. राजेंद्र प्रसाद"
+    },
+    {
+     "en": "K. M. Munshi",
+     "hi": "के. एम. मुंशी"
+    },
+    {
+     "en": "Jawaharlal Nehru",
+     "hi": "जवाहरलाल नेहरू"
+    },
+    {
+     "en": "Dr. B. R. Ambedkar",
+     "hi": "डॉ. बी. आर. आंबेडकर"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Dr. B. R. Ambedkar chaired the Drafting Committee and is called the chief architect of the Constitution.",
+    "hi": "डॉ. बी. आर. आंबेडकर प्रारूप समिति के अध्यक्ष थे और उन्हें संविधान का मुख्य शिल्पकार कहा जाता है।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-004",
+   "q": {
+    "en": "Who was the President of the Constituent Assembly?",
+    "hi": "संविधान सभा के अध्यक्ष कौन थे?"
+   },
+   "options": [
+    {
+     "en": "Dr. Rajendra Prasad",
+     "hi": "डॉ. राजेंद्र प्रसाद"
+    },
+    {
+     "en": "Dr. B. R. Ambedkar",
+     "hi": "डॉ. बी. आर. आंबेडकर"
+    },
+    {
+     "en": "Sachchidananda Sinha",
+     "hi": "सच्चिदानंद सिन्हा"
+    },
+    {
+     "en": "Sardar Patel",
+     "hi": "सरदार पटेल"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Dr. Rajendra Prasad was elected President of the Constituent Assembly; Sachchidananda Sinha was its temporary chairman at the first meeting.",
+    "hi": "डॉ. राजेंद्र प्रसाद संविधान सभा के अध्यक्ष चुने गए; पहली बैठक में सच्चिदानंद सिन्हा अस्थायी अध्यक्ष थे।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-005",
+   "q": {
+    "en": "Fundamental Rights are contained in which Part of the Constitution?",
+    "hi": "मौलिक अधिकार संविधान के किस भाग में हैं?"
+   },
+   "options": [
+    {
+     "en": "Part II",
+     "hi": "भाग II"
+    },
+    {
+     "en": "Part IV-A",
+     "hi": "भाग IV-A"
+    },
+    {
+     "en": "Part IV",
+     "hi": "भाग IV"
+    },
+    {
+     "en": "Part III",
+     "hi": "भाग III"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Part III (Articles 12 to 35) contains the Fundamental Rights.",
+    "hi": "भाग III (अनुच्छेद 12 से 35) में मौलिक अधिकार हैं।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking",
+    "upsc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-006",
+   "q": {
+    "en": "Directive Principles of State Policy are in which Part of the Constitution?",
+    "hi": "राज्य के नीति निदेशक तत्व संविधान के किस भाग में हैं?"
+   },
+   "options": [
+    {
+     "en": "Part III",
+     "hi": "भाग III"
+    },
+    {
+     "en": "Part VI",
+     "hi": "भाग VI"
+    },
+    {
+     "en": "Part V",
+     "hi": "भाग V"
+    },
+    {
+     "en": "Part IV",
+     "hi": "भाग IV"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Part IV (Articles 36 to 51) contains the Directive Principles of State Policy.",
+    "hi": "भाग IV (अनुच्छेद 36 से 51) में राज्य के नीति निदेशक तत्व हैं।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-007",
+   "q": {
+    "en": "Fundamental Duties were added to the Constitution by which Amendment?",
+    "hi": "मौलिक कर्तव्य किस संविधान संशोधन द्वारा जोड़े गए?"
+   },
+   "options": [
+    {
+     "en": "42nd Amendment",
+     "hi": "42वाँ संशोधन"
+    },
+    {
+     "en": "44th Amendment",
+     "hi": "44वाँ संशोधन"
+    },
+    {
+     "en": "52nd Amendment",
+     "hi": "52वाँ संशोधन"
+    },
+    {
+     "en": "73rd Amendment",
+     "hi": "73वाँ संशोधन"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "The 42nd Amendment (1976) added Fundamental Duties in Part IV-A, Article 51A.",
+    "hi": "42वें संशोधन (1976) ने भाग IV-A, अनुच्छेद 51A में मौलिक कर्तव्य जोड़े।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-008",
+   "q": {
+    "en": "Which Article of the Constitution abolishes untouchability?",
+    "hi": "संविधान का कौन-सा अनुच्छेद अस्पृश्यता का अंत करता है?"
+   },
+   "options": [
+    {
+     "en": "Article 14",
+     "hi": "अनुच्छेद 14"
+    },
+    {
+     "en": "Article 32",
+     "hi": "अनुच्छेद 32"
+    },
+    {
+     "en": "Article 21",
+     "hi": "अनुच्छेद 21"
+    },
+    {
+     "en": "Article 17",
+     "hi": "अनुच्छेद 17"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Article 17 abolishes untouchability and forbids its practice in any form.",
+    "hi": "अनुच्छेद 17 अस्पृश्यता का अंत करता है और किसी भी रूप में इसके आचरण को निषिद्ध करता है।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "railway",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-009",
+   "q": {
+    "en": "Which Article guarantees the protection of life and personal liberty?",
+    "hi": "कौन-सा अनुच्छेद प्राण और दैहिक स्वतंत्रता के संरक्षण की गारंटी देता है?"
+   },
+   "options": [
+    {
+     "en": "Article 19",
+     "hi": "अनुच्छेद 19"
+    },
+    {
+     "en": "Article 20",
+     "hi": "अनुच्छेद 20"
+    },
+    {
+     "en": "Article 21",
+     "hi": "अनुच्छेद 21"
+    },
+    {
+     "en": "Article 22",
+     "hi": "अनुच्छेद 22"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Article 21: no person shall be deprived of life or personal liberty except according to procedure established by law.",
+    "hi": "अनुच्छेद 21: किसी व्यक्ति को विधि द्वारा स्थापित प्रक्रिया के अलावा प्राण या दैहिक स्वतंत्रता से वंचित नहीं किया जाएगा।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "upsc",
+    "banking"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-010",
+   "q": {
+    "en": "What is the minimum age to be elected President of India?",
+    "hi": "भारत का राष्ट्रपति चुने जाने के लिए न्यूनतम आयु कितनी है?"
+   },
+   "options": [
+    {
+     "en": "25 years",
+     "hi": "25 वर्ष"
+    },
+    {
+     "en": "30 years",
+     "hi": "30 वर्ष"
+    },
+    {
+     "en": "35 years",
+     "hi": "35 वर्ष"
+    },
+    {
+     "en": "40 years",
+     "hi": "40 वर्ष"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Article 58 requires a presidential candidate to have completed 35 years of age.",
+    "hi": "अनुच्छेद 58 के अनुसार राष्ट्रपति पद के उम्मीदवार की आयु 35 वर्ष पूरी होनी चाहिए।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "railway",
+    "defence"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-011",
+   "q": {
+    "en": "What is the minimum age to become a member of the Lok Sabha?",
+    "hi": "लोकसभा सदस्य बनने के लिए न्यूनतम आयु कितनी है?"
+   },
+   "options": [
+    {
+     "en": "18 years",
+     "hi": "18 वर्ष"
+    },
+    {
+     "en": "21 years",
+     "hi": "21 वर्ष"
+    },
+    {
+     "en": "25 years",
+     "hi": "25 वर्ष"
+    },
+    {
+     "en": "30 years",
+     "hi": "30 वर्ष"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Article 84 sets 25 years for the Lok Sabha and 30 years for the Rajya Sabha.",
+    "hi": "अनुच्छेद 84 के अनुसार लोकसभा के लिए 25 वर्ष और राज्यसभा के लिए 30 वर्ष आयु आवश्यक है।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "railway"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-012",
+   "q": {
+    "en": "What is the maximum strength of the Rajya Sabha allowed by the Constitution?",
+    "hi": "संविधान के अनुसार राज्यसभा की अधिकतम सदस्य संख्या कितनी हो सकती है?"
+   },
+   "options": [
+    {
+     "en": "238",
+     "hi": "238"
+    },
+    {
+     "en": "245",
+     "hi": "245"
+    },
+    {
+     "en": "250",
+     "hi": "250"
+    },
+    {
+     "en": "552",
+     "hi": "552"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Article 80 allows up to 250 members: 238 elected from states and union territories and 12 nominated by the President.",
+    "hi": "अनुच्छेद 80 के अनुसार अधिकतम 250 सदस्य: राज्यों और केंद्र शासित प्रदेशों से 238 निर्वाचित और राष्ट्रपति द्वारा 12 मनोनीत।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-013",
+   "q": {
+    "en": "Who appoints the Chief Justice of India?",
+    "hi": "भारत के मुख्य न्यायाधीश की नियुक्ति कौन करता है?"
+   },
+   "options": [
+    {
+     "en": "The Prime Minister",
+     "hi": "प्रधानमंत्री"
+    },
+    {
+     "en": "The Law Minister",
+     "hi": "विधि मंत्री"
+    },
+    {
+     "en": "The Parliament",
+     "hi": "संसद"
+    },
+    {
+     "en": "The President",
+     "hi": "राष्ट्रपति"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Under Article 124, the President appoints the Chief Justice and other judges of the Supreme Court.",
+    "hi": "अनुच्छेद 124 के तहत राष्ट्रपति मुख्य न्यायाधीश और सर्वोच्च न्यायालय के अन्य न्यायाधीशों की नियुक्ति करते हैं।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-014",
+   "q": {
+    "en": "Constitutional status was given to Panchayati Raj institutions by which Amendment?",
+    "hi": "पंचायती राज संस्थाओं को संवैधानिक दर्जा किस संशोधन से मिला?"
+   },
+   "options": [
+    {
+     "en": "61st Amendment",
+     "hi": "61वाँ संशोधन"
+    },
+    {
+     "en": "73rd Amendment",
+     "hi": "73वाँ संशोधन"
+    },
+    {
+     "en": "74th Amendment",
+     "hi": "74वाँ संशोधन"
+    },
+    {
+     "en": "86th Amendment",
+     "hi": "86वाँ संशोधन"
+    }
+   ],
+   "answer": 1,
+   "explanation": {
+    "en": "The 73rd Amendment Act, 1992 added Part IX on panchayats. The 74th did the same for municipalities.",
+    "hi": "73वें संशोधन अधिनियम, 1992 ने पंचायतों पर भाग IX जोड़ा। 74वें संशोधन ने नगरपालिकाओं के लिए ऐसा किया।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc",
+    "teaching"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-015",
+   "q": {
+    "en": "The voting age was lowered from 21 to 18 years by which Amendment?",
+    "hi": "मतदान की आयु 21 से घटाकर 18 वर्ष किस संशोधन से की गई?"
+   },
+   "options": [
+    {
+     "en": "42nd Amendment",
+     "hi": "42वाँ संशोधन"
+    },
+    {
+     "en": "52nd Amendment",
+     "hi": "52वाँ संशोधन"
+    },
+    {
+     "en": "61st Amendment",
+     "hi": "61वाँ संशोधन"
+    },
+    {
+     "en": "73rd Amendment",
+     "hi": "73वाँ संशोधन"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "The 61st Amendment Act, 1988 reduced the voting age from 21 to 18 years.",
+    "hi": "61वें संशोधन अधिनियम, 1988 ने मतदान की आयु 21 से घटाकर 18 वर्ष कर दी।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-016",
+   "q": {
+    "en": "The Right to Education (Article 21A) was added by which Amendment?",
+    "hi": "शिक्षा का अधिकार (अनुच्छेद 21A) किस संशोधन से जोड़ा गया?"
+   },
+   "options": [
+    {
+     "en": "44th Amendment",
+     "hi": "44वाँ संशोधन"
+    },
+    {
+     "en": "73rd Amendment",
+     "hi": "73वाँ संशोधन"
+    },
+    {
+     "en": "86th Amendment",
+     "hi": "86वाँ संशोधन"
+    },
+    {
+     "en": "91st Amendment",
+     "hi": "91वाँ संशोधन"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "The 86th Amendment Act, 2002 added Article 21A: free and compulsory education for children aged 6 to 14.",
+    "hi": "86वें संशोधन अधिनियम, 2002 ने अनुच्छेद 21A जोड़ा: 6 से 14 वर्ष के बच्चों के लिए निःशुल्क और अनिवार्य शिक्षा।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "teaching",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-017",
+   "q": {
+    "en": "Who is the ex-officio Chairman of the Rajya Sabha?",
+    "hi": "राज्यसभा का पदेन सभापति कौन होता है?"
+   },
+   "options": [
+    {
+     "en": "The President",
+     "hi": "राष्ट्रपति"
+    },
+    {
+     "en": "The Speaker",
+     "hi": "लोकसभा अध्यक्ष"
+    },
+    {
+     "en": "The Prime Minister",
+     "hi": "प्रधानमंत्री"
+    },
+    {
+     "en": "The Vice-President",
+     "hi": "उपराष्ट्रपति"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "Under Article 64, the Vice-President of India is the ex-officio Chairman of the Rajya Sabha.",
+    "hi": "अनुच्छेद 64 के अनुसार भारत के उपराष्ट्रपति राज्यसभा के पदेन सभापति होते हैं।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "railway",
+    "banking"
+   ],
+   "difficulty": "easy",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-018",
+   "q": {
+    "en": "A National Emergency is proclaimed under which Article?",
+    "hi": "राष्ट्रीय आपातकाल किस अनुच्छेद के तहत घोषित किया जाता है?"
+   },
+   "options": [
+    {
+     "en": "Article 352",
+     "hi": "अनुच्छेद 352"
+    },
+    {
+     "en": "Article 356",
+     "hi": "अनुच्छेद 356"
+    },
+    {
+     "en": "Article 360",
+     "hi": "अनुच्छेद 360"
+    },
+    {
+     "en": "Article 368",
+     "hi": "अनुच्छेद 368"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "Article 352 covers National Emergency; Article 356 covers President's Rule in a state and Article 360 a Financial Emergency.",
+    "hi": "अनुच्छेद 352 राष्ट्रीय आपातकाल से, 356 राज्य में राष्ट्रपति शासन से और 360 वित्तीय आपातकाल से संबंधित है।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-019",
+   "q": {
+    "en": "Which Article deals with the procedure to amend the Constitution?",
+    "hi": "संविधान संशोधन की प्रक्रिया किस अनुच्छेद में है?"
+   },
+   "options": [
+    {
+     "en": "Article 352",
+     "hi": "अनुच्छेद 352"
+    },
+    {
+     "en": "Article 360",
+     "hi": "अनुच्छेद 360"
+    },
+    {
+     "en": "Article 368",
+     "hi": "अनुच्छेद 368"
+    },
+    {
+     "en": "Article 370",
+     "hi": "अनुच्छेद 370"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Article 368 in Part XX gives Parliament the power and procedure to amend the Constitution.",
+    "hi": "भाग XX का अनुच्छेद 368 संसद को संविधान संशोधन की शक्ति और प्रक्रिया देता है।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-020",
+   "q": {
+    "en": "Which words were added to the Preamble by the 42nd Amendment (1976)?",
+    "hi": "42वें संशोधन (1976) द्वारा प्रस्तावना में कौन-से शब्द जोड़े गए?"
+   },
+   "options": [
+    {
+     "en": "Socialist, Secular and Integrity",
+     "hi": "समाजवादी, पंथनिरपेक्ष और अखंडता"
+    },
+    {
+     "en": "Sovereign and Democratic",
+     "hi": "संप्रभु और लोकतांत्रिक"
+    },
+    {
+     "en": "Justice and Liberty",
+     "hi": "न्याय और स्वतंत्रता"
+    },
+    {
+     "en": "Fraternity and Dignity",
+     "hi": "बंधुता और गरिमा"
+    }
+   ],
+   "answer": 0,
+   "explanation": {
+    "en": "The 42nd Amendment added 'Socialist' and 'Secular', and changed 'unity of the Nation' to 'unity and integrity of the Nation'.",
+    "hi": "42वें संशोधन ने 'समाजवादी' और 'पंथनिरपेक्ष' जोड़े, और 'राष्ट्र की एकता' को 'राष्ट्र की एकता और अखंडता' किया।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "hard",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-021",
+   "q": {
+    "en": "The Directive Principles of State Policy were inspired by the constitution of:",
+    "hi": "राज्य के नीति निदेशक तत्व किस देश के संविधान से प्रेरित हैं?"
+   },
+   "options": [
+    {
+     "en": "USA",
+     "hi": "अमेरिका"
+    },
+    {
+     "en": "Australia",
+     "hi": "ऑस्ट्रेलिया"
+    },
+    {
+     "en": "Canada",
+     "hi": "कनाडा"
+    },
+    {
+     "en": "Ireland",
+     "hi": "आयरलैंड"
+    }
+   ],
+   "answer": 3,
+   "explanation": {
+    "en": "The idea of Directive Principles was taken from the constitution of Ireland.",
+    "hi": "नीति निदेशक तत्वों का विचार आयरलैंड के संविधान से लिया गया।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-022",
+   "q": {
+    "en": "The idea of Fundamental Duties in the Indian Constitution was taken from the constitution of:",
+    "hi": "भारतीय संविधान में मौलिक कर्तव्यों का विचार किस देश के संविधान से लिया गया?"
+   },
+   "options": [
+    {
+     "en": "USA",
+     "hi": "अमेरिका"
+    },
+    {
+     "en": "UK",
+     "hi": "ब्रिटेन"
+    },
+    {
+     "en": "USSR (Soviet Union)",
+     "hi": "सोवियत संघ (USSR)"
+    },
+    {
+     "en": "Japan",
+     "hi": "जापान"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Fundamental Duties were inspired by the constitution of the former USSR.",
+    "hi": "मौलिक कर्तव्य पूर्व सोवियत संघ (USSR) के संविधान से प्रेरित हैं।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "upsc",
+    "state_psc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  },
+  {
+   "id": "rq-polity-023",
+   "q": {
+    "en": "Which Article gives the right to move the Supreme Court for enforcing Fundamental Rights?",
+    "hi": "मौलिक अधिकारों को लागू कराने के लिए सर्वोच्च न्यायालय जाने का अधिकार किस अनुच्छेद में है?"
+   },
+   "options": [
+    {
+     "en": "Article 19",
+     "hi": "अनुच्छेद 19"
+    },
+    {
+     "en": "Article 21",
+     "hi": "अनुच्छेद 21"
+    },
+    {
+     "en": "Article 32",
+     "hi": "अनुच्छेद 32"
+    },
+    {
+     "en": "Article 226",
+     "hi": "अनुच्छेद 226"
+    }
+   ],
+   "answer": 2,
+   "explanation": {
+    "en": "Article 32 (right to constitutional remedies) was called the 'heart and soul' of the Constitution by Dr. Ambedkar. Article 226 is for High Courts.",
+    "hi": "अनुच्छेद 32 (संवैधानिक उपचारों का अधिकार) को डॉ. आंबेडकर ने संविधान का 'हृदय और आत्मा' कहा। अनुच्छेद 226 उच्च न्यायालयों के लिए है।"
+   },
+   "subject": "polity",
+   "exams": [
+    "ssc",
+    "railway",
+    "upsc"
+   ],
+   "difficulty": "medium",
+   "source": null,
+   "asked": null,
+   "verified": true
+  }
+ ]
+}
