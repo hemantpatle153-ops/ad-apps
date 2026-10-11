@@ -440,6 +440,9 @@ class PartyGuest extends WatchParty {
   }
 
   void _onMessage(Object? data) {
+    // Messages can still arrive while the socket closes after [close]; the
+    // screen may already have disposed this guest.
+    if (_closed) return;
     final now = Clock.nowUs();
     final m = decodeMessage(data);
     if (m == null) return;

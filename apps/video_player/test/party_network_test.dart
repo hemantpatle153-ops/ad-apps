@@ -447,6 +447,19 @@ void main() {
       linkHost.dispose();
     });
 
+    test('messages after the guest leaves are ignored', () async {
+      final g = PartyGuest('Ravi', JoinCode(hosts: const ['127.0.0.1'], port: host.port, name: 'Host'));
+      await g.connect();
+      await _until(() => host.guestCount == 1);
+      final closing = g.close();
+      host.sendChat('late');
+      await host.close();
+      await closing;
+      g.dispose();
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      expect(g.messages.any((m) => m.text == 'late'), isFalse);
+    });
+
     test('host closing ends the guest with a reason', () async {
       final g = PartyGuest('Ravi', JoinCode(hosts: const ['127.0.0.1'], port: host.port, name: 'Host'));
       await g.connect();
