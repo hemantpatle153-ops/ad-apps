@@ -110,3 +110,29 @@ export function clip(text, max) {
   const t = String(text ?? '').trim();
   return t.length > max ? t.slice(0, max) : t;
 }
+
+// Google Drive share links (same rules as lib/src/player/drive_link.dart).
+// The file must be shared as "Anyone with the link".
+const driveHosts = ['drive.google.com', 'docs.google.com', 'drive.usercontent.google.com'];
+
+/** The file id in a Drive link, or null if it isn't one. */
+export function driveFileId(link) {
+  let u;
+  try { u = new URL(String(link ?? '').trim()); } catch { return null; }
+  if (!driveHosts.includes(u.hostname.toLowerCase())) return null;
+  const seg = u.pathname.split('/').filter(Boolean);
+  const d = seg.indexOf('d');
+  let id = seg.includes('file') && d >= 0 && d + 1 < seg.length ? seg[d + 1] : null;
+  id ??= u.searchParams.get('id');
+  return id && /^[A-Za-z0-9_-]{10,}$/.test(id) ? id : null;
+}
+
+/** A direct address a <video> can stream and seek, past Drive's virus-scan page. */
+export const driveStreamUrl = (id) =>
+  `https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t`;
+
+/** Drive links become their stream address; other links stay as they are. */
+export function streamUrlFor(link) {
+  const id = driveFileId(link);
+  return id ? driveStreamUrl(id) : link;
+}

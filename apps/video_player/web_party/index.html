@@ -30,10 +30,15 @@
 
     <section class="card">
       <h2>Start a party</h2>
-      <p class="muted">Play a video link, or a video file you have on this device. Friends join from the app or this page.</p>
+      <p class="muted">Play a video link or a Google Drive video, so friends stream it without having a copy. Or play a file on this device, if friends have it too.</p>
       <form id="host-form" autocomplete="off">
         <label class="field">Video link
-          <input id="host-url" type="url" placeholder="https://example.com/video.mp4 or .m3u8">
+          <input id="host-url" type="url" placeholder="Google Drive link, or https://…/video.mp4">
+        </label>
+        <p class="muted small">Google Drive: upload the video, tap Share, set General access to
+          "Anyone with the link", then copy the link and paste it here.</p>
+        <label class="field">Video name (optional)
+          <input id="host-name" maxlength="120" placeholder="Shown to friends in the room">
         </label>
         <div class="or">or</div>
         <label class="file-button">
@@ -46,8 +51,9 @@
     </section>
 
     <p class="muted small center">
-      Watch only videos you own or have the right to share. Your video file never leaves your device:
-      only the play, pause and seek position, names and chat travel through the room, and rooms are deleted automatically.
+      Watch only videos you own or have the right to share. Videos never go through our servers: a file stays on
+      your device and a Drive video streams from Google Drive. Only the play, pause and seek position, names and
+      chat travel through the room, and rooms are deleted automatically.
       <a id="privacy" href="https://luzzan.com/privacy/video_player" target="_blank" rel="noopener">Privacy policy</a>
     </p>
   </main>
@@ -63,7 +69,7 @@
         <span>Choose the video</span>
       </label>
       <p id="pick-warning" class="warn small" hidden></p>
-      <p class="muted small">Don't have it? Ask your friend to share a video link instead, or to start the party in the app.</p>
+      <p class="muted small">Don't have it? Ask your friend to put the video in Google Drive and start the party with its Drive link, so you can stream it.</p>
       <button id="pick-cancel" class="ghost">Leave</button>
     </section>
   </main>

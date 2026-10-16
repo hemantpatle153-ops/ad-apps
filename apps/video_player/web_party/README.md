@@ -6,12 +6,19 @@ Video Player app (Firebase Realtime Database, `watch/<code>`, project
 
 - **Join**: open `<page>/#K7QF2M` (or type the code). A link party plays the
   link; a file party asks the viewer to pick their own copy, like the app.
-- **Start**: paste a video link (mp4, webm, m3u8) or pick a file on this
-  device. Friends join from the app or the page. Closing the tab ends the room.
+- **Start**: paste a video link (mp4, webm, m3u8) or a Google Drive share
+  link, or pick a file on this device. Friends join from the app or the page.
+  Closing the tab ends the room.
+- **Google Drive**: the host uploads the video to Drive and shares it as
+  "Anyone with the link". The room stores the file's direct stream address
+  (`drive.usercontent.google.com/download?id=…&confirm=t`), so friends stream
+  it from Drive without having a copy, in the app or the browser. Drive limits
+  how often one file can be downloaded per day, and may block sharing of files
+  it flags for copyright.
 - Play, pause, seek and speed stay in sync both ways with the app (same
   timeline maths as `lib/src/party/follower.dart`), plus chat, emoji
   reactions, mute and report (`reports/`, same as the app).
-- The video itself never goes through the server.
+- The video itself never goes through the room's server.
 
 Browsers play MP4 (H.264/AAC) and WebM everywhere. MKV, HEVC and AVI files
 often don't play in a browser; the page says so.

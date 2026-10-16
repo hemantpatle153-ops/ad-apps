@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../player/drive_link.dart';
 import '../player/play_item.dart';
 import '../player/player_screen.dart';
 import '../settings.dart';
 
-/// Asks for a stream url (mp4, m3u8, mkv over http) and plays it.
+/// Asks for a stream url (mp4, m3u8, mkv over http) or a Google Drive share
+/// link and plays it.
 Future<void> showNetworkDialog(BuildContext context, Settings settings) async {
   final controller = TextEditingController();
   final clip = await Clipboard.getData(Clipboard.kTextPlain);
@@ -35,6 +37,12 @@ Future<void> showNetworkDialog(BuildContext context, Settings settings) async {
               ),
               onSubmitted: (_) => submit(),
             ),
+            const SizedBox(height: 8),
+            Text(
+              'Google Drive works too: in Drive, share the video with '
+              '"Anyone with the link", copy the link and paste it here.',
+              style: Theme.of(ctx).textTheme.bodySmall,
+            ),
             if (settings.streamHistory.isNotEmpty) ...[
               const SizedBox(height: 12),
               for (final u in settings.streamHistory.take(4))
@@ -57,5 +65,13 @@ Future<void> showNetworkDialog(BuildContext context, Settings settings) async {
   );
   if (url == null || !context.mounted) return;
   settings.addStream(url);
-  await openPlayer(context, settings, [PlayItem.fromUrl(url)]);
+  final driveId = driveFileId(url);
+  String? name;
+  if (driveId != null) {
+    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        const SnackBar(content: Text('Opening the Google Drive video...')));
+    name = await driveFileName(driveId).timeout(const Duration(seconds: 6), onTimeout: () => null);
+  }
+  if (!context.mounted) return;
+  await openPlayer(context, settings, [PlayItem.fromUrl(url, title: name)]);
 }

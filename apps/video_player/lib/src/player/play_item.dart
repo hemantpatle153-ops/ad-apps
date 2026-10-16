@@ -1,6 +1,7 @@
 import '../library/private_vault.dart';
 import '../library/video_library.dart';
 import '../settings.dart';
+import 'drive_link.dart';
 
 /// Anything the player can open: a phone video, a private one, a link.
 class PlayItem {
@@ -59,15 +60,21 @@ class PlayItem {
         path: VideoLibrary.instance.byId(r.assetId ?? '')?.path,
       );
 
-  static PlayItem fromUrl(String url) {
-    final u = Uri.tryParse(url);
-    var title = url;
-    if (u != null && u.pathSegments.isNotEmpty && u.pathSegments.last.isNotEmpty) {
-      title = u.pathSegments.last; // already percent-decoded
-    } else if (u != null && u.host.isNotEmpty) {
-      title = u.host;
+  /// A Drive share link plays through its direct stream address.
+  static PlayItem fromUrl(String url, {String? title}) {
+    final driveId = driveFileId(url);
+    if (driveId != null) {
+      final stream = driveStreamUrl(driveId);
+      return PlayItem(uri: stream, title: title ?? 'Google Drive video', key: stream);
     }
-    return PlayItem(uri: url, title: title, key: url);
+    final u = Uri.tryParse(url);
+    var name = url;
+    if (u != null && u.pathSegments.isNotEmpty && u.pathSegments.last.isNotEmpty) {
+      name = u.pathSegments.last; // already percent-decoded
+    } else if (u != null && u.host.isNotEmpty) {
+      name = u.host;
+    }
+    return PlayItem(uri: url, title: title ?? name, key: url);
   }
 
   /// A video another app asked us to open.

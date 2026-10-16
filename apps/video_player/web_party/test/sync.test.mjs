@@ -100,3 +100,20 @@ test('follower waits while buffering or settling, and past the end', () => {
   f.follow(end, s);
   assert.equal(end.currentTime, 10, 'room is past this copy\'s end');
 });
+
+test('Drive share links stream through usercontent', async () => {
+  const { driveFileId, streamUrlFor } = await import('../sync.js');
+  const id = '1AbC-dEf_GhIjKlMnOpQrStUvWxYz0123';
+  for (const link of [
+    `https://drive.google.com/file/d/${id}/view?usp=sharing`,
+    `https://drive.google.com/file/u/0/d/${id}/preview`,
+    `https://drive.google.com/open?id=${id}`,
+    `https://drive.google.com/uc?id=${id}&export=download`,
+  ]) assert.equal(driveFileId(link), id, link);
+  for (const link of [`https://example.com/file/d/${id}/view`, `https://drive.google.com/drive/folders/${id}`, 'nope', null]) {
+    assert.equal(driveFileId(link), null, String(link));
+  }
+  assert.equal(streamUrlFor(`https://drive.google.com/open?id=${id}`),
+    `https://drive.usercontent.google.com/download?id=${id}&export=download&confirm=t`);
+  assert.equal(streamUrlFor('https://example.com/a.mp4'), 'https://example.com/a.mp4');
+});

@@ -8,8 +8,8 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
 import { firebaseConfig, playStoreUrl } from './config.js';
 import {
-  TimelineFollower, clip, codeFromLocation, isHls, newRoomCode, normalizeRoomCode,
-  parseState, partyEmojis, positionAt, sameLength,
+  TimelineFollower, clip, codeFromLocation, driveFileId, isHls, newRoomCode, normalizeRoomCode,
+  parseState, partyEmojis, positionAt, sameLength, streamUrlFor,
 } from './sync.js';
 
 const $ = (id) => document.getElementById(id);
@@ -141,9 +141,12 @@ video.addEventListener('waiting', () => { buffering = true; });
 video.addEventListener('playing', () => { buffering = false; });
 video.addEventListener('canplay', () => { buffering = false; });
 video.addEventListener('error', () => {
-  toast(room.video?.url
-    ? "This browser can't play that link."
-    : "This browser can't play that file. MP4 (H.264) works everywhere.", 6000);
+  const url = room.video?.url;
+  toast(driveFileId(url)
+    ? "Couldn't play the Drive video. In Drive, share it with \"Anyone with the link\". MP4 works best."
+    : url
+      ? "This browser can't play that link."
+      : "This browser can't play that file. MP4 (H.264) works everywhere.", 8000);
 });
 
 let syncTimer = null;
@@ -306,6 +309,8 @@ async function start({ url, file }) {
   const name = await askName();
   if (!name) return;
   let title = 'Video';
+  const driveId = url ? driveFileId(url) : null;
+  if (driveId) url = streamUrlFor(url);
   let dur = 0;
   if (file) {
     title = file.name.replace(/\.[^.]+$/, '') || 'Video';
@@ -316,11 +321,14 @@ async function start({ url, file }) {
       probe.onloadedmetadata = () => resolve(Math.round(probe.duration * 1000) || 0);
       probe.onerror = () => resolve(0);
     });
+  } else if (driveId) {
+    title = $('host-name').value.trim() || 'Google Drive video';
   } else {
     try {
       const last = decodeURIComponent(new URL(url).pathname.split('/').pop() ?? '');
       title = last.replace(/\.[^.]+$/, '') || new URL(url).hostname;
     } catch { title = 'Video link'; }
+    title = $('host-name').value.trim() || title;
   }
   try {
     await connect();
