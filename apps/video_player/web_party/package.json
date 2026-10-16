@@ -1,0 +1,6 @@
+{
+  "name": "video-player-web-party",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test" }
+}
