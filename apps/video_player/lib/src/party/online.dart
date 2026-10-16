@@ -7,6 +7,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:media_kit/media_kit.dart';
 
 import 'clock.dart';
+import 'drive.dart';
 import 'follower.dart';
 import 'party.dart';
 import 'protocol.dart';
@@ -93,22 +94,27 @@ String? normalizeRoomCode(String raw) {
 }
 
 /// The video an online room watches. Only its name and length travel; a
-/// file stays on each phone, a link is opened by each phone.
+/// file stays on each phone, a link is opened by each phone. A video the
+/// host shared from Google Drive is a link too, with [driveId] set.
 class OnlineVideo {
-  const OnlineVideo({required this.title, this.url, this.durationMs = 0});
+  const OnlineVideo({required this.title, this.url, this.durationMs = 0, this.driveId});
 
   final String title;
   final String? url;
   final int durationMs;
+  final String? driveId;
 
   bool get isLink => url != null;
+  bool get isDrive => driveId != null;
 
-  Map<String, Object?> toJson() => {'title': title, 'url': url, 'dur': durationMs};
+  Map<String, Object?> toJson() =>
+      {'title': title, 'url': url, 'dur': durationMs, 'drive': driveId};
 
   factory OnlineVideo.fromJson(Map<Object?, Object?> j) => OnlineVideo(
         title: '${j['title'] ?? 'Video'}',
         url: j['url'] as String?,
         durationMs: (j['dur'] as num?)?.toInt() ?? 0,
+        driveId: j['drive'] as String?,
       );
 }
 
@@ -154,7 +160,8 @@ class OnlineParty extends WatchParty {
 
   /// Text friends can paste or forward to join.
   String get inviteText => 'Watch "${video.title}" with me in Video Player: '
-      'open Watch together and enter code $code';
+      'open Watch together and enter code $code'
+      '${video.isDrive ? '. No need to have the video, it streams.' : ''}';
 
   static Future<(FirebaseDatabase, String)> _connect() async {
     try {
@@ -426,6 +433,8 @@ class OnlineParty extends WatchParty {
     for (final s in _subs) {
       await s.cancel();
     }
+    final drive = video.driveId;
+    if (owner && drive != null) unawaited(DriveShare.instance.unshare(drive));
     try {
       if (owner) {
         await _room.remove();

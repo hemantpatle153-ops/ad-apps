@@ -13,6 +13,7 @@ import 'package:screen_brightness/screen_brightness.dart';
 
 import '../format.dart';
 import '../library/subtitles.dart';
+import '../party/drive.dart';
 import '../party/party.dart';
 import '../party/online.dart';
 import '../party/party_widgets.dart';
@@ -427,37 +428,84 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       _openParty();
       return;
     }
-    final online = await showPlayerSheet<bool>(
+    final canDrive = DriveShare.available && !item.isNetwork && item.path != null;
+    final how = await showPlayerSheet<_PartyKind>(
       context,
       (ctx) => SafeArea(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
           const SheetTitle('Watch with friends'),
+          if (canDrive)
+            ListTile(
+              leading: const Icon(Icons.cloud_upload_rounded),
+              title: const Text('Online, stream from Google Drive'),
+              subtitle: const Text('Friends anywhere, no copy needed. '
+                  'Uploads to your Google Drive first.'),
+              onTap: () => Navigator.pop(ctx, _PartyKind.drive),
+            ),
           ListTile(
             leading: const Icon(Icons.public_rounded),
             title: const Text('Online, with a code'),
             subtitle: Text(item.isNetwork
                 ? 'Friends anywhere open this link in sync'
                 : 'Friends anywhere who have this same video on their phone'),
-            onTap: () => Navigator.pop(ctx, true),
+            onTap: () => Navigator.pop(ctx, _PartyKind.online),
           ),
           ListTile(
             leading: const Icon(Icons.wifi_rounded),
             title: const Text('Nearby, on the same Wi-Fi'),
             subtitle: const Text('Friends stream the video from your phone'),
-            onTap: () => Navigator.pop(ctx, false),
+            onTap: () => Navigator.pop(ctx, _PartyKind.nearby),
           ),
         ]),
       ),
     );
-    if (online == null || !mounted) return;
-    online ? await _hostOnline() : await _hostNearby();
+    if (how == null || !mounted) return;
+    switch (how) {
+      case _PartyKind.drive:
+        await _hostDrive();
+      case _PartyKind.online:
+        await _hostOnline();
+      case _PartyKind.nearby:
+        await _hostNearby();
+    }
   }
 
   Future<String> _myName() async => settings.partyName.isNotEmpty
       ? settings.partyName
       : await SystemChannel.instance.deviceName();
 
-  Future<void> _hostOnline() async {
+  /// Uploads this video to the host's Google Drive (or reuses today's
+  /// upload), shares it for the party and starts an online room that
+  /// streams it.
+  Future<void> _hostDrive() async {
+    final name = await askOnlinePartyName(context, settings);
+    if (name == null || !mounted) return;
+    final path = item.path;
+    if (path == null || !await File(path).exists()) {
+      _flash(Icons.cloud_off_rounded, "Can't share this video",
+          subtext: 'Pick it from your folders and try again');
+      return;
+    }
+    if (!mounted) return;
+    final wasPlaying = player.state.playing;
+    if (wasPlaying) await player.pause();
+    if (!mounted) return;
+    final id = await showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => DriveUploadDialog(file: File(path)),
+    );
+    if (id == null || !mounted) return;
+    try {
+      await DriveShare.instance.share(id);
+    } on DriveException catch (e) {
+      _flash(Icons.cloud_off_rounded, "Couldn't share the video", subtext: e.message);
+      return;
+    }
+    await _hostOnline(driveId: id);
+  }
+
+  Future<void> _hostOnline({String? driveId}) async {
     final name = await askOnlinePartyName(context, settings);
     if (name == null || !mounted) return;
     final it = item;
@@ -468,8 +516,13 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
         name,
         OnlineVideo(
           title: it.title,
-          url: it.isNetwork ? it.uri : null,
+          url: driveId != null
+              ? DriveShare.streamUrl(driveId)
+              : it.isNetwork
+                  ? it.uri
+                  : null,
           durationMs: s.duration.inMilliseconds,
+          driveId: driveId,
         ),
         PartyState(
           playing: s.playing,
@@ -487,6 +540,7 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
       setState(() => _party = party);
       _openParty();
     } on OnlineException catch (e) {
+      if (driveId != null) unawaited(DriveShare.instance.unshare(driveId));
       _flash(Icons.public_off_rounded, 'Couldn\'t start the watch party',
           subtext: e.message);
     }
@@ -1500,3 +1554,5 @@ class _Scrim extends StatelessWidget {
         ),
       );
 }
+
+enum _PartyKind { drive, online, nearby }
