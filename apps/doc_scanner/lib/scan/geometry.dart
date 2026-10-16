@@ -133,7 +133,7 @@ List<double> _squareToQuad(List<double> x, List<double> y) {
 
 /// Output size for a flattened document: the average lengths of opposite
 /// edges, so the page keeps its real shape.
-(int, int) rectifiedSize(Quad q, int w, int h, {int maxSide = 2600}) {
+(int, int) rectifiedSize(Quad q, int w, int h, {int maxSide = 3200}) {
   double len(P a, P b) => math.sqrt(math.pow((a.x - b.x) * w, 2) + math.pow((a.y - b.y) * h, 2));
   var ow = (len(q.tl, q.tr) + len(q.bl, q.br)) / 2;
   var oh = (len(q.tl, q.bl) + len(q.tr, q.br)) / 2;
@@ -145,7 +145,7 @@ List<double> _squareToQuad(List<double> x, List<double> y) {
 
 /// Flattens the document inside [q] to a straight rectangle with a true
 /// perspective transform (bilinear sampling).
-img.Image warpPerspective(img.Image src, Quad q, {int maxSide = 2600}) {
+img.Image warpPerspective(img.Image src, Quad q, {int maxSide = 3200}) {
   final w = src.width, h = src.height;
   final (ow, oh) = rectifiedSize(q, w, h, maxSide: maxSide);
   final m = _squareToQuad(
@@ -186,7 +186,7 @@ img.Image warpPerspective(img.Image src, Quad q, {int maxSide = 2600}) {
 
 /// Decodes a photo, applies its EXIF rotation, crops and flattens [q],
 /// and returns a JPEG.
-Uint8List cropDocument(Uint8List jpeg, Quad q, {int maxSide = 2600, int quality = 92}) {
+Uint8List cropDocument(Uint8List jpeg, Quad q, {int maxSide = 3200, int quality = 92}) {
   final src = img.decodeImage(jpeg);
   if (src == null) throw const FormatException('Not an image.');
   final upright = img.bakeOrientation(src);

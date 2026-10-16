@@ -20,6 +20,17 @@ class ScanPage {
   String path;
   PageFilter filter;
   int turns = 0;
+
+  /// The brightness and contrast sliders, each -100..100.
+  int brightness = 0;
+  int contrast = 0;
+
+  /// Copies [other]'s look (filter and sliders), not its rotation.
+  void copyLook(ScanPage other) {
+    filter = other.filter;
+    brightness = other.brightness;
+    contrast = other.contrast;
+  }
 }
 
 /// Reorder, edit (filters, rotate), remove or add pages, then save them as
@@ -92,8 +103,9 @@ class _ReviewScreenState extends State<ReviewScreen> {
       setState(() => _progress = 'Preparing page ${i + 1} of ${_pages.length}');
       final p = _pages[i];
       final raw = await File(p.path).readAsBytes();
-      final filter = p.filter, turns = p.turns;
-      out.add(await bg(processJob, (raw, filter, turns, 2400, 88)));
+      final filter = p.filter, turns = p.turns, b = p.brightness, c = p.contrast;
+      // 3000 px is about 300 dpi on A4, so small print stays sharp.
+      out.add(await bg(renderJob, (raw, filter, turns, 3000, 88, b, c)));
     }
     return out;
   }
@@ -149,10 +161,18 @@ class _ReviewScreenState extends State<ReviewScreen> {
   }
 
   Future<void> _edit(int i) async {
-    final changed = await Navigator.of(context).push<bool>(
+    final r = await Navigator.of(context).push<EditResult>(
       MaterialPageRoute(builder: (_) => EditPageScreen(page: _pages[i], number: i + 1)),
     );
-    if (changed == true) setState(() {});
+    if (r == null || !mounted) return;
+    setState(() {
+      if (r == EditResult.applyToAll) {
+        for (final p in _pages) {
+          p.copyLook(_pages[i]);
+        }
+      }
+    });
+    if (r == EditResult.applyToAll) toast(context, 'Applied to all ${_pages.length} pages');
   }
 
   @override
@@ -184,7 +204,10 @@ class _ReviewScreenState extends State<ReviewScreen> {
                           onPressed: () {
                             setState(() {
                               for (final p in _pages) {
-                                p.filter = f;
+                                p
+                                  ..filter = f
+                                  ..brightness = 0
+                                  ..contrast = 0;
                               }
                             });
                             Navigator.pop(c);
@@ -294,7 +317,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
   }
 }
 
-/// Filters and rotation for one page, with a live preview.
+/// How the page editor was closed.
+enum EditResult { done, applyToAll }
+
+/// Filters (with previews), brightness and contrast, crop and rotation for
+/// one page, with a live preview, like Adobe Scan's page editor.
 class EditPageScreen extends StatefulWidget {
   const EditPageScreen({super.key, required this.page, required this.number});
   final ScanPage page;
@@ -307,17 +334,25 @@ class EditPageScreen extends StatefulWidget {
 class _EditPageScreenState extends State<EditPageScreen> {
   late PageFilter _filter = widget.page.filter;
   late int _turns = widget.page.turns;
+  late double _brightness = widget.page.brightness.toDouble();
+  late double _contrast = widget.page.contrast.toDouble();
+  bool _adjusting = false;
   Uint8List? _raw;
   Uint8List? _preview;
+  List<Uint8List>? _thumbs;
   int _job = 0;
 
   @override
   void initState() {
     super.initState();
-    File(widget.page.path).readAsBytes().then((b) {
-      _raw = b;
-      _refresh();
-    });
+    _load(widget.page.path);
+  }
+
+  Future<void> _load(String path) async {
+    _raw = await File(path).readAsBytes();
+    _refresh();
+    final thumbs = await bg(filterPreviewsJob, _raw!);
+    if (mounted) setState(() => _thumbs = thumbs);
   }
 
   Future<void> _crop() async {
@@ -325,92 +360,205 @@ class _EditPageScreenState extends State<EditPageScreen> {
         MaterialPageRoute(builder: (_) => CropScreen(pagePath: widget.page.path)));
     if (path == null || !mounted) return;
     widget.page.path = path;
-    _raw = await File(path).readAsBytes();
-    _refresh();
+    setState(() => _thumbs = null);
+    _load(path);
   }
 
   Future<void> _refresh() async {
     final raw = _raw;
     if (raw == null) return;
     final job = ++_job;
-    final filter = _filter;
-    // Rotation is shown with RotatedBox, so the preview only needs the filter.
-    final out = await bg(processJob, (raw, filter, 0, 1000, 80));
+    final f = _filter, b = _brightness.round(), c = _contrast.round();
+    // Rotation is shown with RotatedBox, so the preview only needs the look.
+    final out = await bg(renderJob, (raw, f, 0, 1400, 85, b, c));
     if (mounted && job == _job) setState(() => _preview = out);
+  }
+
+  void _close(EditResult r) {
+    widget.page
+      ..filter = _filter
+      ..turns = _turns
+      ..brightness = _brightness.round()
+      ..contrast = _contrast.round();
+    Navigator.pop(context, r);
   }
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: Text('Page ${widget.number}'),
         actions: [
           TextButton(
-            onPressed: () {
-              widget.page
-                ..filter = _filter
-                ..turns = _turns;
-              Navigator.pop(context, true);
-            },
+            onPressed: () => _close(EditResult.applyToAll),
+            child: const Text('Apply to all'),
+          ),
+          FilledButton(
+            onPressed: () => _close(EditResult.done),
             child: const Text('Done'),
           ),
+          const SizedBox(width: 8),
         ],
       ),
       body: Column(
         children: [
           Expanded(
-            child: _preview == null
-                ? const Center(child: CircularProgressIndicator())
-                : InteractiveViewer(
-                    child: Center(
-                      child: RotatedBox(
-                          quarterTurns: _turns, child: Image.memory(_preview!)),
+            child: ColoredBox(
+              color: scheme.surfaceContainerHighest,
+              child: _preview == null
+                  ? const Center(child: CircularProgressIndicator())
+                  : InteractiveViewer(
+                      maxScale: 6,
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: RotatedBox(
+                              quarterTurns: _turns,
+                              child: Image.memory(_preview!, gaplessPlayback: true)),
+                        ),
+                      ),
                     ),
-                  ),
+            ),
           ),
+          if (_adjusting) _sliders(),
           SizedBox(
-            height: 56,
-            child: ListView(
+            height: 112,
+            child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              children: [
-                for (final f in PageFilter.values)
-                  Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: ChoiceChip(
-                      label: Text(f.label),
-                      selected: f == _filter,
-                      onSelected: (_) {
-                        setState(() => _filter = f);
-                        _refresh();
-                      },
-                    ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              itemCount: PageFilter.values.length,
+              itemBuilder: (_, i) {
+                final f = PageFilter.values[i];
+                final selected = f == _filter;
+                final thumb = _thumbs?[i];
+                return GestureDetector(
+                  onTap: () {
+                    setState(() => _filter = f);
+                    _refresh();
+                  },
+                  child: Container(
+                    width: 72,
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Column(children: [
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                                color: selected ? scheme.primary : scheme.outlineVariant,
+                                width: selected ? 3 : 1),
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          child: thumb == null
+                              ? const Center(
+                                  child: SizedBox(
+                                      width: 16,
+                                      height: 16,
+                                      child: CircularProgressIndicator(strokeWidth: 2)))
+                              : Image.memory(thumb, fit: BoxFit.cover, width: 72),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(f.label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: selected ? FontWeight.w700 : FontWeight.w400,
+                              color: selected ? scheme.primary : null)),
+                    ]),
                   ),
-              ],
+                );
+              },
             ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              TextButton.icon(
-                onPressed: _crop,
-                icon: const Icon(Icons.crop),
-                label: const Text('Crop'),
+              _Tool(icon: Icons.crop, label: 'Crop', onTap: _crop),
+              _Tool(
+                icon: Icons.tune,
+                label: 'Adjust',
+                selected: _adjusting,
+                onTap: () => setState(() => _adjusting = !_adjusting),
               ),
-              TextButton.icon(
-                onPressed: () => setState(() => _turns = (_turns + 3) % 4),
-                icon: const Icon(Icons.rotate_left),
-                label: const Text('Left'),
+              _Tool(
+                icon: Icons.rotate_left,
+                label: 'Left',
+                onTap: () => setState(() => _turns = (_turns + 3) % 4),
               ),
-              TextButton.icon(
-                onPressed: () => setState(() => _turns = (_turns + 1) % 4),
-                icon: const Icon(Icons.rotate_right),
-                label: const Text('Right'),
+              _Tool(
+                icon: Icons.rotate_right,
+                label: 'Right',
+                onTap: () => setState(() => _turns = (_turns + 1) % 4),
               ),
             ],
           ),
           const SizedBox(height: 8),
         ],
+      ),
+    );
+  }
+
+  Widget _sliders() {
+    Widget row(String label, IconData icon, double value, ValueChanged<double> set) => Row(
+          children: [
+            const SizedBox(width: 12),
+            Icon(icon, size: 20),
+            SizedBox(width: 84, child: Text('  $label')),
+            Expanded(
+              child: Slider(
+                min: -100,
+                max: 100,
+                divisions: 40,
+                value: value,
+                label: value.round().toString(),
+                onChanged: (v) => setState(() => set(v)),
+                onChangeEnd: (_) => _refresh(),
+              ),
+            ),
+          ],
+        );
+    return Column(mainAxisSize: MainAxisSize.min, children: [
+      row('Brightness', Icons.brightness_6_outlined, _brightness, (v) => _brightness = v),
+      row('Contrast', Icons.contrast, _contrast, (v) => _contrast = v),
+      Align(
+        alignment: Alignment.centerRight,
+        child: TextButton(
+          onPressed: _brightness == 0 && _contrast == 0
+              ? null
+              : () {
+                  setState(() => _brightness = _contrast = 0);
+                  _refresh();
+                },
+          child: const Text('Reset'),
+        ),
+      ),
+    ]);
+  }
+}
+
+class _Tool extends StatelessWidget {
+  const _Tool({required this.icon, required this.label, required this.onTap, this.selected = false});
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = selected ? Theme.of(context).colorScheme.primary : null;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Icon(icon, color: c),
+          const SizedBox(height: 2),
+          Text(label, style: TextStyle(fontSize: 12, color: c)),
+        ]),
       ),
     );
   }

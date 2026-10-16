@@ -10,6 +10,15 @@ import 'pdf_tools.dart';
 Uint8List processJob((Uint8List, PageFilter, int, int, int) a) =>
     processPage(a.$1, filter: a.$2, quarterTurns: a.$3, maxSide: a.$4, quality: a.$5);
 
+/// [processJob] plus the brightness and contrast sliders (-100..100).
+Uint8List renderJob((Uint8List, PageFilter, int, int, int, int, int) a) => processPage(a.$1,
+    filter: a.$2,
+    quarterTurns: a.$3,
+    maxSide: a.$4,
+    quality: a.$5,
+    brightness: a.$6,
+    contrast: a.$7);
+
 Uint8List unlockJob((Uint8List, String) a) => PdfTools.unlock(a.$1, a.$2);
 
 Uint8List mergeJob(List<Uint8List> files) => PdfTools.merge(files);

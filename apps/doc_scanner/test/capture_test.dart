@@ -47,10 +47,10 @@ void main() {
     expect(img.decodeJpg(r.jpeg)!.width, 300);
   });
 
-  test('big photos are limited to 2600 px', () {
+  test('big photos are limited to 3200 px', () {
     final big = Uint8List.fromList(img.encodeJpg(img.Image(width: 4000, height: 3000)));
     final out = img.decodeJpg(processCapture((big, null, false)).jpeg)!;
-    expect(out.width, 2600);
+    expect(out.width, 3200);
   });
 
   test('recrop uses the given corners', () {
