@@ -65,7 +65,9 @@ class _PickVideoScreenState extends State<PickVideoScreen> {
                 'Your friend is watching "${target.title}"'
                 '${target.durationMs > 0 ? ' (${formatDuration(Duration(milliseconds: target.durationMs))})' : ''}. '
                 'Pick the same video on this phone. Only play, pause and seek '
-                'go over the internet, so it plays smoothly.',
+                'go over the internet, so it plays smoothly. Don\'t have it? '
+                'Ask your friend to put it in Google Drive and start the party '
+                'from its Drive link, so you can stream it.',
                 style: theme.textTheme.bodyMedium,
               ),
             ),

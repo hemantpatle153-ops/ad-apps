@@ -227,6 +227,18 @@ class _OnlineCard extends StatelessWidget {
                   'enter this code and pick the video.',
           style: TextStyle(color: scheme.onSurfaceVariant, fontSize: 13),
         ),
+        if (party.webLink case final link?) ...[
+          const SizedBox(height: 6),
+          GestureDetector(
+            onLongPress: () {
+              Clipboard.setData(ClipboardData(text: link));
+              ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+                  const SnackBar(content: Text('Link copied')));
+            },
+            child: Text('No app? Friends can join in a browser: $link',
+                style: TextStyle(color: scheme.primary, fontSize: 13)),
+          ),
+        ],
         const SizedBox(height: 8),
         FilledButton.tonalIcon(
           onPressed: () => SharePlus.instance.share(ShareParams(text: party.inviteText)),

@@ -36,6 +36,20 @@ abstract final class FirebaseSetup {
       );
 }
 
+/// Address of the Watch Together web page (apps/video_player/web_party),
+/// ending in "/". Empty until it is hosted; set with
+/// --dart-define=WEB_PARTY_URL=https://.../ or change the default here.
+const webPartyUrl = String.fromEnvironment('WEB_PARTY_URL');
+
+String? partyWebLink(String code, {String webUrl = webPartyUrl}) =>
+    webUrl.isEmpty ? null : '$webUrl#$code';
+
+String partyInvite(String title, String code, {String webUrl = webPartyUrl}) {
+  final link = partyWebLink(code, webUrl: webUrl);
+  return 'Watch "$title" with me in Video Player: open Watch together and '
+      'enter code $code${link == null ? '' : ', or join in a browser: $link'}';
+}
+
 enum OnlineError { offline, denied, failed, notFound }
 
 class OnlineException implements Exception {
@@ -152,9 +166,12 @@ class OnlineParty extends WatchParty {
 
   int serverNowUs() => Clock.nowUs() + _serverOffsetUs;
 
+  /// Where friends without the app can join in a browser, or null until
+  /// the Watch Together web page is hosted.
+  String? get webLink => partyWebLink(code);
+
   /// Text friends can paste or forward to join.
-  String get inviteText => 'Watch "${video.title}" with me in Video Player: '
-      'open Watch together and enter code $code';
+  String get inviteText => partyInvite(video.title, code);
 
   static Future<(FirebaseDatabase, String)> _connect() async {
     try {

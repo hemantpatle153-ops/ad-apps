@@ -48,6 +48,20 @@ jobs:
           fi
           exit "$status"
 
+  # Video Player's Watch Together web page (plain HTML and JavaScript).
+  web-party:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/video_player/web_party
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --check party.js && node --check sync.js && node --check config.js
+      - run: node --test
+
   # Builds test APKs so they can be shared without a laptop build. Signed
   # with debug keys: the Play upload key stays offline. To build another
   # app, add its folder name to the matrix. Each APK is also saved as the

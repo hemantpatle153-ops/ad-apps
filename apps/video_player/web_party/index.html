@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Watch Together</title>
+  <meta name="description" content="Watch your own videos in sync with friends, from the Video Player app or any browser.">
+  <meta name="theme-color" content="#14121a">
+  <link rel="icon" href="icon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <img src="icon.png" alt="" width="32" height="32">
+    <strong>Watch Together</strong>
+    <a id="get-app" class="ghost small" target="_blank" rel="noopener">Get the app</a>
+  </header>
+
+  <!-- Start: join with a code, or start a party here. -->
+  <main id="home" class="screen">
+    <section class="card">
+      <h1>Join a watch party</h1>
+      <p class="muted">Enter the 6-letter code your friend shared.</p>
+      <form id="join-form" autocomplete="off">
+        <input id="join-code" class="code-input" maxlength="9" placeholder="K7QF2M"
+               autocapitalize="characters" spellcheck="false" aria-label="Party code">
+        <button class="primary" type="submit">Join</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Start a party</h2>
+      <p class="muted">Play a video link or a Google Drive video, so friends stream it without having a copy. Or play a file on this device, if friends have it too.</p>
+      <form id="host-form" autocomplete="off">
+        <label class="field">Video link
+          <input id="host-url" type="url" placeholder="Google Drive link, or https://…/video.mp4">
+        </label>
+        <p class="muted small">Google Drive: upload the video, tap Share, set General access to
+          "Anyone with the link", then copy the link and paste it here.</p>
+        <label class="field">Video name (optional)
+          <input id="host-name" maxlength="120" placeholder="Shown to friends in the room">
+        </label>
+        <div class="or">or</div>
+        <label class="file-button">
+          <input id="host-file" type="file" accept="video/*">
+          <span>Choose a video file</span>
+        </label>
+        <p id="host-file-name" class="muted small"></p>
+        <button class="primary" type="submit">Start party</button>
+      </form>
+    </section>
+
+    <p class="muted small center">
+      Watch only videos you own or have the right to share. Videos never go through our servers: a file stays on
+      your device and a Drive video streams from Google Drive. Only the play, pause and seek position, names and
+      chat travel through the room, and rooms are deleted automatically.
+      <a id="privacy" href="https://luzzan.com/privacy/video_player" target="_blank" rel="noopener">Privacy policy</a>
+    </p>
+  </main>
+
+  <!-- A friend's file party: pick your own copy. -->
+  <main id="pick" class="screen" hidden>
+    <section class="card">
+      <h1>Pick your copy</h1>
+      <p>Your friend is playing <strong id="pick-title"></strong><span id="pick-length"></span>.
+        Choose the same video from this device.</p>
+      <label class="file-button">
+        <input id="pick-file" type="file" accept="video/*">
+        <span>Choose the video</span>
+      </label>
+      <p id="pick-warning" class="warn small" hidden></p>
+      <p class="muted small">Don't have it? Ask your friend to put the video in Google Drive and start the party with its Drive link, so you can stream it.</p>
+      <button id="pick-cancel" class="ghost">Leave</button>
+    </section>
+  </main>
+
+  <!-- The room. -->
+  <main id="room" class="screen room" hidden>
+    <div class="stage" id="stage">
+      <video id="video" playsinline preload="auto"></video>
+      <div id="floats" class="floats" aria-hidden="true"></div>
+      <button id="tap-start" class="tap-start" hidden>Tap to start watching</button>
+      <div id="ended" class="ended" hidden></div>
+      <div class="controls">
+        <button id="btn-back" class="icon" title="Back 10 s" aria-label="Back 10 seconds">⟲10</button>
+        <button id="btn-play" class="icon big" title="Play or pause" aria-label="Play or pause">▶</button>
+        <button id="btn-fwd" class="icon" title="Forward 10 s" aria-label="Forward 10 seconds">10⟳</button>
+        <span id="time" class="time">0:00 / 0:00</span>
+        <input id="seek" type="range" min="0" max="1000" value="0" aria-label="Seek">
+        <button id="btn-mute" class="icon" title="Sound" aria-label="Sound on or off">🔊</button>
+        <button id="btn-full" class="icon" title="Full screen" aria-label="Full screen">⛶</button>
+      </div>
+    </div>
+
+    <aside class="side">
+      <div class="room-head">
+        <div>
+          <div class="muted small">Party code</div>
+          <div id="room-code" class="room-code"></div>
+        </div>
+        <button id="btn-share" class="ghost small">Invite</button>
+        <button id="btn-leave" class="ghost small">Leave</button>
+      </div>
+      <div id="room-title" class="muted small"></div>
+      <div id="members" class="members"></div>
+      <div class="emoji-row" id="emoji-row"></div>
+      <p class="muted small">Be kind. Tap a name to mute or report.</p>
+      <ol id="chat" class="chat"></ol>
+      <form id="chat-form" autocomplete="off">
+        <input id="chat-input" maxlength="300" placeholder="Say something" aria-label="Message">
+        <button class="primary" type="submit">Send</button>
+      </form>
+    </aside>
+  </main>
+
+  <dialog id="name-dialog">
+    <form method="dialog" id="name-form">
+      <h2>Your name in the room</h2>
+      <p class="muted small">Friends in the room see this name next to your messages.</p>
+      <input id="name-input" maxlength="30" required aria-label="Your name">
+      <menu>
+        <button value="cancel" formnovalidate class="ghost">Cancel</button>
+        <button value="ok" class="primary">OK</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <dialog id="person-dialog">
+    <form method="dialog">
+      <h2 id="person-name"></h2>
+      <menu class="column">
+        <button value="mute" id="person-mute" class="ghost">Mute this person</button>
+        <button value="report" class="ghost">Report</button>
+        <button value="cancel" class="ghost">Cancel</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js" defer></script>
+  <script type="module" src="party.js"></script>
+</body>
+</html>

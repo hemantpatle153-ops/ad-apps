@@ -437,7 +437,8 @@ class _PlayerScreenState extends State<PlayerScreen> with WidgetsBindingObserver
             title: const Text('Online, with a code'),
             subtitle: Text(item.isNetwork
                 ? 'Friends anywhere open this link in sync'
-                : 'Friends anywhere who have this same video on their phone'),
+                : 'Friends anywhere who have this same video. No copy? '
+                    'Play it from a Google Drive link instead'),
             onTap: () => Navigator.pop(ctx, true),
           ),
           ListTile(
