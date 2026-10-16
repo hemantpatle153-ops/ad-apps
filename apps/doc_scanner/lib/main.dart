@@ -114,11 +114,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     _reload();
     if (saved == null || !mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: const Text('PDF saved'),
-      action: SnackBarAction(
-          label: 'Share', onPressed: () => _share(saved.path)),
-    ));
+    // Show the finished PDF right away (share, save to phone, print), the
+    // way Adobe Scan does, instead of only adding it to the list.
+    final st = await saved.stat();
+    if (!mounted) return;
+    await Navigator.of(context).push(MaterialPageRoute(
+        builder: (_) => ViewerScreen(doc: SavedDoc(saved, st.modified, st.size))));
+    _reload();
     // Natural break: a document was just finished.
     AdService.instance.maybeShowInterstitial();
   }

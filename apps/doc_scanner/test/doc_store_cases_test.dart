@@ -119,8 +119,9 @@ void main() {
             expect(s.width, closeTo(300, 1));
             expect(s.height, closeTo(200, 1));
           } else {
-            expect(s.width, closeTo(size.format!.width, 1));
-            expect(s.height, closeTo(size.format!.height, 1));
+            // 300x200 is wide, so it goes on a sideways sheet.
+            expect(s.width, closeTo(size.format!.height, 1));
+            expect(s.height, closeTo(size.format!.width, 1));
           }
         });
       }

@@ -104,7 +104,9 @@ class DocStore {
       final img = pw.MemoryImage(images[i]);
       final iw = (img.width ?? 595).toDouble();
       final ih = (img.height ?? 842).toDouble();
-      final format = size.format ?? PdfPageFormat(iw, ih);
+      // A wide page goes on a sideways sheet instead of shrinking to a strip.
+      final sheet = iw > ih ? size.format?.landscape : size.format;
+      final format = sheet ?? PdfPageFormat(iw, ih);
       final margin = size.format == null ? 0.0 : 18.0;
       final cw = format.width - 2 * margin;
       final ch = format.height - 2 * margin;

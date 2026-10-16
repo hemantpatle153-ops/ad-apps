@@ -7,17 +7,20 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../scan_settings.dart';
 import '../system_channel.dart';
 import '../ui_helpers.dart';
 import 'capture.dart';
 import 'geometry.dart';
 
-/// What the camera is for. Both keep the whole photo (no auto-crop);
-/// documents get auto-capture and Magic color by default.
+/// What the camera is for. Documents get auto-capture, Magic color and,
+/// when Auto-crop is on, are cropped to the page; photos are kept whole.
 enum ScanMode { document, photo }
 
-/// The app's own document camera: auto-capture when a page is steady, flash, tap to focus, batch pages. Runs entirely in the
-/// app, with no Google Play services scanner.
+/// The app's own document camera: full-resolution photos, live page
+/// outline, optional auto-crop, auto-capture when the page is steady, flash,
+/// tap to focus, batch pages. Runs entirely in the app, with no Google Play
+/// services scanner.
 class CameraScanScreen extends StatefulWidget {
   const CameraScanScreen({
     super.key,
@@ -43,11 +46,13 @@ class _CameraScanScreenState extends State<CameraScanScreen>
   String _error = '';
   late ScanMode _mode = widget.mode;
   bool _auto = true;
+  bool _autoCrop = ScanSettings.autoCrop;
   bool _grid = false;
   FlashMode _flash = FlashMode.off;
 
   // Live detection.
   Quad? _live; // in portrait preview coordinates
+  Quad? _shown; // smoothed for drawing
   int _steady = 0;
   bool _detecting = false;
   DateTime _lastFrame = DateTime.fromMillisecondsSinceEpoch(0);
@@ -68,6 +73,9 @@ class _CameraScanScreenState extends State<CameraScanScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    ScanSettings.load().then((_) {
+      if (mounted) setState(() => _autoCrop = ScanSettings.autoCrop);
+    });
     _start();
   }
 
@@ -102,7 +110,9 @@ class _CameraScanScreenState extends State<CameraScanScreen>
       }
       final back = cams.firstWhere((c) => c.lensDirection == CameraLensDirection.back,
           orElse: () => cams.first);
-      final cam = CameraController(back, ResolutionPreset.veryHigh,
+      // max = the sensor's full photo size (often 12 MP+). veryHigh would be
+      // only 1920x1080, which made small print blurry.
+      final cam = CameraController(back, ResolutionPreset.max,
           enableAudio: false, imageFormatGroup: ImageFormatGroup.yuv420);
       await cam.initialize();
       await cam.setFlashMode(_flash).catchError((_) {});
@@ -167,6 +177,8 @@ class _CameraScanScreenState extends State<CameraScanScreen>
           _steady = prev != null && prev.maxShift(portrait) < 0.025 ? _steady + 1 : 0;
           _live = portrait;
         }
+        final target = _live;
+        _shown = target == null ? null : (_shown == null ? target : _shown!.lerp(target, 0.6));
       });
       if (_auto && _steady >= _steadyFrames && !_shooting) _shoot();
     }).whenComplete(() => _detecting = false);
@@ -177,12 +189,13 @@ class _CameraScanScreenState extends State<CameraScanScreen>
     if (cam == null || _shooting || _pages.length >= widget.pageLimit) return;
     setState(() => _shooting = true);
     HapticFeedback.mediumImpact();
+    final hint = _live;
     try {
       await _stopStream();
       final shot = await cam.takePicture();
       _flashFx.forward(from: 0);
       _steady = 0;
-      _process(shot);
+      _process(shot, hint);
     } catch (e) {
       if (mounted) toast(context, 'Could not take the picture: $e');
     } finally {
@@ -193,7 +206,7 @@ class _CameraScanScreenState extends State<CameraScanScreen>
     }
   }
 
-  Future<void> _process(XFile shot) async {
+  Future<void> _process(XFile shot, Quad? hint) async {
     setState(() => _processing++);
     try {
       final bytes = await shot.readAsBytes();
@@ -203,8 +216,10 @@ class _CameraScanScreenState extends State<CameraScanScreen>
       final stamp = DateTime.now().microsecondsSinceEpoch;
       final original = File('${pages.path}/orig_$stamp.jpg');
       await original.writeAsBytes(bytes, flush: true);
-      // Keep the whole photo, upright; the user can crop it by hand later.
-      final res = await bg(processCapture, (bytes, null, false));
+      // With Auto-crop off the whole photo is kept, upright; it can still be
+      // cropped by hand later.
+      final crop = _mode == ScanMode.document && _autoCrop;
+      final res = await bg(processCapture, (bytes, hint, crop));
       final cropped = File('${pages.path}/page_$stamp.jpg');
       await cropped.writeAsBytes(res.jpeg, flush: true);
       pageSources[cropped.path] =
@@ -225,7 +240,7 @@ class _CameraScanScreenState extends State<CameraScanScreen>
     if (!mounted) return;
     for (final p in picked) {
       if (_pages.length + _processing >= widget.pageLimit) break;
-      await _process(XFile(p));
+      await _process(XFile(p), null);
     }
     await _startStream();
   }
@@ -320,6 +335,18 @@ class _CameraScanScreenState extends State<CameraScanScreen>
                                 child: Stack(fit: StackFit.expand, children: [
                                   CameraPreview(cam),
                                   if (_grid) const CustomPaint(painter: _GridPainter()),
+                                  if (_mode == ScanMode.document && _autoCrop)
+                                    AnimatedOpacity(
+                                      opacity: _shown == null ? 0 : 1,
+                                      duration: const Duration(milliseconds: 200),
+                                      child: CustomPaint(
+                                        painter: _QuadPainter(
+                                          _shown,
+                                          steady: _auto ? (_steady / _steadyFrames).clamp(0, 1) : 0,
+                                          color: Theme.of(context).colorScheme.primary,
+                                        ),
+                                      ),
+                                    ),
                                   if (_focusAt != null)
                                     Positioned(
                                       left: _focusAt!.dx - 30,
@@ -339,7 +366,9 @@ class _CameraScanScreenState extends State<CameraScanScreen>
                                       child: AnimatedBuilder(
                                         animation: _flashFx,
                                         builder: (_, child) => ColoredBox(
-                                          color: _flashFx.isAnimating ? Colors.white : Colors.transparent,
+                                          color: _flashFx.isAnimating
+                                              ? Colors.white
+                                              : Colors.transparent,
                                         ),
                                       ),
                                     ),
@@ -384,7 +413,8 @@ class _CameraScanScreenState extends State<CameraScanScreen>
         Expanded(
           child: Text(widget.title ?? (_mode == ScanMode.document ? 'Scan document' : 'Take photo'),
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
+              style:
+                  const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600)),
         ),
         IconButton(
             tooltip: 'Flash', color: Colors.white, icon: Icon(flashIcon), onPressed: _cycleFlash),
@@ -404,40 +434,61 @@ class _CameraScanScreenState extends State<CameraScanScreen>
       color: Colors.black,
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          _Chip(
-            label: 'Document',
-            selected: _mode == ScanMode.document,
-            onTap: () async {
-              setState(() => _mode = ScanMode.document);
-              await _startStream();
-            },
+        Center(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(children: [
+              _Chip(
+                label: 'Document',
+                selected: _mode == ScanMode.document,
+                onTap: () async {
+                  setState(() => _mode = ScanMode.document);
+                  await _startStream();
+                },
+              ),
+              const SizedBox(width: 8),
+              _Chip(
+                label: 'Photo',
+                selected: _mode == ScanMode.photo,
+                onTap: () async {
+                  await _stopStream();
+                  setState(() {
+                    _mode = ScanMode.photo;
+                    _live = _shown = null;
+                  });
+                },
+              ),
+              if (_mode == ScanMode.document) ...[
+                const SizedBox(width: 16),
+                _Chip(
+                  label: _auto ? 'Auto capture' : 'Manual',
+                  icon: _auto ? Icons.auto_awesome : Icons.touch_app_outlined,
+                  selected: _auto,
+                  onTap: () => setState(() {
+                    _auto = !_auto;
+                    _steady = 0;
+                  }),
+                ),
+                const SizedBox(width: 8),
+                _Chip(
+                  label: _autoCrop ? 'Auto-crop on' : 'Auto-crop off',
+                  icon: _autoCrop ? Icons.crop : Icons.crop_free,
+                  selected: _autoCrop,
+                  onTap: () {
+                    setState(() => _autoCrop = !_autoCrop);
+                    ScanSettings.autoCrop = _autoCrop;
+                    ScanSettings.save();
+                    toast(
+                        context,
+                        _autoCrop
+                            ? 'Pages will be cropped to their edges'
+                            : 'Pages will be kept as shot');
+                  },
+                ),
+              ],
+            ]),
           ),
-          const SizedBox(width: 8),
-          _Chip(
-            label: 'Photo',
-            selected: _mode == ScanMode.photo,
-            onTap: () async {
-              await _stopStream();
-              setState(() {
-                _mode = ScanMode.photo;
-                _live = null;
-              });
-            },
-          ),
-          if (_mode == ScanMode.document) ...[
-            const SizedBox(width: 16),
-            _Chip(
-              label: _auto ? 'Auto capture' : 'Manual',
-              icon: _auto ? Icons.auto_awesome : Icons.touch_app_outlined,
-              selected: _auto,
-              onTap: () => setState(() {
-                _auto = !_auto;
-                _steady = 0;
-              }),
-            ),
-          ],
-        ]),
+        ),
         const SizedBox(height: 14),
         Row(children: [
           Expanded(
@@ -493,7 +544,8 @@ class _CameraScanScreenState extends State<CameraScanScreen>
                                   child: SizedBox(
                                       width: 20,
                                       height: 20,
-                                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)))
+                                      child: CircularProgressIndicator(
+                                          strokeWidth: 2, color: Colors.white)))
                               : Image.file(File(_pages.last), fit: BoxFit.cover, cacheWidth: 120),
                         ),
                         Positioned(
@@ -579,6 +631,42 @@ class _HintPill extends StatelessWidget {
   }
 }
 
+class _QuadPainter extends CustomPainter {
+  _QuadPainter(this.quad, {required this.steady, required this.color});
+  final Quad? quad;
+  final double steady;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final q = quad;
+    if (q == null) return;
+    final path = Path()
+      ..moveTo(q.tl.x * size.width, q.tl.y * size.height)
+      ..lineTo(q.tr.x * size.width, q.tr.y * size.height)
+      ..lineTo(q.br.x * size.width, q.br.y * size.height)
+      ..lineTo(q.bl.x * size.width, q.bl.y * size.height)
+      ..close();
+    final c = Color.lerp(color, Colors.greenAccent, steady)!;
+    canvas.drawPath(path, Paint()..color = c.withValues(alpha: 0.18));
+    canvas.drawPath(
+        path,
+        Paint()
+          ..color = c
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3
+          ..strokeJoin = StrokeJoin.round);
+    for (final p in q.points) {
+      canvas.drawCircle(Offset(p.x * size.width, p.y * size.height), 7, Paint()..color = c);
+      canvas.drawCircle(
+          Offset(p.x * size.width, p.y * size.height), 3.5, Paint()..color = Colors.white);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_QuadPainter old) => old.quad != quad || old.steady != steady;
+}
+
 class _GridPainter extends CustomPainter {
   const _GridPainter();
 
@@ -616,7 +704,10 @@ class _ProblemView extends StatelessWidget {
           'Turn on camera access',
           'Camera access is off for Doc Scanner. Open Settings, tap Permissions, and allow Camera.'
         ),
-      _Problem.noCamera => ('No camera found', 'This device has no camera. You can still import photos.'),
+      _Problem.noCamera => (
+          'No camera found',
+          'This device has no camera. You can still import photos.'
+        ),
       _ => ('Camera could not start', 'Close other camera apps and try again. ($error)'),
     };
     return Center(
@@ -627,12 +718,14 @@ class _ProblemView extends StatelessWidget {
           const SizedBox(height: 16),
           Text(title,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600)),
+              style:
+                  const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           Text(body, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white70)),
           const SizedBox(height: 24),
           if (problem == _Problem.deniedForever)
-            FilledButton(onPressed: SystemChannel.openAppSettings, child: const Text('Open settings'))
+            FilledButton(
+                onPressed: SystemChannel.openAppSettings, child: const Text('Open settings'))
           else if (problem != _Problem.noCamera)
             FilledButton(onPressed: onRetry, child: const Text('Allow camera')),
           const SizedBox(height: 8),

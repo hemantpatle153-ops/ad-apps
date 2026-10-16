@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:image/image.dart' as img;
 
+import '../image_filters.dart' show fitWithin;
 import 'edge_detect.dart';
 import 'geometry.dart';
 
@@ -58,14 +59,8 @@ Quad? detectPhotoJob(Uint8List bytes) => detectInPhoto(bytes);
 /// Detects the page in a small live frame.
 Quad? detectFrameJob(Luma frame) => detectDocument(frame);
 
-Uint8List _limit(img.Image up, {int maxSide = 2600}) {
-  var im = up;
-  if (im.width > maxSide || im.height > maxSide) {
-    im = im.width >= im.height
-        ? img.copyResize(im, width: maxSide)
-        : img.copyResize(im, height: maxSide);
-  }
-  return img.encodeJpg(im, quality: 92);
+Uint8List _limit(img.Image up, {int maxSide = 3200}) {
+  return img.encodeJpg(fitWithin(up, maxSide), quality: 92);
 }
 
 /// Samples a camera's luminance plane down to about [target] pixels on the
