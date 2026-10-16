@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 
 import 'src/app.dart';
+import 'src/party/drive.dart';
 import 'src/player/background_audio.dart';
 import 'src/settings.dart';
 
@@ -14,5 +15,6 @@ Future<void> main() async {
   // Background audio, consent and ads start after the first frame so the
   // app opens instantly.
   BackgroundAudio.instance.init();
+  DriveShare.instance.cleanup();
   AdService.instance.init(AdConfig.fromEnvironment());
 }

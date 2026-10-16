@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../player/tool_sheets.dart';
 import '../settings.dart';
+import 'drive.dart';
 import 'online.dart';
 import 'party.dart';
 import 'protocol.dart';
@@ -221,7 +223,10 @@ class _OnlineCard extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          video.isLink
+          video.isDrive
+              ? 'Friends open Watch together and enter this code. The video streams to '
+                  "them from your Google Drive; they don't need a copy."
+              : video.isLink
               ? 'Friends open Watch together and enter this code. The link opens on their phone.'
               : 'Friends need "${video.title}" on their phone. They open Watch together, '
                   'enter this code and pick the video.',
@@ -430,4 +435,87 @@ Future<String?> askOnlinePartyName(BuildContext context, Settings settings) asyn
   if (v.isEmpty) return null;
   settings.setPartyName(v);
   return v;
+}
+
+/// Uploads a video to the host's Google Drive for a streamed watch party.
+/// Pops with the Drive file id, or null when stopped or failed (the error is
+/// shown first). A stopped upload resumes where it left off next time.
+class DriveUploadDialog extends StatefulWidget {
+  const DriveUploadDialog({super.key, required this.file});
+
+  final File file;
+
+  @override
+  State<DriveUploadDialog> createState() => _DriveUploadDialogState();
+}
+
+class _DriveUploadDialogState extends State<DriveUploadDialog> {
+  final _stop = Completer<void>();
+  double _progress = 0;
+  int _size = 0;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _run();
+  }
+
+  Future<void> _run() async {
+    _size = await widget.file.length();
+    try {
+      final id = await DriveShare.instance.upload(widget.file,
+          cancel: _stop.future,
+          onProgress: (v) {
+            if (mounted) setState(() => _progress = v);
+          });
+      if (mounted) Navigator.pop(context, id);
+    } on DriveException catch (e) {
+      if (!mounted) return;
+      if (e.error == DriveError.canceled) {
+        Navigator.pop(context);
+      } else {
+        setState(() => _error = e.message);
+      }
+    }
+  }
+
+  static String _mb(num bytes) => (bytes / (1024 * 1024)).toStringAsFixed(0);
+
+  @override
+  Widget build(BuildContext context) {
+    final error = _error;
+    return AlertDialog(
+      title: const Text('Uploading to Google Drive'),
+      content: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+        if (error != null)
+          Text(error)
+        else ...[
+          LinearProgressIndicator(value: _progress == 0 ? null : _progress),
+          const SizedBox(height: 12),
+          Text(_size == 0
+              ? 'Getting ready...'
+              : '${_mb(_size * _progress)} of ${_mb(_size)} MB'),
+          const SizedBox(height: 8),
+          Text(
+            'Keep the app open. Friends stream it from your Drive, so they '
+            "don't need a copy. It is shared only during the party and deleted "
+            'from your Drive after a day.',
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 13),
+          ),
+        ],
+      ]),
+      actions: [
+        if (error != null)
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Close'))
+        else
+          TextButton(
+            onPressed: () {
+              if (!_stop.isCompleted) _stop.complete();
+            },
+            child: const Text('Stop'),
+          ),
+      ],
+    );
+  }
 }
