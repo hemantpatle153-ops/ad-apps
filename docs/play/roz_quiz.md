@@ -2,7 +2,7 @@
 
 - Folder: `apps/roz_quiz` - Package: `in.onlysoftware.roz_quiz`
 - Type: App - Free - **No ads in the first release** (built with the default `ADS=off`) - Ages 13+
-- Privacy policy: https://dice-dhamaal.web.app/privacy/roz_quiz.html (from `website/build.py`; deploy hosting before filling the forms)
+- Privacy policy: https://luzzan.com/privacy/roz_quiz
 - Uses Firebase project **dice-dhamaal** (Anonymous Auth, Realtime Database path `feedReports/`, write-only). The app id in `lib/services/firebase_reports.dart` is borrowed from Expense Tracker: **register `in.onlysoftware.roz_quiz` in the Firebase project and put its own app id there before release.**
 - Feed: daily quiz, current affairs and question banks are read from the `feed-data` branch of `ad-apps-builds` (`AppConfig.feedBaseUrl`, override with `--dart-define=FEED_BASE_URL=...`).
 
@@ -120,5 +120,5 @@ No exact alarms (reminders are inexact on purpose), no camera, storage, contacts
 | A wrong answer in the bundled bank is shown offline to everyone. | `apps/roz_quiz/assets/bank/` | `test/bank_integrity_test.dart` checks every question; fix reported questions in the feed and in the bank. |
 | The Firebase app id is not Roz Quiz's own. | `apps/roz_quiz/lib/services/firebase_reports.dart` | Register the package in Firebase and replace it before release. |
 | `feedReports` writes are rejected unless the database rules allow `app: "roz_quiz"`. | `firebase/database.rules.json` (separate PR) | Deploy the rules before release. |
-| Privacy page must be live. | `website/build.py` | Run `python website/build.py` and deploy hosting. |
+| Privacy page must be live. | luzzan.com | Live at https://luzzan.com/privacy/roz_quiz (checked 11 Oct 2026). |
 | Play may detect the Google Mobile Ads SDK and ask about ads. | `packages/app_core` | Answer "No ads": the SDK is never initialised and the AD_ID permission is removed. |

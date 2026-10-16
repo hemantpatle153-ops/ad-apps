@@ -7,7 +7,7 @@ import 'ui/home_screen.dart';
 const packageName = 'in.onlysoftware.multi_speaker';
 
 const privacyPolicyUrl =
-    'https://dice-dhamaal.web.app/privacy/multi_speaker.html'; // website/build.py
+    'https://luzzan.com/privacy/multi_speaker'; // policy page on luzzan.com
 
 class MultiSpeakerApp extends StatelessWidget {
   const MultiSpeakerApp({super.key, required this.settings});

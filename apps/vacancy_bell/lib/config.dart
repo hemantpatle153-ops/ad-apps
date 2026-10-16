@@ -24,9 +24,9 @@ abstract final class AppConfig {
   static const playLink =
       'https://play.google.com/store/apps/details?id=$packageName';
 
-  /// Written by website/build.py, served by Firebase Hosting.
+  /// Policy page on luzzan.com (company site of LUZZAN PRIVATE LIMITED).
   static const privacyPolicyUrl =
-      'https://dice-dhamaal.web.app/privacy/vacancy_bell.html';
+      'https://luzzan.com/privacy/vacancy_bell';
 
   /// Name used in the feedReports database entries.
   static const reportAppId = 'vacancy_bell';
